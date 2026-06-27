@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>站点设置 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link active"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <h1 class="text-2xl font-serif font-bold mb-6">站点设置</h1>
+    <form id="settingsForm" class="max-w-2xl space-y-6">
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-tag mr-2 text-[#2D5A3D]"></i>品牌信息</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">品牌名称</label><input id="sBrandName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#2D5A3D]/30"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">品牌域名</label><input id="sBrandDomain" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#2D5A3D]/30"></div>
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">品牌标语</label><input id="sTagline" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-envelope mr-2 text-[#C4926E]"></i>联系方式</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">WhatsApp 号码</label><input id="sWhatsApp" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">邮箱地址</label><input id="sEmail" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">所在位置</label><input id="sLocation" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">最低起订量</label><input id="sMoq" type="number" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-palette mr-2 text-[#2D5A3D]"></i>主题配色</h2>
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">主色</label><input id="sColPrimary" type="color" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">主色（浅）</label><input id="sColPrimaryLight" type="color" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">主色（深）</label><input id="sColPrimaryDark" type="color" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">强调色</label><input id="sColAccent" type="color" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">强调色（浅）</label><input id="sColAccentLight" type="color" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">WhatsApp</label><input id="sColWhatsApp" type="color" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" value="#25D366"></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-globe mr-2 text-[#2D5A3D]"></i>站点图标 (Favicon)</h2>
+        <p class="text-xs text-gray-400">上传后将显示在浏览器标签页上。建议使用 32x32 或 64x64 的 .ico / .png 图片。</p>
+        <div class="flex items-center gap-4">
+          <img id="faviconPreview" class="w-10 h-10 rounded-lg border border-gray-100 hidden object-cover">
+          <button type="button" onclick="document.getElementById('faviconInput').click()" class="px-4 py-2 border border-gray-200 rounded-xl text-sm hover:border-[#2D5A3D] transition-colors"><i class="fas fa-upload mr-1"></i> 上传图标</button>
+          <button type="button" onclick="clearFavicon()" class="text-xs text-red-400 hover:text-red-600">清除</button>
+        </div>
+        <input type="hidden" id="sFaviconPath" value="">
+        <input type="file" id="faviconInput" accept="image/png,image/x-icon,image/svg+xml,.ico" class="hidden" onchange="uploadFavicon(this)">
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-search mr-2 text-[#C4926E]"></i>SEO 设置</h2>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1">站点标题</label><input id="sSiteTitle" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1">站点描述</label><textarea id="sSiteDesc" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-20 resize-none outline-none"></textarea></div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-cloud mr-2 text-[#2D5A3D]"></i>阿里云 OSS 配置</h2>
+        <p class="text-xs text-gray-400">启用后，上传的图片将自动存入阿里云 OSS，不再存储在服务器本地。</p>
+        <div class="flex items-center gap-3">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="sOssEnabled" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2D5A3D]"></div>
+          </label>
+          <span class="text-sm font-medium text-gray-700">启用 OSS 存储</span>
+        </div>
+        <div id="ossFields" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-medium text-gray-500 mb-1">Region（地域)</label><input id="sOssRegion" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="oss-cn-shenzhen"></div>
+            <div><label class="block text-xs font-medium text-gray-500 mb-1">Bucket 名称</label><input id="sOssBucket" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="lightcirle-images"></div>
+            <div><label class="block text-xs font-medium text-gray-500 mb-1">AccessKey ID</label><input id="sOssKeyId" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+            <div><label class="block text-xs font-medium text-gray-500 mb-1">AccessKey Secret</label><input id="sOssKeySecret" type="password" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+            <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">CDN 域名（可选）</label><input id="sOssCdn" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="https://cdn.lightcirle.com"></div>
+          </div>
+          <p class="text-xs text-amber-600 bg-amber-50 p-3 rounded-xl">安全提醒：建议使用 RAM 子账号（仅授权 OSS 的 PutObject + DeleteObject），Bucket 设为公共读。</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 justify-end pt-2">
+        <button type="submit" class="bg-[#2D5A3D] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-save mr-2"></i> 保存设置</button>
+      </div>
+    </form>
+
+    <!-- Toast notification -->
+    <div id="toastMsg" class="fixed top-4 right-4 z-[100] bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium opacity-0 translate-x-4 transition-all duration-300 pointer-events-none hidden">
+      <i class="fas fa-check-circle mr-2"></i><span id="toastText">已保存</span>
+    </div>
+    </form>
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+  <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+  <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+  <a href="articles.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
+  <a href="categories.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
+  <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+  <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+  <a href="settings.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+</nav>
+
+<script>
+  const API = '/api'; let token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...opts.headers } });
+    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/admin/login.html'; }
+    return res;
+  }
+
+  async function load() {
+    const s = await (await api('/settings')).json();
+    document.getElementById('sBrandName').value = s.brandName || '';
+    document.getElementById('sBrandDomain').value = s.brandDomain || '';
+    document.getElementById('sTagline').value = s.brandTagline || '';
+    document.getElementById('sWhatsApp').value = s.whatsappNumber || '';
+    document.getElementById('sEmail').value = s.emailAddress || '';
+    document.getElementById('sLocation').value = s.location || '';
+    document.getElementById('sMoq').value = s.moq || 50;
+    document.getElementById('sSiteTitle').value = s.siteTitle || '';
+    document.getElementById('sSiteDesc').value = s.siteDescription || '';
+    document.getElementById('sColPrimary').value = s.colors.primary || '#2D5A3D';
+    document.getElementById('sColPrimaryLight').value = s.colors.primaryLight || '#3E7B54';
+    document.getElementById('sColPrimaryDark').value = s.colors.primaryDark || '#1F3F2A';
+    document.getElementById('sColAccent').value = s.colors.accent || '#C4926E';
+    document.getElementById('sColAccentLight').value = s.colors.accentLight || '#D4A88C';
+    document.getElementById('sColWhatsApp').value = s.colors.whatsapp || '#25D366';
+    // Load OSS fields
+    document.getElementById('sOssEnabled').checked = s.oss?.enabled || false;
+    document.getElementById('sOssRegion').value = s.oss?.region || '';
+    document.getElementById('sOssBucket').value = s.oss?.bucket || '';
+    document.getElementById('sOssKeyId').value = s.oss?.accessKeyId || '';
+    document.getElementById('sOssKeySecret').value = s.oss?.accessKeySecret || '';
+    document.getElementById('sOssCdn').value = s.oss?.cdnDomain || '';
+    toggleOssFields();
+    // Load favicon
+    document.getElementById('sFaviconPath').value = s.faviconPath || '';
+    if (s.faviconPath) {
+      document.getElementById('faviconPreview').src = s.faviconPath;
+      document.getElementById('faviconPreview').classList.remove('hidden');
+    }
+  }
+
+  // Toggle OSS fields visibility
+  function toggleOssFields() {
+    const enabled = document.getElementById('sOssEnabled').checked;
+    document.getElementById('ossFields').style.opacity = enabled ? '1' : '0.4';
+    document.getElementById('ossFields').querySelectorAll('input').forEach(i => i.disabled = !enabled);
+  }
+  document.getElementById('sOssEnabled').addEventListener('change', toggleOssFields);
+
+  // --- Favicon upload ---
+  function uploadFavicon(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'site');
+    fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.url) {
+          document.getElementById('sFaviconPath').value = data.url;
+          document.getElementById('faviconPreview').src = data.url;
+          document.getElementById('faviconPreview').classList.remove('hidden');
+        }
+      })
+      .catch(function(e) { alert('上传失败: ' + e.message); });
+    input.value = '';
+  }
+
+  function clearFavicon() {
+    document.getElementById('sFaviconPath').value = '';
+    document.getElementById('faviconPreview').classList.add('hidden');
+  }
+
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      brandName: document.getElementById('sBrandName').value,
+      brandDomain: document.getElementById('sBrandDomain').value,
+      brandTagline: document.getElementById('sTagline').value,
+      whatsappNumber: document.getElementById('sWhatsApp').value,
+      emailAddress: document.getElementById('sEmail').value,
+      location: document.getElementById('sLocation').value,
+      moq: parseInt(document.getElementById('sMoq').value) || 50,
+      siteTitle: document.getElementById('sSiteTitle').value,
+      siteDescription: document.getElementById('sSiteDesc').value,
+      colors: {
+        primary: document.getElementById('sColPrimary').value,
+        primaryLight: document.getElementById('sColPrimaryLight').value,
+        primaryDark: document.getElementById('sColPrimaryDark').value,
+        accent: document.getElementById('sColAccent').value,
+        accentLight: document.getElementById('sColAccentLight').value,
+        whatsapp: document.getElementById('sColWhatsApp').value,
+      },
+      oss: {
+        enabled: document.getElementById('sOssEnabled').checked,
+        region: document.getElementById('sOssRegion').value,
+        bucket: document.getElementById('sOssBucket').value,
+        accessKeyId: document.getElementById('sOssKeyId').value,
+        accessKeySecret: document.getElementById('sOssKeySecret').value,
+        cdnDomain: document.getElementById('sOssCdn').value,
+      },
+      faviconPath: document.getElementById('sFaviconPath').value,
+    };
+    try {
+      await api('/settings', { method: 'PUT', body: JSON.stringify(data) });
+      showToast('设置已保存！配置文件已同步。');
+    } catch(e) { alert('保存失败: ' + e.message); }
+  });
+
+  function showToast(msg) {
+    var el = document.getElementById('toastMsg');
+    var txt = document.getElementById('toastText');
+    txt.textContent = msg;
+    el.classList.remove('hidden', 'opacity-0', 'translate-x-4');
+    el.classList.add('opacity-100', 'translate-x-0');
+    setTimeout(function() {
+      el.classList.remove('opacity-100', 'translate-x-0');
+      el.classList.add('opacity-0', 'translate-x-4');
+      setTimeout(function() { el.classList.add('hidden'); }, 300);
+    }, 2000);
+  }
+
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章管理 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link active"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-serif font-bold">文章管理</h1>
+      <button onclick="openEditor()" class="bg-[#2D5A3D] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-plus mr-1"></i> 新建文章</button>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
+          <th class="p-4 font-medium">文章标题</th><th class="p-4 font-medium">分类</th><th class="p-4 font-medium">日期</th><th class="p-4 font-medium">操作</th>
+        </tr></thead>
+        <tbody id="articleTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Editor Modal -->
+    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)closeEditor()">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-8" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新建文章</h2><button onclick="closeEditor()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
+        <form id="articleForm" class="grid grid-cols-2 gap-4">
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">文章标题</label><input id="edTitle" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" required></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类</label>
+            <select id="edCat" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+              <option value="fabric-knowledge">面料知识</option><option value="business-tips">商业建议</option><option value="industry-news">行业动态</option>
+            </select>
+          </div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">日期</label><input id="edDate" type="date" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">作者</label><input id="edAuthor" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" value="lightcirle Team"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">标签（逗号分隔）</label><input id="edTags" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm"></div>
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-gray-500 mb-1">封面图片</label>
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="document.getElementById('articleImageInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传封面</button>
+              <div class="flex-1 flex gap-2">
+                <input type="text" id="edImage" class="flex-1 px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴图片URL">
+                <button type="button" onclick="setCoverImage()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">设置</button>
+              </div>
+            </div>
+            <img id="coverPreview" class="mt-2 max-h-24 rounded-lg hidden object-cover border border-gray-100">
+            <input type="file" id="articleImageInput" accept="image/*" class="hidden" onchange="uploadArticleImage(this)">
+          </div>
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">摘要</label><textarea id="edExcerpt" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-16 resize-none"></textarea></div>
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">正文（Markdown）</label><textarea id="edContent" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-64 resize-none"></textarea></div>
+          <div class="col-span-2 flex gap-3 justify-end pt-4 border-t border-gray-100">
+            <button type="button" onclick="closeEditor()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
+            <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存文章</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+  <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+  <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+  <a href="articles.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
+  <a href="categories.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
+  <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+  <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+  <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+</nav>
+
+<script>
+  const API = '/api'; let token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...opts.headers } });
+    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/admin/login.html'; }
+    return res;
+  }
+
+  let articles = [], editingId = null;
+  function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  async function loadArticles() {
+    articles = await (await api('/articles')).json();
+    const catNames = {'fabric-knowledge':'Fabric Knowledge','business-tips':'Business Tips','industry-news':'Industry News'};
+    document.getElementById('articleTable').innerHTML = articles.map(a => `
+      <tr class="border-b border-gray-50 hover:bg-gray-50/50">
+        <td class="p-4 font-medium max-w-[300px] truncate"><a href="/blog-detail.html?id=${a.id}" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(a.title)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
+        <td class="p-4"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${catNames[a.category]||a.category}</span></td>
+        <td class="p-4 text-gray-500 text-xs">${a.date}</td>
+        <td class="p-4"><button onclick="editArticle('${a.id}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteArticle('${a.id}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  function openEditor(article) {
+    editingId = article ? article.id : null;
+    document.getElementById('editorTitle').textContent = article ? '编辑: ' + article.title : '新建文章';
+    document.getElementById('edTitle').value = article ? article.title : '';
+    document.getElementById('edCat').value = article ? article.category : 'business-tips';
+    document.getElementById('edDate').value = article ? article.date : new Date().toISOString().split('T')[0];
+    document.getElementById('edAuthor').value = article ? article.author : 'lightcirle Team';
+    document.getElementById('edTags').value = article ? (article.tags||[]).join(',') : '';
+    document.getElementById('edImage').value = article ? article.image : '';
+    document.getElementById('edExcerpt').value = article ? article.excerpt : '';
+    document.getElementById('edContent').value = article ? article.content : '';
+    previewCover(article ? article.image : '');
+    document.getElementById('editorModal').classList.remove('hidden');
+  }
+
+  function closeEditor() { document.getElementById('editorModal').classList.add('hidden'); editingId = null; }
+
+  // --- Cover image management ---
+  function previewCover(url) {
+    var img = document.getElementById('coverPreview');
+    if (url) { img.src = url; img.classList.remove('hidden'); }
+    else { img.classList.add('hidden'); }
+  }
+
+  function setCoverImage() {
+    var url = document.getElementById('edImage').value.trim();
+    if (!url) return;
+    document.getElementById('edImage').value = url;
+    previewCover(url);
+  }
+
+  async function uploadArticleImage(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'articles');
+    try {
+      var res = await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+      var data = await res.json();
+      if (data.url) { document.getElementById('edImage').value = data.url; previewCover(data.url); }
+    } catch(e) { alert('上传失败: ' + e.message); }
+    input.value = '';
+  }
+
+  document.getElementById('articleForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      title: document.getElementById('edTitle').value,
+      category: document.getElementById('edCat').value,
+      date: document.getElementById('edDate').value || new Date().toISOString().split('T')[0],
+      author: document.getElementById('edAuthor').value,
+      tags: document.getElementById('edTags').value.split(',').map(s=>s.trim()).filter(Boolean),
+      image: document.getElementById('edImage').value,
+      excerpt: document.getElementById('edExcerpt').value,
+      content: document.getElementById('edContent').value,
+    };
+    try {
+      if (editingId) { await api('/articles/' + editingId, { method: 'PUT', body: JSON.stringify(data) }); }
+      else { await api('/articles', { method: 'POST', body: JSON.stringify(data) }); }
+      closeEditor(); loadArticles();
+    } catch(e) { alert('Error: ' + e.message); }
+  });
+
+  function editArticle(id) { const a = articles.find(x => x.id === id); if (a) openEditor(a); }
+  async function deleteArticle(id) { if (!confirm('确认删除此文章？')) return; await api('/articles/' + id, { method: 'DELETE' }); loadArticles(); }
+
+  loadArticles();
+</script>
+</body>
+</html>

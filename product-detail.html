@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Product Details — lightcirle</title>
+  <meta name="description" content="View product specifications, customization options, and MOQ." id="pageDescription">
+  <meta property="og:title" content="Product Details | lightcirle" id="ogTitle">
+  <meta property="og:description" content="Custom yoga wear product details and specifications." id="ogDescription">
+  <meta property="og:image" content="https://lightcirle.com/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="product">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Product Details | lightcirle">
+  <meta name="twitter:image" content="https://lightcirle.com/og-image.jpg">
+  <link rel="canonical" href="https://lightcirle.com/product-detail.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="js/config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    var twc = window.__TW_COLORS;
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: twc.primary, light: twc['primary-light'], dark: twc['primary-dark'] },
+            accent: { DEFAULT: twc.accent, light: twc['accent-light'] },
+            whatsapp: twc.whatsapp,
+            cream: twc.cream,
+            darkbg: twc.darkbg,
+            darksurface: twc.darksurface,
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
+
+<!-- Navigation -->
+<nav id="mainNav" class="nav-glass fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-2xl font-serif font-bold text-primary dark:text-primary-light">lightcirle</span>
+      </a>
+      <div class="hidden lg:flex items-center gap-5">
+        <form class="nav-search-wrap" onsubmit="window.handleNavSearch(event)">
+          <i class="fas fa-search nav-search-icon"></i>
+          <input type="text" id="navSearchInput" class="nav-search" placeholder="Search products & articles...">
+        </form>
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="search.html" class="nav-link active">Explore</a>
+        <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20interested%20in%20your%20yoga%20wear%20customization%20services." target="_blank" rel="noopener" class="btn-whatsapp text-sm py-2 px-4"><i class="fab fa-whatsapp"></i></a>
+        <a href="mailto:inquiry@lightcirle.com?subject=Yoga%20Wear%20Inquiry" class="btn-outline text-sm py-2 px-4"><i class="fas fa-envelope"></i></a>
+        <button id="themeToggle" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle theme"><i class="fas fa-moon text-lg"></i></button>
+      </div>
+      <div class="flex lg:hidden items-center gap-3">
+        <button id="themeToggle" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle theme"><i class="fas fa-moon text-base"></i></button>
+        <button id="mobileMenuToggle" class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Menu"><i class="fas fa-bars text-xl"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden flex-col gap-2 pb-4 lg:hidden">
+      <form onsubmit="window.handleNavSearch(event)" class="relative px-1">
+        <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input type="text" id="mobileNavSearchInput" class="search-input text-sm" placeholder="Search products & articles...">
+      </form>
+      <a href="index.html" class="block px-4 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800">Home</a>
+      <a href="search.html" class="block px-4 py-3 rounded-lg font-medium text-primary bg-primary/5 dark:bg-primary/10">Explore All</a>
+      <div class="flex gap-3 mt-2 px-4">
+        <a href="https://wa.me/8612345678900?text=Hi!" target="_blank" rel="noopener" class="btn-whatsapp text-sm py-2 px-4 flex-1 justify-center"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="mailto:inquiry@lightcirle.com" class="btn-outline text-sm py-2 px-4 flex-1 justify-center"><i class="fas fa-envelope"></i> Email</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+<section class="pt-28 lg:pt-36 pb-16 lg:pb-24" id="productDetail">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
+      <a href="index.html" class="hover:text-primary dark:hover:text-primary-light">Home</a>
+      <i class="fas fa-chevron-right text-xs"></i>
+      <a href="search.html" class="hover:text-primary dark:hover:text-primary-light">Products</a>
+      <i class="fas fa-chevron-right text-xs"></i>
+      <span id="breadcrumbName" class="text-gray-900 dark:text-gray-200">Loading...</span>
+    </nav>
+
+    <div id="loadingState" class="animate-pulse">
+      <div class="grid lg:grid-cols-2 gap-12">
+        <div>
+          <div class="aspect-[3/4] bg-gray-200 dark:bg-gray-700 rounded-2xl"></div>
+          <div class="flex gap-3 mt-4">
+            <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+            <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+          <div class="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="productContent" class="hidden"></div>
+
+    <div id="errorState" class="empty-state hidden" style="display:none;">
+      <i class="fas fa-exclamation-circle"></i>
+      <h3 class="text-xl font-serif font-bold mb-2">Product not found</h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-6" id="errorMessage">The product you're looking for doesn't exist or has been removed.</p>
+      <a href="search.html" class="btn-primary"><i class="fas fa-th-large"></i> Browse All Products</a>
+    </div>
+  </div>
+</section>
+
+<section id="relatedSection" class="py-16 lg:py-20 bg-white dark:bg-darksurface border-t border-gray-100 dark:border-gray-800 hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl lg:text-3xl font-serif font-bold mb-10">Related Products</h2>
+    <div id="relatedProducts" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <h4>lightcirle</h4>
+        <p class="text-sm leading-relaxed">Premium custom yoga wear manufacturer. MOQ 50pcs, factory direct, global shipping.</p>
+        <div class="flex gap-3 mt-4">
+          <a href="https://wa.me/8612345678900" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-whatsapp transition-colors" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:inquiry@lightcirle.com" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <ul class="space-y-2">
+          <li><a href="search.html?tab=yoga-pants">Yoga Pants</a></li>
+          <li><a href="search.html?tab=sports-bras">Sports Bras</a></li>
+          <li><a href="search.html?tab=yoga-outerwear">Yoga Outerwear</a></li>
+          <li><a href="search.html?tab=hoodies">Hoodies</a></li>
+          <li><a href="search.html?tab=sets">Matching Sets</a></li>
+          <li><a href="search.html?tab=seamless">Seamless Collection</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="space-y-2 text-sm">
+          <li><i class="fab fa-whatsapp mr-2"></i> WhatsApp: +86 123 4567 8900</li>
+          <li><i class="fas fa-envelope mr-2"></i> inquiry@lightcirle.com</li>
+          <li><i class="fas fa-map-marker-alt mr-2"></i> Guangzhou, China</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 lightcirle. Premium Custom Yoga Wear Manufacturer.</p>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<div id="floatingContact" class="floating-contact"></div>
+<button id="scrollTopBtn" class="scroll-top" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+
+<script src="js/main.js"></script>
+<script src="js/visitor-tracker.js"></script>
+<script>
+(function() {
+  var productId = new URLSearchParams(window.location.search).get('id');
+  if (!productId) { window.location.href = 'search.html'; return; }
+
+  var loadingEl = document.getElementById('loadingState');
+  var contentEl = document.getElementById('productContent');
+  var errorEl = document.getElementById('errorState');
+  var errorMsg = document.getElementById('errorMessage');
+
+  function showError(msg) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (contentEl) { contentEl.classList.add('hidden'); }
+    if (errorEl) {
+      if (errorMsg && msg) errorMsg.textContent = msg;
+      errorEl.style.display = '';
+      errorEl.classList.remove('hidden');
+    }
+  }
+
+  var categoryNames = {
+    'yoga-pants': 'Yoga Pants',
+    'sports-bras': 'Sports Bras',
+    'yoga-outerwear': 'Yoga Outerwear',
+    'hoodies': 'Hoodies',
+    'sets': 'Matching Sets',
+    'seamless': 'Seamless'
+  };
+
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function productUrl(product) {
+    return '/' + slugify(product.name) + '.html?id=' + product.id;
+  }
+
+  function renderProduct(product) {
+    document.title = product.name + ' — Custom Yoga Wear | MOQ ' + product.moq + 'pcs | lightcirle';
+    document.getElementById('pageTitle').textContent = document.title;
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute('content', product.name + ': ' + product.description.substring(0, 150) + '... MOQ ' + product.moq + 'pcs.');
+
+    var html = '<div class="grid lg:grid-cols-2 gap-12 lg:gap-16">';
+    // Images
+    html += '<div><div class="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4">';
+    html += '<img src="' + product.images[0] + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
+    html += '</div><div class="flex gap-3">';
+    for (var i = 0; i < product.images.length; i++) {
+      var border = i === 0 ? 'border-primary' : 'border-transparent';
+      html += '<button onclick="document.getElementById(\'mainImage\').src=\'' + product.images[i] + '\'" class="w-20 h-20 rounded-xl overflow-hidden border-2 ' + border + ' hover:border-primary/50 transition-colors"><img src="' + product.images[i] + '" alt="' + product.name + ' view ' + (i+1) + '" class="w-full h-full object-cover"></button>';
+    }
+    html += '</div></div>';
+    // Info
+    html += '<div>';
+    html += '<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (categoryNames[product.category] || product.category) + '</span>';
+    html += '<h1 class="text-3xl lg:text-4xl font-serif font-bold mb-4">' + product.name + '</h1>';
+    html += '<p class="text-gray-600 dark:text-gray-400 text-lg mb-6">' + product.description + '</p>';
+    // Specs
+    html += '<div class="grid grid-cols-2 gap-4 mb-8">';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">MOQ</p><p class="font-bold text-lg">' + product.moq + ' pcs</p></div>';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Lead Time</p><p class="font-bold text-lg">' + product.leadTime + '</p></div>';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Fabric</p><p class="font-bold text-sm">' + product.fabric + '</p></div>';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Weight</p><p class="font-bold text-lg">' + product.weight + '</p></div>';
+    html += '</div>';
+    // Sizes
+    html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Available Sizes</p><div class="flex flex-wrap gap-2">';
+    for (var s = 0; s < product.sizes.length; s++) {
+      html += '<span class="px-3 py-1 rounded-md border border-gray-200 dark:border-gray-700 text-sm">' + product.sizes[s] + '</span>';
+    }
+    html += '</div></div>';
+    // Colors
+    html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Available Colors</p><div class="flex flex-wrap gap-2">';
+    for (var c = 0; c < product.colors.length; c++) {
+      html += '<span class="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-sm">' + product.colors[c] + '</span>';
+    }
+    html += '</div></div>';
+    // Features
+    html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Key Features</p><div class="flex flex-wrap gap-2">';
+    for (var f = 0; f < product.features.length; f++) {
+      html += '<span class="px-3 py-1 rounded-full bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light text-xs font-medium"><i class="fas fa-check mr-1"></i>' + product.features[f] + '</span>';
+    }
+    html += '</div></div>';
+    // CTA
+    html += '<div class="flex flex-wrap gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">';
+    html += '<a href="https://wa.me/8612345678900?text=Hi!%20I%27m%20interested%20in%20' + encodeURIComponent(product.name) + '" target="_blank" rel="noopener" class="btn-whatsapp flex-1 sm:flex-none justify-center"><i class="fab fa-whatsapp"></i> Inquire on WhatsApp</a>';
+    html += '<a href="mailto:inquiry@lightcirle.com?subject=Inquiry%20-%20' + encodeURIComponent(product.name) + '" class="btn-outline flex-1 sm:flex-none justify-center"><i class="fas fa-envelope"></i> Send Email</a>';
+    html += '</div></div></div>';
+
+    // Customization
+    html += '<div class="mt-16 p-8 lg:p-12 rounded-2xl bg-white dark:bg-darksurface border border-gray-100 dark:border-gray-800">';
+    html += '<h2 class="text-2xl font-serif font-bold mb-6">Customization Options</h2><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">';
+    for (var cust = 0; cust < product.customization.length; cust++) {
+      html += '<div class="flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50"><div class="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-check text-primary dark:text-primary-light"></i></div><span class="text-sm font-medium">' + product.customization[cust] + '</span></div>';
+    }
+    html += '</div></div>';
+
+    // Process
+    html += '<div class="mt-12"><h2 class="text-2xl font-serif font-bold mb-8 text-center">How It Works</h2><div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">';
+    var steps = [
+      {icon:'fa-comments',title:'1. Consult',desc:'Tell us your requirements via WhatsApp or email'},
+      {icon:'fa-pencil-ruler',title:'2. Design',desc:'We create tech packs and samples for your approval'},
+      {icon:'fa-industry',title:'3. Produce',desc:'Manufacturing with quality control (15-25 days)'},
+      {icon:'fa-shipping-fast',title:'4. Deliver',desc:'Global shipping to your doorstep'}
+    ];
+    for (var st = 0; st < steps.length; st++) {
+      html += '<div class="text-center p-6"><div class="w-14 h-14 rounded-2xl bg-' + (st%2===0?'primary':'accent') + '/10 dark:bg-' + (st%2===0?'primary-light':'accent-light') + '/10 flex items-center justify-center mx-auto mb-4"><i class="fas ' + steps[st].icon + ' text-xl text-' + (st%2===0?'primary':'accent') + ' dark:text-' + (st%2===0?'primary-light':'accent-light') + '"></i></div><h3 class="font-bold mb-2">' + steps[st].title + '</h3><p class="text-sm text-gray-500 dark:text-gray-400">' + steps[st].desc + '</p></div>';
+    }
+    html += '</div></div>';
+
+    // Add factory capabilities + related articles section after customization
+    html += '<div id="factoryKnowledgeSection">' + renderFactoryKnowledgeSection(product) + '</div>';
+
+    contentEl.innerHTML = html;
+    document.getElementById('breadcrumbName').textContent = product.name;
+    if (loadingEl) loadingEl.style.display = 'none';
+    contentEl.classList.remove('hidden');
+    window.__renderedProduct = product;
+    // Update canonical URL with slug
+    var canonLink = document.querySelector('link[rel="canonical"]');
+    if (canonLink) canonLink.setAttribute('href', 'https://lightcirle.com' + productUrl(product));
+    // Inject Product + Breadcrumb schema
+    if (window.injectProductSchema) injectProductSchema(product);
+    if (window.injectBreadcrumbSchema) injectBreadcrumbSchema([
+      { name: 'Home', url: '/' },
+      { name: 'Explore', url: '/search.html' },
+      { name: product.name, url: productUrl(product) }
+    ]);
+  }
+
+  // ===== Factory Strength & Related Knowledge Module =====
+  function renderFactoryKnowledgeSection(product) {
+    var data = window.__companyData || {};
+    var aboutTitle = data.aboutTitle || 'The Manufacturing Powerhouse Behind Your Brand';
+    var aboutText = data.aboutText || 'Since 2016, our 3,000m² facility in Guangzhou has been producing premium yoga wear for brands worldwide. With 120+ skilled technicians and a monthly capacity of 300,000 pieces, we bring your designs to life with precision and care.';
+    var stats = data.stats || {};
+    var capabilities = data.capabilities || ['OEM & ODM Service', 'Custom Fabric Blends', 'Pantone Color Matching', 'Logo Embroidery', 'Custom Labels & Tags', 'Branded Packaging', 'OEKO-TEX Certified', 'AQL 2.5 QC'];
+    var gallery = data.gallery || [];
+
+    var factoryHtml = '';
+
+    // --- Factory Capabilities (compact) ---
+    factoryHtml += '<div class="mt-16 bg-white dark:bg-darksurface rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">';
+    factoryHtml += '<div class="grid lg:grid-cols-3">';
+
+    // Left: Factory intro
+    factoryHtml += '<div class="lg:col-span-2 p-8 lg:p-10">';
+    factoryHtml += '<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">Our Factory</span>';
+    factoryHtml += '<h2 class="text-2xl lg:text-3xl font-serif font-bold mb-4">' + aboutTitle + '</h2>';
+    factoryHtml += '<p class="text-gray-600 dark:text-gray-400 mb-6">' + aboutText + '</p>';
+
+    // Factory stats row
+    factoryHtml += '<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">';
+    factoryHtml += '<div class="bg-cream dark:bg-gray-800/40 rounded-xl p-3 text-center"><div class="text-xl font-serif font-bold text-primary dark:text-primary-light">' + (stats.facilitySize || '3,000') + '</div><p class="text-xs text-gray-500">m² Facility</p></div>';
+    factoryHtml += '<div class="bg-cream dark:bg-gray-800/40 rounded-xl p-3 text-center"><div class="text-xl font-serif font-bold text-primary dark:text-primary-light">' + (stats.workers || '120+') + '</div><p class="text-xs text-gray-500">Workers</p></div>';
+    factoryHtml += '<div class="bg-cream dark:bg-gray-800/40 rounded-xl p-3 text-center"><div class="text-xl font-serif font-bold text-primary dark:text-primary-light">' + (stats.monthlyCapacity || '300K') + '</div><p class="text-xs text-gray-500">Monthly Pcs</p></div>';
+    factoryHtml += '<div class="bg-cream dark:bg-gray-800/40 rounded-xl p-3 text-center"><div class="text-xl font-serif font-bold text-primary dark:text-primary-light">' + (stats.countriesShipped || '30+') + '</div><p class="text-xs text-gray-500">Countries</p></div>';
+    factoryHtml += '</div>';
+
+    // Factory image gallery — horizontal scrollable row (from API or fallback)
+    var galleryFiles = gallery.length > 0 ? gallery : ['assets/images/factory/1.jpg','assets/images/factory/2.jpg','assets/images/factory/3.jpg','assets/images/factory/4.jpg','assets/images/factory/5.jpg','assets/images/factory/6.jpg','assets/images/factory/7.jpg','assets/images/factory/8.jpg'];
+    factoryHtml += '<div class="mb-6">';
+    factoryHtml += '<div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide" style="scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x mandatory">';
+    for (var fi2 = 0; fi2 < galleryFiles.length; fi2++) {
+      factoryHtml += '<div class="flex-shrink-0 w-[200px] snap-start rounded-xl overflow-hidden aspect-[4/3] bg-gray-100 dark:bg-gray-800"><img src="' + galleryFiles[fi2] + '" alt="Factory photo" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy"></div>';
+    }
+    factoryHtml += '</div>';
+    factoryHtml += '<div class="flex justify-center gap-1.5 mt-2">';
+    for (var fi3 = 0; fi3 < galleryFiles.length; fi3++) {
+      factoryHtml += '<span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 scroll-dot"></span>';
+    }
+    factoryHtml += '</div></div><style>.scrollbar-hide::-webkit-scrollbar{display:none}</style>';
+
+    // Capability tags
+    factoryHtml += '<div class="flex flex-wrap gap-2">';
+    for (var cp = 0; cp < Math.min(capabilities.length, 8); cp++) {
+      factoryHtml += '<span class="text-xs px-3 py-1 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light border border-primary/20 dark:border-primary-light/20"><i class="fas fa-check mr-1"></i>' + capabilities[cp] + '</span>';
+    }
+    factoryHtml += '</div></div>';
+
+    // Right: CTA with WhatsApp
+    factoryHtml += '<div class="p-8 lg:p-10 bg-primary/5 dark:bg-gray-800/30 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-gray-100 dark:border-gray-800">';
+    factoryHtml += '<div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4"><i class="fas fa-industry text-2xl text-primary dark:text-primary-light"></i></div>';
+    factoryHtml += '<h3 class="font-serif font-bold text-lg mb-2">Start Your Project</h3>';
+    factoryHtml += '<p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Talk to our team about customizing this product for your brand. Free consultation.</p>';
+    factoryHtml += '<a href="https://wa.me/8612345678900?text=Hi!%20I%27m%20interested%20in%20' + encodeURIComponent(product.name) + '" target="_blank" rel="noopener" class="btn-whatsapp justify-center text-sm mb-3"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>';
+    factoryHtml += '<a href="mailto:inquiry@lightcirle.com?subject=Inquiry%20-%20' + encodeURIComponent(product.name) + '" class="btn-outline text-sm justify-center"><i class="fas fa-envelope"></i> Send Email</a>';
+    factoryHtml += '</div></div></div>';
+
+    // --- Related Knowledge (if blog data loaded) ---
+    if (window.__relatedArticles && window.__relatedArticles.length > 0) {
+      factoryHtml += '<div class="mt-10">';
+      factoryHtml += '<div class="flex items-center justify-between mb-6"><h3 class="text-xl font-serif font-bold">Related Knowledge</h3><a href="search.html?tab=blog" class="text-sm text-primary dark:text-primary-light hover:underline">View All →</a></div>';
+      factoryHtml += '<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">';
+      for (var ra = 0; ra < Math.min(window.__relatedArticles.length, 3); ra++) {
+        var art = window.__relatedArticles[ra];
+        factoryHtml += '<a href="blog-detail.html?id=' + art.id + '" class="block bg-gray-50 dark:bg-gray-800/40 rounded-xl p-4 hover:bg-primary/5 dark:hover:bg-primary-light/5 transition-colors group">';
+        factoryHtml += '<span class="text-xs font-semibold text-accent uppercase tracking-wider">' + (window.__articleCatNames && window.__articleCatNames[art.category] ? window.__articleCatNames[art.category] : art.category) + '</span>';
+        factoryHtml += '<h4 class="font-bold text-sm mt-1 group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2">' + art.title + '</h4>';
+        factoryHtml += '<p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">' + (art.excerpt || '') + '</p>';
+        factoryHtml += '<span class="text-xs text-primary dark:text-primary-light mt-2 inline-block group-hover:underline">Read More →</span>';
+        factoryHtml += '</a>';
+      }
+      factoryHtml += '</div></div>';
+    }
+
+    return factoryHtml;
+  }
+
+  function renderRelated(products, currentId) {
+    var related = [];
+    for (var i = 0; i < products.length; i++) {
+      if (products[i].id !== currentId && related.length < 4) {
+        related.push(products[i]);
+      }
+    }
+    if (related.length === 0) { document.getElementById('relatedSection').classList.add('hidden'); return; }
+    document.getElementById('relatedSection').classList.remove('hidden');
+    var html = '';
+    for (var r = 0; r < related.length; r++) {
+      html += '<a href="' + productUrl(related[r]) + '" class="product-card block"><div class="product-image-wrap"><img src="' + related[r].images[0] + '" alt="' + related[r].name + '" loading="lazy"></div><div class="p-4"><h3 class="font-serif font-bold text-base mb-1">' + related[r].name + '</h3><span class="text-xs font-semibold text-primary dark:text-primary-light">MOQ ' + related[r].moq + 'pcs</span></div></a>';
+    }
+    document.getElementById('relatedProducts').innerHTML = html;
+  }
+
+  // ===== Article category names for related knowledge =====
+  window.__articleCatNames = {
+    'fabric-knowledge': 'Fabric Knowledge',
+    'business-tips': 'Business Tips',
+    'industry-news': 'Industry News'
+  };
+
+  // ===== Article <-> Product relevance mapping (keyed by product ID prefix) =====
+  var productArticleRelevance = {
+    'leggings': ['fabric-guide-01', 'moq-guide-02', 'yoga-wear-trends-2026-04'],
+    'bra': ['fabric-guide-01', 'customization-process-03', 'private-label-05'],
+    'outerwear': ['customization-process-03', 'private-label-05', 'moq-guide-02'],
+    'hoodie': ['customization-process-03', 'private-label-05', 'moq-guide-02'],
+    'set': ['yoga-wear-trends-2026-04', 'customization-process-03', 'moq-guide-02'],
+    'seamless': ['yoga-wear-trends-2026-04', 'fabric-guide-01', 'moq-guide-02']
+  };
+
+  // Load company data for factory section
+  var companyXhr = new XMLHttpRequest();
+  companyXhr.open('GET', '/api/company', true);
+  companyXhr.onload = function() {
+    try {
+      window.__companyData = JSON.parse(companyXhr.responseText);
+      // If product already rendered, re-render the factory section
+      var existingSection = document.getElementById('factoryKnowledgeSection');
+      if (existingSection && window.__renderedProduct) {
+        existingSection.innerHTML = renderFactoryKnowledgeSection(window.__renderedProduct);
+      }
+    } catch(e) { /* silently skip */ }
+  };
+  companyXhr.send();
+
+  // Load blog data for related articles
+  var blogXhr = new XMLHttpRequest();
+  blogXhr.open('GET', 'data/blog.json', true);
+  blogXhr.onload = function() {
+    try {
+      var allArticles = JSON.parse(blogXhr.responseText);
+      var relevant = productArticleRelevance[productId.split('-')[0]] || [];
+      if (relevant.length > 0) {
+        window.__relatedArticles = [];
+        for (var ri = 0; ri < allArticles.length; ri++) {
+          for (var rj = 0; rj < relevant.length; rj++) {
+            if (allArticles[ri].id === relevant[rj]) {
+              window.__relatedArticles.push(allArticles[ri]);
+              break;
+            }
+          }
+        }
+        // Re-render factory section if product is already rendered
+        var existingSection = document.getElementById('factoryKnowledgeSection');
+        if (existingSection && window.__renderedProduct) {
+          existingSection.innerHTML = renderFactoryKnowledgeSection(window.__renderedProduct);
+        }
+      }
+    } catch(e) { /* silently skip if blog data fails */ }
+  };
+  blogXhr.send();
+
+  // Load data and render
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'data/products.json', true);
+  xhr.onload = function() {
+    try {
+      var products = JSON.parse(xhr.responseText);
+      var product = null;
+      for (var i = 0; i < products.length; i++) {
+        if (products[i].id === productId) { product = products[i]; break; }
+      }
+      if (!product) {
+        showError('Product "' + productId + '" not found in catalog. Please browse available products.');
+        return;
+      }
+      renderProduct(product);
+      renderRelated(products, productId);
+    } catch(e) {
+      showError('Failed to load product data: ' + e.message);
+    }
+  };
+  xhr.onerror = function() {
+    showError('Unable to connect to server. Please try again.');
+  };
+  xhr.send();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+[
+  {
+    "id": "leggings-01",
+    "name": "High-Waist Yoga Leggings",
+    "category": "yoga-pants",
+    "moq": 50,
+    "fabric": "Nylon 80% / Spandex 20%",
+    "features": ["4-Way Stretch", "Squat-Proof", "Moisture-Wicking", "High-Waist", "Tummy Control"],
+    "weight": "220gsm",
+    "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "Navy", "Burgundy", "Forest Green", "Charcoal", "Cocoa Brown"],
+    "description": "Our signature high-waist yoga leggings with tummy control waistband. Premium 4-way stretch nylon-spandex fabric with moisture-wicking technology. Squat-proof construction with flatlock seams for chafe-free movement. The #1 choice for yoga studios and boutique brands.",
+    "customization": ["Custom Colors & Prints", "Logo Placement (Front/Back/Leg)", "Custom Size Labels", "Branded Packaging", "Hang Tags & Care Labels"],
+    "images": [
+      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100", "BSCI"]
+  },
+  {
+    "id": "leggings-02",
+    "name": "Scrunch Booty Yoga Leggings",
+    "category": "yoga-pants",
+    "moq": 50,
+    "fabric": "Nylon 78% / Spandex 22%",
+    "features": ["Scrunch Detail", "Honeycomb Texture", "TikTok Viral Style", "Peach Lifting"],
+    "weight": "230gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Royal Blue", "Hot Pink", "Lavender", "Teal"],
+    "description": "Trend-driven scrunch booty leggings with honeycomb textured fabric. This viral TikTok style features a flattering ruched seam detail and peach-lifting cut. Made from our premium compression fabric. A bestseller for social media brands targeting Gen Z customers.",
+    "customization": ["Custom Colors", "Scrunch Design Variations", "Logo Print on Waistband", "Custom Tags"],
+    "images": [
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506126279646-a6973539f5e1?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "leggings-03",
+    "name": "Flared Yoga Leggings",
+    "category": "yoga-pants",
+    "moq": 50,
+    "fabric": "Nylon 82% / Spandex 18%",
+    "features": ["Flared Hem", "V-Shape Waist", "Retro 90s Style", "Studio-to-Street"],
+    "weight": "240gsm",
+    "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "Charcoal Grey", "Espresso", "Dusty Blue"],
+    "description": "The comeback of the 90s flared yoga pant. V-shape waistband elongates the silhouette while the gentle flare adds elegance. Perfect for yoga, pilates, and everyday wear. A must-have for lifestyle-focused activewear brands.",
+    "customization": ["Custom Colors", "Flare Width Options", "Logo Embroidery", "Custom Labels", "Branded Packaging"],
+    "images": [
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "bra-01",
+    "name": "Cross-Back Sports Bra",
+    "category": "sports-bras",
+    "moq": 50,
+    "fabric": "Nylon 78% / Spandex 22%",
+    "features": ["Medium Support", "Removable Pads", "Elegant Cross-Back", "Wide Band", "4-Way Stretch"],
+    "weight": "200gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "White", "Dusty Rose", "Sage Green", "Lavender"],
+    "description": "Our most popular sports bra with an elegant cross-back strap design. Medium support ideal for yoga, pilates, and barre. Removable pads for customizable coverage. Wide underband distributes pressure evenly for all-day comfort.",
+    "customization": ["Custom Colors", "Strap Design Options", "Logo Print/Embroidery", "Custom Care Labels"],
+    "images": [
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-20 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "bra-02",
+    "name": "Longline Sports Bra",
+    "category": "sports-bras",
+    "moq": 50,
+    "fabric": "Recycled Nylon 75% / Spandex 25%",
+    "features": ["Longline Silhouette", "Eco Fabric", "Light Support", "Crop Top Style"],
+    "weight": "185gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Sand", "Matcha Green", "Lilac", "Terracotta"],
+    "description": "Trendy longline sports bra that doubles as a crop top. Made from eco-friendly GRS-certified recycled nylon. The extended hem provides extra coverage and a flattering silhouette. Perfect for sustainable activewear brands.",
+    "customization": ["Custom Colors", "Logo Placement", "Eco Packaging", "GRS Certification Labels"],
+    "images": [
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506126279646-a6973539f5e1?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-20 days",
+    "certifications": ["OEKO-TEX Standard 100", "GRS Certified"]
+  },
+  {
+    "id": "bra-03",
+    "name": "One-Shoulder Sports Bra",
+    "category": "sports-bras",
+    "moq": 50,
+    "fabric": "Nylon 80% / Spandex 20%",
+    "features": ["One-Shoulder Design", "Built-in Shelf Bra", "Light Support", "Fashion Forward"],
+    "weight": "190gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Ivory", "Wine Red", "Dusty Blue"],
+    "description": "Fashion-forward one-shoulder sports bra for brands that blend style with function. Built-in shelf bra with optional padding. Asymmetric design that photographs beautifully for lookbooks and social media. Ideal for lifestyle and fashion-forward activewear brands.",
+    "customization": ["Custom Colors", "Shoulder Side Options", "Logo Embroidery", "Branded Hardware"],
+    "images": [
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-20 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "outerwear-01",
+    "name": "Zip-Up Yoga Jacket",
+    "category": "yoga-outerwear",
+    "moq": 50,
+    "fabric": "Nylon 85% / Spandex 15%",
+    "features": ["Full Zip", "Thumbholes", "Zipper Pockets", "Lightweight", "Packable"],
+    "weight": "280gsm",
+    "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "Navy", "Charcoal", "Olive", "Cream"],
+    "description": "Lightweight full-zip yoga jacket with thumbholes for hand warmth and secure zipper pockets for essentials. Packs into its own pocket for easy carry. Slim athletic fit with 4-way stretch. Essential layering piece for any yoga collection.",
+    "customization": ["Custom Colors", "Logo Embroidery", "Branded Zippers", "Custom Labels"],
+    "images": [
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "20-30 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "outerwear-02",
+    "name": "Yoga Bolero / Shrug",
+    "category": "yoga-outerwear",
+    "moq": 50,
+    "fabric": "Cotton 65% / Modal 30% / Spandex 5%",
+    "features": ["Open Front", "3/4 Sleeve", "Ultra-Soft", "Loose Fit"],
+    "weight": "240gsm",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Heather Grey", "Blush Pink", "Ivory", "Black"],
+    "description": "Ultra-soft yoga shrug perfect for warm-ups and savasana. Open front design layers easily over any sports bra or tank. Made from a luxurious cotton-modal blend that drapes beautifully. A boutique favorite for studio collections.",
+    "customization": ["Custom Colors", "Logo Label", "Custom Tags", "Gift Packaging"],
+    "images": [
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "hoodie-01",
+    "name": "Cropped Yoga Hoodie",
+    "category": "hoodies",
+    "moq": 50,
+    "fabric": "Cotton 80% / Polyester 20%",
+    "features": ["Cropped Fit", "Drawstring Hood", "Kangaroo Pocket", "Brushed Fleece Interior"],
+    "weight": "320gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Heather Grey", "Sage Green", "Cream", "Dusty Blue"],
+    "description": "Trendy cropped hoodie designed for pre and post yoga. Soft brushed fleece interior keeps you cozy. Kangaroo pocket with hidden media compartment. Relaxed fit with ribbed hem and cuffs. A top seller for studio merch and lifestyle brands.",
+    "customization": ["Custom Colors", "Logo Embroidery (Chest/Back/Sleeve)", "Custom Labels", "Branded Drawstrings", "Wash Finish Options"],
+    "images": [
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "hoodie-02",
+    "name": "Oversized Yoga Sweatshirt",
+    "category": "hoodies",
+    "moq": 50,
+    "fabric": "Cotton 85% / Polyester 15%",
+    "features": ["Oversized Fit", "Drop Shoulder", "Vintage Wash", "Ribbed Crew Neck"],
+    "weight": "360gsm",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Charcoal", "Oatmeal", "Washed Black", "Forest Green", "Mauve"],
+    "description": "Oversized crew neck sweatshirt with a premium vintage wash. Drop-shoulder silhouette gives a relaxed, effortless look. Heavyweight 360gsm fabric with a lived-in feel. Ribbed cuffs and crew neckline. Perfect for yoga lifestyle and athleisure brands.",
+    "customization": ["Custom Colors", "Logo Print Variations", "Wash Effects", "Branded Labels", "Custom Packaging"],
+    "images": [
+      "https://images.unsplash.com/photo-1572495641004-28421ae29ea5?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "set-01",
+    "name": "Classic 2-Piece Yoga Set (Bra + Leggings)",
+    "category": "sets",
+    "moq": 50,
+    "fabric": "Nylon 80% / Spandex 20%",
+    "features": ["Matching Set", "High-Waist Leggings", "Cross-Back Bra", "Moisture-Wicking"],
+    "weight": "220gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Sage Green Set", "Dusty Rose Set", "Navy Blue Set"],
+    "description": "Our best-selling matching yoga set pairs high-waist leggings with a cross-back sports bra. Same premium moisture-wicking fabric for a seamless, Instagram-ready look. Available as a complete set with coordinated packaging. #1 seller for boutique fitness brands.",
+    "customization": ["Custom Set Colors", "Logo on Both Pieces", "Set Box Packaging", "Custom Tags for Both Items"],
+    "images": [
+      "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506126279646-a6973539f5e1?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100", "BSCI"]
+  },
+  {
+    "id": "set-02",
+    "name": "Ribbed 3-Piece Yoga Set (Bra + Leggings + Jacket)",
+    "category": "sets",
+    "moq": 50,
+    "fabric": "Nylon 75% / Spandex 25%",
+    "features": ["3-Piece Set", "Ribbed Texture", "Cropped Jacket", "Seamless Bra"],
+    "weight": "240gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Mocha Set", "Black Set", "Lilac Set", "Ivory Set"],
+    "description": "Luxurious 3-piece ribbed set including seamless leggings, a matching strappy bralette, and a cropped jacket. The trending ribbed texture photographs beautifully. Perfect for brands targeting the premium yoga lifestyle market with higher price points.",
+    "customization": ["Custom Colors (Full Set)", "Logo Embroidery", "Gift-Ready Packaging", "Limited Edition Options"],
+    "images": [
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1518611012118-69672aa579a?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506126279646-a6973539f5e1?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "set-03",
+    "name": "Plus-Size Yoga Set (Bra + Leggings)",
+    "category": "sets",
+    "moq": 50,
+    "fabric": "Nylon 78% / Spandex 22%",
+    "features": ["Plus-Size Friendly", "Adjustable Straps", "Power Mesh Waistband", "Full Coverage"],
+    "weight": "240gsm",
+    "sizes": ["L", "XL", "XXL", "3XL", "4XL"],
+    "colors": ["Black Set", "Wine Red Set", "Deep Teal Set", "Charcoal Set"],
+    "description": "Inclusive plus-size yoga set designed with real body feedback. Features adjustable bra straps, power mesh waistband for support without rolling, and full coverage cut. Made from our compression fabric with extra stretch for curves. Fill the underserved plus-size activewear gap in your product line.",
+    "customization": ["Custom Colors", "Size Range Customization", "Logo on Bra + Leggings", "Inclusive Branding Options"],
+    "images": [
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100", "BSCI"]
+  },
+  {
+    "id": "seamless-01",
+    "name": "Seamless Yoga Leggings",
+    "category": "seamless",
+    "moq": 50,
+    "fabric": "Nylon 75% / Spandex 25%",
+    "features": ["Seamless Knit", "Ribbed Texture", "Butter-Soft", "Zero Chafing", "Second-Skin Feel"],
+    "weight": "240gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Mocha", "Dusty Rose", "Sage Green", "Ivory"],
+    "description": "Premium seamless yoga leggings made with advanced circular knitting technology. No side seams = zero chafing. Ribbed texture adds visual interest while the buttery-soft fabric provides unmatched comfort. Our top-selling seamless product for premium athleisure brands.",
+    "customization": ["Custom Colors", "Logo Embroidery/Silicone Print", "Custom Labels", "Premium Packaging"],
+    "images": [
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506126279646-a6973539f5e1?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100", "BSCI"]
+  },
+  {
+    "id": "seamless-02",
+    "name": "Seamless Yoga Shorts",
+    "category": "seamless",
+    "moq": 50,
+    "fabric": "Nylon 75% / Spandex 25%",
+    "features": ["Seamless Knit", "No Front Seam", "Squat-Proof", "6-inch Inseam"],
+    "weight": "230gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Matcha Green", "Lavender", "Cocoa"],
+    "description": "Seamless biker shorts with zero front seam for a completely smooth look. 6-inch inseam provides coverage without restricting movement. Same buttery-soft seamless fabric as our bestselling leggings. A must-have for the growing bike shorts trend.",
+    "customization": ["Custom Colors", "Logo Placement", "Custom Tags"],
+    "images": [
+      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100"]
+  },
+  {
+    "id": "seamless-03",
+    "name": "Seamless Knit Bra & Shorts Set",
+    "category": "seamless",
+    "moq": 50,
+    "fabric": "Nylon 78% / Spandex 22%",
+    "features": ["Full Seamless Set", "Matching Knit Pattern", "Light Support", "Moisture-Wicking"],
+    "weight": "220gsm",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Dusty Blue Set", "Coral Set", "Sage Set", "Black Set"],
+    "description": "Complete seamless set featuring a matching knit bra and shorts. Both pieces are made without side seams using advanced circular knitting. The coordinated pattern creates a premium, high-end look. Perfect for brands wanting a seamless capsule collection.",
+    "customization": ["Custom Colors (Full Set)", "Set Branding", "Gift Box Packaging"],
+    "images": [
+      "https://images.unsplash.com/photo-1518611012118-69672aa579a?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1506126279646-a6973539f5e1?w=800&h=1000&fit=crop"
+    ],
+    "leadTime": "15-25 days",
+    "certifications": ["OEKO-TEX Standard 100", "BSCI"]
+  }
+]

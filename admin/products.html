@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>产品管理 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}.stat-card{background:white;border:1px solid #E5E7EB;border-radius:16px;padding:24px}</style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link active"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+  <main class="flex-1 p-6 lg:p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-serif font-bold">产品管理</h1>
+      <button onclick="openEditor()" class="bg-[#2D5A3D] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-plus mr-1"></i> 新增产品</button>
+    </div>
+
+    <!-- Filter -->
+    <div class="flex flex-wrap gap-2 mb-4" id="filterBar">
+      <button class="filter-btn active text-xs px-3 py-1.5 rounded-full border">All</button>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
+          <th class="p-4 font-medium">产品名称</th><th class="p-4 font-medium">分类</th><th class="p-4 font-medium">起订量</th><th class="p-4 font-medium">面料</th><th class="p-4 font-medium">操作</th>
+        </tr></thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Editor Modal -->
+    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)closeEditor()">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-8" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新建产品</h2><button onclick="closeEditor()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
+        <form id="productForm" class="grid grid-cols-2 gap-4">
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">产品名称</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" required></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">ID（留空自动生成）</label><input id="edId" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类</label>
+            <select id="edCat" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none">
+              <option value="yoga-pants">瑜伽裤</option><option value="sports-bras">运动文胸</option><option value="yoga-outerwear">瑜伽外套</option>
+              <option value="hoodies">卫衣</option><option value="sets">套装</option><option value="seamless">无缝专区</option>
+            </select>
+          </div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">起订量 (MOQ)</label><input id="edMoq" type="number" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" value="50"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">面料</label><input id="edFabric" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">克重</label><input id="edWeight" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">交期</label><input id="edLead" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" value="15-25 days"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">尺码（逗号分隔）</label><input id="edSizes" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" value="XS,S,M,L,XL"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">颜色（逗号分隔）</label><input id="edColors" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" value="Black,White,Navy"></div>
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">特性（逗号分隔）</label><input id="edFeatures" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm"></div>
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-gray-500 mb-1">产品图片</label>
+            <div class="flex flex-wrap gap-2 mb-2" id="imagePreviewList"></div>
+            <div class="flex gap-2">
+              <button type="button" onclick="document.getElementById('imageUploadInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传图片</button>
+              <input type="text" id="edImageUrl" class="flex-1 px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴图片URL后点击添加">
+              <button type="button" onclick="addImageUrl()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">添加</button>
+            </div>
+            <input type="file" id="imageUploadInput" accept="image/*" class="hidden" onchange="uploadProductImage(this)">
+            <input type="hidden" id="edImages" value="">
+          </div>
+          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">描述</label><textarea id="edDesc" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-20 resize-none focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none"></textarea></div>
+          <div class="col-span-2 flex gap-3 justify-end pt-4 border-t border-gray-100">
+            <button type="button" onclick="closeEditor()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
+            <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+  <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+  <a href="products.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+  <a href="articles.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
+  <a href="categories.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
+  <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+  <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+  <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+</nav>
+
+<script>
+  const API = '/api'; let token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...opts.headers } });
+    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/admin/login.html'; }
+    return res;
+  }
+
+  let products = [], editingId = null;
+
+  function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  async function loadProducts() {
+    products = await (await api('/products')).json();
+    renderTable(products);
+  }
+
+  function renderTable(data) {
+    const catNames = {'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Sets','seamless':'Seamless'};
+    document.getElementById('productTable').innerHTML = data.map(p => `
+      <tr class="border-b border-gray-50 hover:bg-gray-50/50">
+        <td class="p-4 font-medium"><a href="/product-detail.html?id=${p.id}" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(p.name)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
+        <td class="p-4 text-gray-500"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${catNames[p.category]||p.category}</span></td>
+        <td class="p-4 text-gray-500">${p.moq}pcs</td>
+        <td class="p-4 text-gray-500 text-xs max-w-[140px] truncate">${escape(p.fabric)}</td>
+        <td class="p-4"><button onclick="editProduct('${p.id}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  function openEditor(product) {
+    editingId = product ? product.id : null;
+    document.getElementById('editorTitle').textContent = product ? '编辑: ' + product.name : '新建产品';
+    document.getElementById('edName').value = product ? product.name : '';
+    document.getElementById('edId').value = product ? product.id : '';
+    document.getElementById('edCat').value = product ? product.category : 'yoga-pants';
+    document.getElementById('edMoq').value = product ? product.moq : 50;
+    document.getElementById('edFabric').value = product ? product.fabric : '';
+    document.getElementById('edWeight').value = product ? product.weight : '';
+    document.getElementById('edLead').value = product ? product.leadTime : '15-25 days';
+    document.getElementById('edSizes').value = product ? (product.sizes||[]).join(',') : '';
+    document.getElementById('edColors').value = product ? (product.colors||[]).join(',') : '';
+    document.getElementById('edFeatures').value = product ? (product.features||[]).join(',') : '';
+    document.getElementById('edDesc').value = product ? product.description : '';
+    // Load images
+    productImages = product ? (product.images || []).slice() : [];
+    renderImages();
+    document.getElementById('editorModal').classList.remove('hidden');
+  }
+
+  function closeEditor() { document.getElementById('editorModal').classList.add('hidden'); editingId = null; }
+
+  // --- Image management ---
+  var productImages = [];
+
+  function renderImages() {
+    var container = document.getElementById('imagePreviewList');
+    var hidden = document.getElementById('edImages');
+    container.innerHTML = productImages.map(function(url, i) {
+      var filename = url.split('/').pop();
+      return '<div class="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 group">' +
+        '<img src="' + url + '" class="w-full h-full object-cover" onerror="this.parentElement.remove()">' +
+        '<button type="button" onclick="removeImage(' + i + ')" class="absolute top-0.5 right-0.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>' +
+        '<p class="absolute bottom-0 left-0 right-0 bg-white/80 text-[10px] px-1 truncate">' + filename + '</p>' +
+      '</div>';
+    }).join('');
+    hidden.value = JSON.stringify(productImages);
+  }
+
+  function addImageUrl() {
+    var url = document.getElementById('edImageUrl').value.trim();
+    if (!url) return;
+    productImages.push(url);
+    document.getElementById('edImageUrl').value = '';
+    renderImages();
+  }
+
+  function removeImage(idx) {
+    productImages.splice(idx, 1);
+    renderImages();
+  }
+
+  async function uploadProductImage(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'products');
+    try {
+      var res = await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+      var data = await res.json();
+      if (data.url) { productImages.push(data.url); renderImages(); }
+    } catch(e) { alert('上传失败: ' + e.message); }
+    input.value = '';
+  }
+
+  document.getElementById('productForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      name: document.getElementById('edName').value,
+      id: document.getElementById('edId').value || document.getElementById('edName').value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''),
+      category: document.getElementById('edCat').value,
+      moq: parseInt(document.getElementById('edMoq').value) || 50,
+      fabric: document.getElementById('edFabric').value,
+      weight: document.getElementById('edWeight').value,
+      leadTime: document.getElementById('edLead').value,
+      sizes: document.getElementById('edSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
+      colors: document.getElementById('edColors').value.split(',').map(s=>s.trim()).filter(Boolean),
+      features: document.getElementById('edFeatures').value.split(',').map(s=>s.trim()).filter(Boolean),
+      images: productImages,
+      description: document.getElementById('edDesc').value,
+    };
+    try {
+      if (editingId) {
+        await api('/products/' + editingId, { method: 'PUT', body: JSON.stringify(data) });
+      } else {
+        await api('/products', { method: 'POST', body: JSON.stringify(data) });
+      }
+      closeEditor(); loadProducts();
+    } catch(e) { alert('Error: ' + e.message); }
+  });
+
+  function editProduct(id) {
+    const p = products.find(x => x.id === id);
+    if (p) openEditor(p);
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm('确认删除此产品？')) return;
+    await api('/products/' + id, { method: 'DELETE' });
+    loadProducts();
+  }
+
+  // Filter buttons
+  async function initFilters() {
+    const cats = [...new Set(products.map(p => p.category))];
+    const bar = document.getElementById('filterBar');
+    bar.innerHTML = '<button class="filter-btn active text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:border-[#2D5A3D] transition-colors">All</button>';
+    const catNames = {'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Sets','seamless':'Seamless'};
+    cats.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:border-[#2D5A3D] transition-colors';
+      btn.textContent = catNames[c] || c;
+      btn.onclick = () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTable(btn.textContent === 'All' ? products : products.filter(p => p.category === c));
+      };
+      bar.appendChild(btn);
+    });
+  }
+
+  loadProducts().then(initFilters);
+</script>
+</body>
+</html>

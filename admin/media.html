@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>媒体库 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link active"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-serif font-bold">媒体库</h1>
+      <div class="flex gap-3 items-center">
+        <select id="uploadFolder" class="text-sm px-3 py-2 border border-gray-200 rounded-xl bg-white outline-none">
+          <option value="site">📁 站点</option>
+          <option value="company">📁 公司资料</option>
+          <option value="products">📁 产品图片</option>
+          <option value="articles">📁 文章图片</option>
+        </select>
+        <form id="uploadForm" enctype="multipart/form-data" class="flex items-center gap-3">
+          <input type="file" id="fileInput" accept="image/*,.ico,video/*" class="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#2D5A3D] file:text-white hover:file:bg-[#3E7B54]">
+          <button type="submit" class="bg-[#2D5A3D] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#3E7B54]">上传</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Folder tree navigation -->
+    <div class="flex flex-wrap gap-2 mb-6" id="folderNav">
+      <button class="folder-btn active text-sm px-4 py-2 rounded-xl bg-[#2D5A3D] text-white font-medium" data-folder="all">📁 全部文件</button>
+      <button class="folder-btn text-sm px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:border-[#2D5A3D]" data-folder="products">📁 产品图片 <span id="prodCount" class="text-xs ml-1 text-gray-400">(0)</span></button>
+      <button class="folder-btn text-sm px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:border-[#2D5A3D]" data-folder="articles">📁 文章图片 <span id="artCount" class="text-xs ml-1 text-gray-400">(0)</span></button>
+      <button class="folder-btn text-sm px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:border-[#2D5A3D]" data-folder="company">📁 公司资料 <span id="compCount" class="text-xs ml-1 text-gray-400">(0)</span></button>
+      <button class="folder-btn text-sm px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:border-[#2D5A3D]" data-folder="site">📁 站点文件 <span id="siteCount" class="text-xs ml-1 text-gray-400">(0)</span></button>
+    </div>
+
+    <p class="text-sm text-gray-400 mb-4" id="resultCount">加载中...</p>
+    <!-- mediaGrid holds file cards; emptyText is shown when no files -->
+    <div id="mediaGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"></div>
+  </main>
+</div>
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+  <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+  <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+  <a href="articles.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
+  <a href="categories.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
+  <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+  <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+  <a href="settings.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+</nav>
+<script>
+  const API = '/api'; let token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
+
+  let currentFolder = 'all';
+
+  async function loadMedia() {
+    const [filesRes, statsRes] = await Promise.all([
+      fetch(API + '/media?folder=' + currentFolder, { headers: { 'Authorization': 'Bearer ' + token } }),
+      fetch(API + '/media/stats', { headers: { 'Authorization': 'Bearer ' + token } })
+    ]);
+    const files = await filesRes.json();
+    const stats = await statsRes.json();
+
+    document.getElementById('prodCount').textContent = '(' + stats.products + ')';
+    document.getElementById('artCount').textContent = '(' + stats.articles + ')';
+    if (document.getElementById('compCount')) document.getElementById('compCount').textContent = '(' + (stats.company || 0) + ')';
+    document.getElementById('siteCount').textContent = '(' + stats.site + ')';
+    document.getElementById('resultCount').textContent = '共 ' + files.length + ' 个文件';
+
+    if (files.length === 0) {
+      document.getElementById('mediaGrid').innerHTML = '<p class="text-gray-400 col-span-full text-center py-16">此文件夹暂无文件。</p>';
+      return;
+    }
+
+    document.getElementById('mediaGrid').innerHTML = files.map(f => {
+      var isVideo = f.mimeType && f.mimeType.startsWith('video/');
+      return '<div class="relative group bg-white rounded-xl border border-gray-100 overflow-hidden aspect-square">' +
+        (isVideo
+          ? '<video src="' + f.url + '" class="w-full h-full object-cover" muted></video>'
+          : '<img src="' + f.url + '" alt="' + f.originalName + '" class="w-full h-full object-cover" loading="lazy">') +
+        '<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">' +
+          '<button onclick="copyPath(\'' + f.url + '\')" class="bg-white text-xs px-2 py-1 rounded-lg font-medium"><i class="fas fa-copy"></i></button>' +
+          '<button onclick="deleteFile(' + f.id + ')" class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-medium"><i class="fas fa-trash"></i></button>' +
+        '</div>' +
+        '<p class="absolute bottom-0 left-0 right-0 bg-white/90 text-xs p-1.5 truncate">' + f.originalName + '</p>' +
+      '</div>';
+    }).join('');
+  }
+
+  function copyPath(url) { navigator.clipboard.writeText(url).then(() => alert('已复制: ' + url)); }
+  async function deleteFile(id) { if (!confirm('确认删除此文件？')) return; await fetch(API + '/media/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } }); loadMedia(); }
+
+  // Folder navigation
+  document.querySelectorAll('.folder-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.folder-btn').forEach(b => {
+        b.classList.remove('active', 'bg-[#2D5A3D]', 'text-white');
+        b.classList.add('border', 'border-gray-200', 'text-gray-600');
+      });
+      this.classList.add('active', 'bg-[#2D5A3D]', 'text-white');
+      this.classList.remove('border', 'border-gray-200', 'text-gray-600');
+      currentFolder = this.dataset.folder;
+      loadMedia();
+    });
+  });
+
+  // Upload with folder
+  document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    var fileInput = document.getElementById('fileInput');
+    if (!fileInput.files[0]) return;
+    var fd = new FormData();
+    fd.append('file', fileInput.files[0]);
+    fd.append('folder', document.getElementById('uploadFolder').value);
+    await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+    fileInput.value = '';
+    loadMedia();
+  });
+
+  loadMedia();
+</script>
+</body>
+</html>

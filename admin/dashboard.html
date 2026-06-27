@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>仪表盘 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 10px; transition: all 0.2s; font-size: 0.9rem; color: #6B7280; text-decoration: none; }
+    .sidebar-link:hover, .sidebar-link.active { background: rgba(45,90,61,0.08); color: #2D5A3D; }
+    .sidebar-link.active { font-weight: 600; }
+    .stat-card { background: white; border: 1px solid #E5E7EB; border-radius: 16px; padding: 24px; }
+  </style>
+</head>
+<body class="bg-[#FAFAF8]">
+  <div class="flex min-h-screen">
+    <!-- Sidebar (full height, fixed) -->
+    <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+      <!-- Brand -->
+      <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+        <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+        <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+      </div>
+      <!-- Navigation -->
+      <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+        <a href="dashboard.html" class="sidebar-link active"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+        <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+        <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+        <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+        <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+        <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+        <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+        <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+      </nav>
+      <!-- Logout (always visible at bottom) -->
+      <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+        <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50">
+          <i class="fas fa-sign-out-alt w-5"></i>退出登录
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-serif font-bold">仪表盘</h1>
+        <p class="text-sm text-gray-400" id="timeDisplay"></p>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="statsContainer">
+        <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-tshirt mr-2 text-[#2D5A3D]"></i>产品数</p><p id="prodCount" class="text-3xl font-bold mt-2">—</p></div>
+        <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-newspaper mr-2 text-[#C4926E]"></i>文章数</p><p id="artCount" class="text-3xl font-bold mt-2">—</p></div>
+        <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-tags mr-2 text-[#2D5A3D]"></i>分类数</p><p id="catCount" class="text-3xl font-bold mt-2">—</p></div>
+        <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-database mr-2 text-[#C4926E]"></i>数据库</p><p id="dbSize" class="text-3xl font-bold mt-2">—</p></div>
+      </div>
+
+      <!-- Recent Products -->
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-serif font-bold text-lg">最新产品</h2>
+          <a href="products.html" class="text-sm text-[#2D5A3D] hover:underline">管理 →</a>
+        </div>
+        <div id="recentProducts" class="text-sm text-gray-500">加载中...</div>
+      </div>
+
+      <!-- Recent Articles -->
+      <div class="bg-white rounded-2xl border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-serif font-bold text-lg">最新文章</h2>
+          <a href="articles.html" class="text-sm text-[#2D5A3D] hover:underline">管理 →</a>
+        </div>
+        <div id="recentArticles" class="text-sm text-gray-500">Loading...</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+    <a href="dashboard.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+    <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+    <a href="articles.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
+    <a href="categories.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
+    <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+    <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+    <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+  </nav>
+
+  <script>
+    const API = '/api';
+    let token = localStorage.getItem('token');
+    if (!token) { window.location.href = '/admin/login.html'; }
+
+    async function api(path, opts = {}) {
+      const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...opts.headers } });
+      if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/admin/login.html'; }
+      return res;
+    }
+
+    document.getElementById('logoutBtn')?.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
+    document.getElementById('timeDisplay').textContent = new Date().toLocaleString();
+
+    async function load() {
+      try {
+        const [prod, art, sets] = await Promise.all([
+          (await api('/products')).json(), (await api('/articles')).json(),
+          (await api('/settings')).json()
+        ]);
+        document.getElementById('prodCount').textContent = prod.length;
+        document.getElementById('artCount').textContent = art.length;
+        const cats = [...new Set(prod.map(p => p.category))];
+        document.getElementById('catCount').textContent = cats.length;
+        document.getElementById('dbSize').textContent = sets.dbSize || '—';
+
+        // Recent products (4)
+        document.getElementById('recentProducts').innerHTML = prod.slice(0, 5).map(p => 
+          '<div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"><span class="font-medium">' + p.name + '</span><span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">' + p.category + '</span></div>'
+        ).join('');
+
+        // Recent articles (4)
+        document.getElementById('recentArticles').innerHTML = art.slice(0, 5).map(a =>
+          '<div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"><span class="font-medium">' + a.title + '</span><span class="text-xs text-gray-400">' + a.date + '</span></div>'
+        ).join('');
+      } catch(e) { console.error(e); }
+    }
+    load();
+  </script>
+</body>
+</html>

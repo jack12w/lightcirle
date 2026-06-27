@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公司信息 — lightcirle 管理后台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}
+    .sidebar-link.active{font-weight:600}
+    .stat-card{background:white;border-radius:16px;border:1px solid #E5E7EB;padding:20px}
+    .toast{position:fixed;top:24px;right:24px;z-index:9999;background:#2D5A3D;color:white;padding:14px 24px;border-radius:12px;font-size:.9rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.15);opacity:0;transform:translateY(-10px);transition:all .3s ease}
+    .toast.show{opacity:1;transform:translateY(0)}
+    .capability-tag{padding:8px 14px;border-radius:50px;font-size:.85rem;border:1px solid #E5E7EB;cursor:pointer;transition:all .2s;user-select:none}
+    .capability-tag.active{background:rgba(45,90,61,.1);border-color:#2D5A3D;color:#2D5A3D;font-weight:500}
+    .gallery-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;border:2px solid transparent;transition:all .2s}
+    .gallery-item:hover{border-color:#2D5A3D}
+    .gallery-item .remove-btn{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,.9);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;opacity:0;transition:opacity .2s}
+    .gallery-item:hover .remove-btn{opacity:1}
+  </style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link active"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <!-- Toast -->
+    <div id="toast" class="toast"><i class="fas fa-check-circle mr-2"></i><span id="toastMsg">已保存</span></div>
+
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-2xl font-serif font-bold">公司信息</h1>
+      <button onclick="saveCompany()" class="bg-[#2D5A3D] text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-save mr-2"></i>保存</button>
+    </div>
+
+    <!-- About Section -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-info-circle mr-2 text-[#2D5A3D]"></i>公司介绍</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">标题</label>
+          <input id="aboutTitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#2D5A3D]/30">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">正文</label>
+          <textarea id="aboutText" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm h-28 resize-none outline-none focus:ring-2 focus:ring-[#2D5A3D]/30"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Factory Stats -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-chart-bar mr-2 text-[#C4926E]"></i>工厂数据</h2>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div><label class="block text-xs font-medium text-gray-500 mb-1">厂房面积</label><input id="statFacility" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="3,000"></div>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1">工人数</label><input id="statWorkers" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="120+"></div>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1">月产能</label><input id="statCapacity" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="300K"></div>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1">出口国家数</label><input id="statCountries" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="30+"></div>
+      </div>
+    </div>
+
+    <!-- Capabilities -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-check-circle mr-2 text-[#2D5A3D]"></i>定制能力标签</h2>
+      <p class="text-xs text-gray-400 mb-3">点击标签启用/禁用，双击编辑内容，拖拽可排序</p>
+      <div id="capabilitiesList" class="flex flex-wrap gap-2"></div>
+      <div class="mt-4 flex gap-2">
+        <input id="newCapInput" class="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#2D5A3D]/30" placeholder="输入新能力名称..." maxlength="50">
+        <button onclick="addCapability()" class="bg-[#2D5A3D] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-plus"></i> 添加</button>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-images mr-2 text-[#C4926E]"></i>工厂图片</h2>
+        <div class="flex gap-2">
+          <a href="media.html" class="text-sm text-[#2D5A3D] hover:underline"><i class="fas fa-external-link-alt mr-1"></i>管理媒体库</a>
+        </div>
+      </div>
+      <div class="flex gap-3 mb-4">
+        <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="uploadGalleryImage(this)">
+        <button onclick="document.getElementById('galleryInput').click()" class="border-2 border-dashed border-gray-300 hover:border-[#2D5A3D] text-gray-400 hover:text-[#2D5A3D] px-5 py-3 rounded-xl text-sm transition-colors"><i class="fas fa-cloud-upload-alt mr-2"></i>从媒体库选择</button>
+        <button onclick="openMediaPicker()" class="border border-gray-200 px-5 py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-2"></i>从媒体库选择</button>
+      </div>
+      <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+        <p class="text-gray-400 text-sm col-span-full" id="galleryLoading">加载中...</p>
+      </div>
+    </div>
+
+    <!-- Why Choose Us -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-star mr-2 text-[#2D5A3D]"></i>Why Choose Us（首页6个卖点卡片）</h2>
+      <p class="text-xs text-gray-400 mb-3">每个卡片包含：图标(Free Icon)、标题、描述。最少2个，最多8个。</p>
+      <div id="whyChooseUsList"></div>
+      <button onclick="addWhyCard()" class="mt-3 text-sm text-[#2D5A3D] hover:underline"><i class="fas fa-plus mr-1"></i>添加卖点卡片</button>
+    </div>
+
+    <!-- Equipment -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-cogs mr-2 text-[#C4926E]"></i>先进设备展示（首页底部）</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">区块标题</label>
+          <input id="eqTitle" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">区块描述</label>
+          <textarea id="eqDesc" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-20 resize-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">设备列表（每行一个设备名）</label>
+          <textarea id="eqList" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-28 resize-none" placeholder="4-Needle 6-Thread Machines&#10;Flat Lock Machines&#10;..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Usage Note -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-globe mr-2 text-[#2D5A3D]"></i>数据引用页面</h2>
+      <p class="text-xs text-gray-400 mb-2">以下页面会读取此模块的数据，修改后刷新对应页面即可看到效果：</p>
+      <div class="grid sm:grid-cols-2 gap-2 text-sm">
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+          <i class="fas fa-home text-blue-500"></i>
+          <span><strong>首页</strong> (<code>index.html</code>)</span>
+        </div>
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
+          <i class="fas fa-box text-green-500"></i>
+          <span><strong>产品详情页</strong> (<code>product-detail.html</code>)</span>
+        </div>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">引用的数据字段：公司介绍、工厂数据(4个统计)、定制能力标签、工厂图片。</p>
+    </div>
+
+    <!-- Preview -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-eye mr-2 text-[#C4926E]"></i>前端预览</h2>
+      <p class="text-xs text-gray-400 mb-3">以下显示当前信息在前端产品详情页的展示效果</p>
+      <div id="previewArea" class="bg-gray-50 dark:bg-gray-800/30 rounded-xl p-6 text-sm text-gray-500">
+        保存后点击产品详情页查看效果。
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+      <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+      <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+      <a href="company.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+      <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+      <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+    </nav>
+  </main>
+</div>
+
+<script>
+  const API = '/api';
+  let token = localStorage.getItem('token');
+  let capabilities = [];
+  let gallery = [];
+  let whyChooseUs = [];
+
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = '/admin/login.html';
+  });
+
+  function showToast(msg) {
+    document.getElementById('toastMsg').textContent = msg;
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, {
+      ...opts,
+      headers: { ...opts.headers, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Request failed');
+    return res.json();
+  }
+
+  // --- Capabilities ---
+  function renderCapabilities() {
+    const el = document.getElementById('capabilitiesList');
+    el.innerHTML = capabilities.map((c, i) =>
+      `<span class="capability-tag active" title="点击切换" onclick="toggleCap(${i})" ondblclick="editCap(${i})">
+        <i class="fas fa-check mr-1 text-[#2D5A3D]"></i>${c}
+        <button onclick="event.stopPropagation();removeCap(${i})" class="ml-2 text-red-400 hover:text-red-600"><i class="fas fa-times"></i></button>
+      </span>`
+    ).join('');
+  }
+
+  function toggleCap(i) {
+    // Always active in this version
+  }
+  function removeCap(i) {
+    if (capabilities.length <= 2) return showToast('至少保留2个能力标签');
+    capabilities.splice(i, 1);
+    renderCapabilities();
+  }
+  function editCap(i) {
+    const newVal = prompt('编辑能力名称:', capabilities[i]);
+    if (newVal && newVal.trim()) { capabilities[i] = newVal.trim(); renderCapabilities(); }
+  }
+  function addCapability() {
+    const input = document.getElementById('newCapInput');
+    const val = input.value.trim();
+    if (!val) return;
+    if (capabilities.length >= 15) return showToast('最多15个标签');
+    capabilities.push(val);
+    input.value = '';
+    renderCapabilities();
+  }
+
+  // --- Why Choose Us ---
+  function renderWhyChooseUs() {
+    const el = document.getElementById('whyChooseUsList');
+    el.innerHTML = whyChooseUs.map((card, i) =>
+      `<div class="flex items-start gap-3 p-3 mb-2 rounded-xl bg-gray-50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700">
+        <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input value="${escapeHtml(card.icon)}" onchange="whyChooseUs[${i}].icon=this.value" class="px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="fa-icon名">
+          <input value="${escapeHtml(card.title)}" onchange="whyChooseUs[${i}].title=this.value" class="px-2 py-1.5 border border-gray-200 rounded-lg text-sm font-medium" placeholder="标题">
+          <textarea onchange="whyChooseUs[${i}].desc=this.value" class="px-2 py-1.5 border border-gray-200 rounded-lg text-xs h-16 resize-none" placeholder="描述">${escapeHtml(card.desc)}</textarea>
+        </div>
+        <button onclick="whyChooseUs.splice(${i},1);renderWhyChooseUs()" class="text-red-400 hover:text-red-600 mt-1 flex-shrink-0"><i class="fas fa-times"></i></button>
+      </div>`
+    ).join('');
+  }
+  function addWhyCard() {
+    if (whyChooseUs.length >= 8) return showToast('最多8个卖点卡片');
+    whyChooseUs.push({ icon: 'fa-check-circle', title: '新卖点', desc: '描述文字' });
+    renderWhyChooseUs();
+  }
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  // --- Gallery ---
+  function renderGallery() {
+    const el = document.getElementById('galleryGrid');
+    if (gallery.length === 0) {
+      el.innerHTML = '<p class="text-gray-400 text-sm col-span-full">暂无图片，点击上方按钮添加工厂图片。</p>';
+      return;
+    }
+    el.innerHTML = gallery.map((url, i) =>
+      `<div class="gallery-item">
+        <img src="${url}" alt="工厂图片 ${i+1}" class="w-full h-full object-cover">
+        <button class="remove-btn" onclick="removeGallery(${i})"><i class="fas fa-times"></i></button>
+        <span class="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">${i+1}</span>
+      </div>`
+    ).join('');
+  }
+
+  function removeGallery(i) {
+    gallery.splice(i, 1);
+    renderGallery();
+  }
+
+  function openMediaPicker() {
+    // Open media tab in a modal/dialog
+    const w = window.open('media.html?picker=company', 'mediaPicker', 'width=900,height=700');
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'media-pick') {
+        gallery.push(e.data.url);
+        renderGallery();
+        w.close();
+      }
+    });
+  }
+
+  function uploadGalleryImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'company');
+    fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd })
+      .then(r => r.json())
+      .then(data => {
+        gallery.push(data.url);
+        renderGallery();
+        input.value = '';
+      })
+      .catch(e => showToast('上传失败: ' + e.message));
+  }
+
+  // --- Load / Save ---
+  async function loadCompany() {
+    document.getElementById('galleryLoading').textContent = '加载中...';
+    try {
+      const data = await api('/company');
+      document.getElementById('aboutTitle').value = data.aboutTitle || '';
+      document.getElementById('aboutText').value = data.aboutText || '';
+      document.getElementById('statFacility').value = data.stats?.facilitySize || '3,000';
+      document.getElementById('statWorkers').value = data.stats?.workers || '120+';
+      document.getElementById('statCapacity').value = data.stats?.monthlyCapacity || '300K';
+      document.getElementById('statCountries').value = data.stats?.countriesShipped || '30+';
+      capabilities = data.capabilities || [];
+      gallery = data.gallery || [];
+      whyChooseUs = data.whyChooseUs || [];
+      document.getElementById('eqTitle').value = data.equipmentTitle || '';
+      document.getElementById('eqDesc').value = data.equipmentDesc || '';
+      document.getElementById('eqList').value = (data.equipmentList || []).join('\n');
+      renderCapabilities();
+      renderGallery();
+      renderWhyChooseUs();
+      renderPreview(data);
+    } catch(e) {
+      document.getElementById('galleryLoading').textContent = '加载失败: ' + e.message;
+    }
+  }
+
+  function renderPreview(data) {
+    const el = document.getElementById('previewArea');
+    const caps = (data.capabilities || ['OEM & ODM Service', 'Custom Fabric Blends']).slice(0, 4).map(c => `<span class="inline-block text-xs px-2 py-0.5 rounded-full bg-gray-100 mr-1 mb-1">${c}</span>`).join('');
+    const cards = (data.whyChooseUs || []).slice(0, 3).map(c => `<div class="text-center p-2 bg-white dark:bg-gray-800/40 rounded-lg"><i class="fas ${c.icon} text-primary mb-1"></i><div class="text-xs font-bold">${c.title}</div></div>`).join('');
+    el.innerHTML = `<div class="flex items-center gap-4">
+      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.facilitySize || '3,000'}</div><div class="text-xs text-gray-500">m² Facility</div></div>
+      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.workers || '120+'}</div><div class="text-xs text-gray-500">Workers</div></div>
+      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.monthlyCapacity || '300K'}</div><div class="text-xs text-gray-500">Monthly Pcs</div></div>
+      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.countriesShipped || '30+'}</div><div class="text-xs text-gray-500">Countries</div></div>
+    </div>
+    <div class="mt-3 flex flex-wrap gap-1">${caps}</div>
+    <div class="mt-3 grid grid-cols-3 gap-2">${cards}</div>`;
+  }
+
+  async function saveCompany() {
+    const eqListRaw = document.getElementById('eqList').value;
+    const eqItems = eqListRaw.split('\n').map(s => s.trim()).filter(Boolean);
+    const data = {
+      aboutTitle: document.getElementById('aboutTitle').value,
+      aboutText: document.getElementById('aboutText').value,
+      stats: {
+        facilitySize: document.getElementById('statFacility').value,
+        workers: document.getElementById('statWorkers').value,
+        monthlyCapacity: document.getElementById('statCapacity').value,
+        countriesShipped: document.getElementById('statCountries').value,
+      },
+      capabilities: capabilities,
+      gallery: gallery,
+      whyChooseUs: whyChooseUs,
+      equipmentTitle: document.getElementById('eqTitle').value,
+      equipmentDesc: document.getElementById('eqDesc').value,
+      equipmentList: eqItems,
+    };
+    try {
+      await api('/company', { method: 'PUT', body: JSON.stringify(data) });
+      renderPreview(data);
+      showToast('公司信息已保存！');
+    } catch(e) {
+      showToast('保存失败: ' + e.message);
+    }
+  }
+
+  loadCompany();
+</script>
+</body>
+</html>

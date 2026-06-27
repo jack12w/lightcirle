@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>访客统计 — lightcirle 管理后台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}
+    .sidebar-link.active{font-weight:600}
+    .stat-card{background:white;border-radius:16px;border:1px solid #E5E7EB;padding:24px}
+  </style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link active"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-2xl font-serif font-bold">访客统计</h1>
+      <button onclick="loadData()" class="bg-[#2D5A3D] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-sync-alt mr-1"></i>刷新</button>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-users mr-1 text-[#2D5A3D]"></i>今日访客</p><p id="statToday" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-calendar-week mr-1 text-[#C4926E]"></i>本周访客</p><p id="statWeek" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-globe mr-1 text-[#2D5A3D]"></i>总访客</p><p id="statTotal" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-bolt mr-1 text-green-500"></i>当前在线</p><p id="statActive" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-chart-simple mr-1 text-[#C4926E]"></i>跳出率</p><p id="statBounce" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-clock mr-1 text-[#2D5A3D]"></i>平均停留</p><p id="statDuration" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-rotate mr-1 text-[#C4926E]"></i>回访数</p><p id="statReturning" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-eye mr-1 text-[#2D5A3D]"></i>总浏览量</p><p id="statVisits" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fab fa-whatsapp mr-1 text-green-500"></i>WhatsApp点击</p><p id="statWhatsApp" class="text-3xl font-bold">—</p></div>
+      <div class="stat-card text-center"><p class="text-xs text-gray-500 mb-1"><i class="fas fa-envelope mr-1 text-[#C4926E]"></i>邮件点击</p><p id="statEmail" class="text-3xl font-bold">—</p></div>
+    </div>
+
+    <!-- Top Pages -->
+    <div class="grid lg:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-2xl border border-gray-100 p-6">
+        <h2 class="font-semibold text-base mb-4"><i class="fas fa-file mr-2 text-[#2D5A3D]"></i>热门页面</h2>
+        <div id="topPages" class="text-sm text-gray-500">加载中...</div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 p-6">
+        <h2 class="font-semibold text-base mb-4"><i class="fas fa-external-link-alt mr-2 text-[#C4926E]"></i>来源渠道</h2>
+        <div id="topReferrers" class="text-sm text-gray-500">加载中...</div>
+      </div>
+    </div>
+
+    <!-- Recent Visitors -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-list mr-2 text-[#2D5A3D]"></i>最近访问</h2>
+      <div id="recentVisitors" class="text-sm text-gray-500">加载中...</div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+      <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+      <a href="visitors.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+      <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+      <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+    </nav>
+  </main>
+</div>
+
+<script>
+  const API = '/api';
+  let token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => {
+    e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html';
+  });
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, {
+      ...opts,
+      headers: { ...opts.headers, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Request failed');
+    return res.json();
+  }
+
+  function shortUrl(url) {
+    if (!url || url === '/') return 'Home';
+    var name = url.split('?')[0].replace(/\.html$/, '').replace(/^\//, '');
+    if (name === 'search') return 'Explore';
+    if (name === 'blog-detail' || name === 'product-detail') return url;
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  async function loadData() {
+    try {
+      const stats = await api('/visitors/stats');
+      document.getElementById('statToday').textContent = stats.today;
+      document.getElementById('statWeek').textContent = stats.week;
+      document.getElementById('statTotal').textContent = stats.total;
+      document.getElementById('statActive').textContent = stats.active;
+      document.getElementById('statBounce').textContent = stats.bounceRate + '%';
+      document.getElementById('statDuration').textContent = stats.avgDuration + 's';
+      document.getElementById('statReturning').textContent = stats.returningSessions;
+      document.getElementById('statVisits').textContent = stats.totalVisits;
+      document.getElementById('statWhatsApp').textContent = stats.whatsappClicks || 0;
+      document.getElementById('statEmail').textContent = stats.emailClicks || 0;
+
+      // Top pages (clickable)
+      var pagesHtml = stats.topPages && stats.topPages.length > 0
+        ? stats.topPages.map(function(p, i) {
+            var pct = Math.round(p.visits / stats.totalVisits * 100);
+            var label = p.pageTitle || shortUrl(p.page_url);
+            var href = window.location.origin + p.page_url;
+            return '<div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"><div class="flex items-center gap-2"><span class="text-xs text-gray-400 w-5">' + (i+1) + '.</span><a href="' + href + '" target="_blank" rel="noopener" class="text-sm truncate max-w-[200px] text-blue-600 hover:text-blue-800 hover:underline" title="' + href + '">' + label + ' <i class="fas fa-external-link-alt text-xs ml-0.5 opacity-50"></i></a></div><div class="flex items-center gap-2"><span class="text-xs font-bold">' + p.visits + '</span><div class="w-16 bg-gray-100 rounded-full h-1.5"><div class="bg-[#2D5A3D] h-1.5 rounded-full" style="width:' + pct + '%"></div></div></div></div>';
+          }).join('')
+        : '<p class="text-gray-400">暂无数据</p>';
+      document.getElementById('topPages').innerHTML = pagesHtml;
+
+      // Top referrers (clickable)
+      var refHtml = stats.topReferrers && stats.topReferrers.length > 0
+        ? stats.topReferrers.map(function(r) {
+            var domain = r.referrer ? new URL(r.referrer).hostname : 'direct';
+            var href = r.referrer || '#';
+            return '<div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"><a href="' + href + '" target="_blank" rel="noopener" class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"><i class="fas fa-external-link-alt text-xs opacity-50"></i>' + domain + '</a><span class="text-xs font-bold text-[#2D5A3D]">' + r.visitors + '</span></div>';
+          }).join('')
+        : '<p class="text-gray-400">暂无数据</p>';
+      document.getElementById('topReferrers').innerHTML = refHtml;
+
+      // Recent visitors (with clickable links)
+      const recent = await api('/visitors/recent');
+      var recentHtml = recent.length > 0
+        ? '<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-xs text-gray-400 uppercase"><th class="pb-3 pr-4">页面</th><th class="pb-3 pr-4">访问时间</th><th class="pb-3 pr-4">停留</th><th class="pb-3 pr-4">滚动</th><th class="pb-3 pr-4">来源</th><th class="pb-3">操作</th></tr></thead><tbody>' + recent.slice(0, 25).map(function(r) {
+            var time = new Date(r.entryTime + 'Z').toLocaleString();
+            var dur = r.duration ? r.duration + 's' : '-';
+            var scroll = r.scrollDepth ? r.scrollDepth + '%' : '-';
+            var href = window.location.origin + r.pageUrl;
+            var ref = r.referrer ? '<a href="' + r.referrer + '" target="_blank" rel="noopener" class="text-blue-500 hover:underline" title="' + r.referrer + '">' + r.referrer.replace(/https?:\/\//, '').split('/')[0] + '</a>' : 'direct';
+            var bounce = r.isBounce ? '<span class="text-red-400" title="跳出">弹</span>' : '<span class="text-green-400" title="未跳出">✓</span>';
+            var wa = r.clickWhatsapp > 0 ? '<i class="fab fa-whatsapp text-green-500 ml-1" title="点击了WhatsApp"></i>' : '';
+            var em = r.clickEmail > 0 ? '<i class="fas fa-envelope text-[#C4926E] ml-1" title="点击了邮件"></i>' : '';
+            return '<tr class="border-b border-gray-50 text-sm"><td class="py-2.5 pr-4 truncate max-w-[150px]"><a href="' + href + '" target="_blank" rel="noopener" class="text-blue-600 hover:underline">' + (r.pageTitle || r.pageUrl) + '</a>' + wa + em + '</td><td class="py-2.5 pr-4 text-xs text-gray-400">' + time + '</td><td class="py-2.5 pr-4">' + dur + '</td><td class="py-2.5 pr-4">' + scroll + '</td><td class="py-2.5 pr-4 text-xs truncate max-w-[120px]">' + ref + '</td><td class="py-2.5">' + bounce + '</td></tr>';
+          }).join('') + '</tbody></table></div>'
+        : '<p class="text-gray-400">暂无数据。访客开始浏览后会有记录。</p>';
+      document.getElementById('recentVisitors').innerHTML = recentHtml;
+
+    } catch(e) {
+      document.getElementById('topPages').innerHTML = '<p class="text-red-400">加载失败: ' + e.message + '</p>';
+    }
+  }
+
+  loadData();
+  // Auto-refresh every 30 seconds
+  setInterval(loadData, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore — Yoga Wear Products & Industry Insights | lightcirle</title>
+  <meta name="description" content="Search our complete catalog of customizable yoga wear products and expert manufacturing articles. MOQ 50pcs, OEM/ODM services.">
+  <meta property="og:title" content="Explore Products & Blog | lightcirle">
+  <meta property="og:description" content="Search yoga wear products and expert manufacturing insights in one place.">
+  <meta property="og:image" content="https://lightcirle.com/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lightcirle.com/search.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Explore Products & Blog | lightcirle">
+  <meta name="twitter:description" content="Search yoga wear products and expert manufacturing insights in one place.">
+  <meta name="twitter:image" content="https://lightcirle.com/og-image.jpg">
+  <link rel="canonical" href="https://lightcirle.com/search.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="js/config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    var twc = window.__TW_COLORS;
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: twc.primary, light: twc['primary-light'], dark: twc['primary-dark'] },
+            accent: { DEFAULT: twc.accent, light: twc['accent-light'] },
+            whatsapp: twc.whatsapp,
+            cream: twc.cream,
+            darkbg: twc.darkbg,
+            darksurface: twc.darksurface,
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Inline nav search */
+    .nav-search-wrap {
+      position: relative;
+    }
+    .nav-search {
+      background: rgba(0,0,0,0.04);
+      border: 1.5px solid transparent;
+      padding: 8px 16px 8px 40px;
+      border-radius: 50px;
+      font-size: 0.875rem;
+      width: 200px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .dark .nav-search { background: rgba(255,255,255,0.06); color: #E8E6E3; }
+    .nav-search:focus { border-color: var(--color-primary); width: 260px; background: white; }
+    .dark .nav-search:focus { background: var(--color-surface-dark); }
+    .nav-search-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: #9CA3AF; font-size: 0.85rem; pointer-events: none;
+    }
+    @media (max-width: 1023px) {
+      .nav-search, .nav-search:focus { width: 100%; }
+    }
+
+    /* Tab bar */
+    .tab-bar {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 4px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 50px;
+      overflow-x: auto;
+    }
+    .dark .tab-bar { background: rgba(255,255,255,0.04); }
+    .tab-btn {
+      padding: 10px 22px; border-radius: 50px; font-size: 0.85rem;
+      font-weight: 500; cursor: pointer; white-space: nowrap;
+      border: none; background: transparent; color: #6B7280;
+      transition: all 0.25s ease;
+    }
+    .tab-btn:hover { color: var(--color-primary); }
+    .tab-btn.active {
+      background: white; color: var(--color-primary); font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .dark .tab-btn.active { background: var(--color-surface-dark); color: var(--color-primary-light); }
+
+    /* Section label */
+    .section-label {
+      display: flex; align-items: center; gap: 12px; margin: 32px 0 16px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--color-border-light);
+    }
+    .dark .section-label::after { background: var(--color-border-dark); }
+
+    /* Blog card in grid */
+    .blog-result-card {
+      border-radius: 16px; overflow: hidden;
+      background: white; border: 1px solid var(--color-border-light);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dark .blog-result-card { background: var(--color-surface-dark); border-color: var(--color-border-dark); }
+    .blog-result-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .dark .blog-result-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+  </style>
+</head>
+<body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
+
+<!-- Navigation with embedded search -->
+<nav id="mainNav" class="nav-glass fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a href="index.html" class="flex items-center gap-2 flex-shrink-0">
+        <span class="text-2xl font-serif font-bold text-primary dark:text-primary-light">lightcirle</span>
+      </a>
+
+      <!-- Desktop: Nav Links + Search + Actions -->
+      <div class="hidden lg:flex items-center gap-5">
+        <!-- Search first -->
+        <form class="nav-search-wrap" onsubmit="handleNavSearch(event)">
+          <i class="fas fa-search nav-search-icon"></i>
+          <input type="text" id="navSearchInput" class="nav-search" placeholder="Search products & articles...">
+        </form>
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="search.html" class="nav-link active">Explore</a>
+        <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20interested%20in%20your%20yoga%20wear%20customization%20services." target="_blank" rel="noopener" class="btn-whatsapp text-sm py-2 px-4">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="mailto:inquiry@lightcirle.com?subject=Yoga%20Wear%20Inquiry" class="btn-outline text-sm py-2 px-4">
+          <i class="fas fa-envelope"></i>
+        </a>
+        <button id="themeToggle" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle theme">
+          <i class="fas fa-moon text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Mobile: Menu + Theme -->
+      <div class="flex lg:hidden items-center gap-3">
+        <button id="themeToggle" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle theme">
+          <i class="fas fa-moon text-base"></i>
+        </button>
+        <button id="mobileMenuToggle" class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Menu">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden flex-col gap-2 pb-4 lg:hidden">
+      <!-- Mobile Search -->
+      <form onsubmit="handleNavSearch(event)" class="relative px-1">
+        <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input type="text" id="mobileNavSearchInput" class="search-input text-sm" placeholder="Search products & articles...">
+      </form>
+      <a href="index.html" class="block px-4 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800">Home</a>
+      <a href="search.html" class="block px-4 py-3 rounded-lg font-medium text-primary bg-primary/5 dark:bg-primary/10">Explore All</a>
+      <div class="flex gap-3 mt-2 px-4">
+        <a href="https://wa.me/8612345678900?text=Hi!" target="_blank" rel="noopener" class="btn-whatsapp text-sm py-2 px-4 flex-1 justify-center">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="mailto:inquiry@lightcirle.com" class="btn-outline text-sm py-2 px-4 flex-1 justify-center">
+          <i class="fas fa-envelope"></i> Email
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- Page Header -->
+<section class="pt-28 lg:pt-36 pb-8 lg:pb-12 bg-white dark:bg-darksurface border-b border-gray-100 dark:border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl lg:text-5xl font-serif font-bold mb-3">Explore Everything</h1>
+    <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl">Browse <span id="productCount">16</span> customizable products and <span id="articleCount">6</span> expert articles — everything you need to launch your yoga wear brand.</p>
+  </div>
+</section>
+
+<!-- Results Section -->
+<section class="py-10 lg:py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Tabs -->
+    <div class="tab-bar mb-8 flex flex-wrap gap-2" id="tabBar">
+      <button class="tab-btn active" data-tab="all">All</button>
+      <button class="tab-btn" data-tab="new">New</button>
+      <button class="tab-btn" data-tab="yoga-pants">Yoga Pants</button>
+      <button class="tab-btn" data-tab="sports-bras">Sports Bras</button>
+      <button class="tab-btn" data-tab="yoga-outerwear">Outerwear</button>
+      <button class="tab-btn" data-tab="hoodies">Hoodies</button>
+      <button class="tab-btn" data-tab="sets">Sets</button>
+      <button class="tab-btn" data-tab="seamless">Seamless</button>
+      <button class="tab-btn" data-tab="blog">Blog</button>
+    </div>
+
+    <!-- Result count -->
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6" id="resultCount">Loading...</p>
+
+    <!-- Mixed Results Grid -->
+    <div id="searchResults" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Rendering by JS -->
+    </div>
+
+    <!-- No Results -->
+    <div id="noResults" class="empty-state hidden">
+      <i class="fas fa-search"></i>
+      <h3 class="text-xl font-serif font-bold mb-2">No matches found</h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-6">Try different keywords or browse by category tabs above. Can't find what you need?</p>
+      <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20looking%20for%20a%20specific%20yoga%20wear%20product%20not%20in%20your%20catalog." target="_blank" rel="noopener" class="btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> Request Custom Product
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <h4>lightcirle</h4>
+        <p class="text-sm leading-relaxed">Premium custom yoga wear manufacturer. MOQ 50pcs, factory direct, global shipping.</p>
+        <div class="flex gap-3 mt-4">
+          <a href="https://wa.me/8612345678900" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-whatsapp transition-colors" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a href="mailto:inquiry@lightcirle.com" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Categories</h4>
+        <ul class="space-y-2">
+          <li><a href="search.html?tab=yoga-pants">Yoga Pants</a></li>
+          <li><a href="search.html?tab=sports-bras">Sports Bras</a></li>
+          <li><a href="search.html?tab=sets">Matching Sets</a></li>
+          <li><a href="search.html?tab=seamless">Seamless Collection</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <ul class="space-y-2">
+          <li><a href="search.html?tab=blog">Expert Articles</a></li>
+          <li><a href="blog-detail.html?id=fabric-guide-01">Fabric Guide</a></li>
+          <li><a href="blog-detail.html?id=moq-guide-02">Low MOQ Guide</a></li>
+          <li><a href="blog-detail.html?id=customization-process-03">Custom Process</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="space-y-2 text-sm">
+          <li><i class="fab fa-whatsapp mr-2"></i> WhatsApp: +86 123 4567 8900</li>
+          <li><i class="fas fa-envelope mr-2"></i> inquiry@lightcirle.com</li>
+          <li><i class="fas fa-map-marker-alt mr-2"></i> Guangzhou, China</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 lightcirle. Premium Custom Yoga Wear Manufacturer. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<!-- Floating Contact -->
+<div id="floatingContact" class="floating-contact"></div>
+<button id="scrollTopBtn" class="scroll-top" aria-label="Scroll to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script src="js/main.js"></script>
+<script src="js/visitor-tracker.js"></script>
+<script>
+  // --- Data ---
+  let allProducts = [];
+  let allArticles = [];
+  let activeTab = 'all';
+  let query = '';
+
+  // --- Category display names ---
+  const categoryNames = {
+    'yoga-pants': 'Yoga Pants',
+    'sports-bras': 'Sports Bras',
+    'yoga-outerwear': 'Yoga Outerwear',
+    'hoodies': 'Hoodies',
+    'sets': 'Matching Sets',
+    'seamless': 'Seamless',
+  };
+  const blogCategoryNames = {
+    'fabric-knowledge': 'Fabric Knowledge',
+    'business-tips': 'Business Tips',
+    'industry-news': 'Industry News',
+  };
+
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  function productUrl(p) { return '/' + slugify(p.name) + '.html?id=' + p.id; }
+  function articleUrl(a) { return '/' + slugify(a.title) + '.html?id=' + a.id; }
+
+  // --- Card Renderers ---
+  function renderProductCard(p) {
+    return `
+      <a href="${productUrl(p)}" class="product-card block group">
+        <div class="product-image-wrap">
+          <img src="${p.images[0]}" alt="${p.name}" loading="lazy">
+        </div>
+        <div class="p-4 lg:p-5">
+          <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${categoryNames[p.category] || p.category}</span>
+          <h3 class="font-serif font-bold text-base lg:text-lg mt-1 mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors leading-snug">${p.name}</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">${p.fabric}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light px-2.5 py-1 rounded-full">MOQ ${p.moq}pcs</span>
+            <div class="flex gap-1.5">
+              <span class="w-7 h-7 rounded-full bg-whatsapp/10 text-whatsapp flex items-center justify-center hover:bg-whatsapp hover:text-white transition-colors" onclick="event.stopPropagation();event.preventDefault();" title="WhatsApp">
+                <i class="fab fa-whatsapp text-xs"></i>
+              </span>
+              <span class="w-7 h-7 rounded-full bg-accent/10 text-accent flex items-center justify-center hover:bg-accent hover:text-white transition-colors" onclick="event.stopPropagation();event.preventDefault();" title="Email">
+                <i class="fas fa-envelope text-xs"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+    `;
+  }
+
+  function renderArticleCard(a) {
+    const dt = new Date(a.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const aUrl = articleUrl(a);
+    return `
+      <article class="blog-result-card">
+        <a href="${aUrl}" class="block">
+          <div class="blog-image-wrap">
+            <img src="${a.image}" alt="${a.title}" loading="lazy">
+          </div>
+        </a>
+        <div class="p-5">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${blogCategoryNames[a.category] || a.category}</span>
+            <span class="text-xs text-gray-400">${dt}</span>
+          </div>
+          <a href="${aUrl}" class="block group">
+            <h3 class="font-serif font-bold text-base lg:text-lg leading-snug group-hover:text-primary dark:group-hover:text-primary-light transition-colors">${a.title}</h3>
+          </a>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 line-clamp-2">${a.excerpt}</p>
+          <div class="flex gap-2 mt-3">
+            ${a.tags.slice(0, 3).map(t => `<span class="text-xs text-gray-400">#${t}</span>`).join('')}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  // --- Search Logic ---
+  function matchesQuery(item, fields) {
+    if (!query) return true;
+    const terms = query.toLowerCase().split(/\s+/);
+    return terms.every(term =>
+      fields.some(f => {
+        const val = (typeof f === 'function') ? f(item) : (item[f] || '');
+        return String(val).toLowerCase().includes(term);
+      })
+    );
+  }
+
+  function matchedProductFields(p) {
+    return [p.name, p.category, p.fabric, p.description, ...p.features, ...p.colors, ...p.customization, ...(p.certifications || [])];
+  }
+
+  function matchedArticleFields(a) {
+    return [a.title, a.excerpt, a.category, ...a.tags, a.author, a.content];
+  }
+
+  function sortArticlesByDate(articles) {
+    return articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
+
+  function renderResults() {
+    const container = document.getElementById('searchResults');
+    const countEl = document.getElementById('resultCount');
+    const noResults = document.getElementById('noResults');
+
+    let products = [];
+    let articles = [];
+
+    if (activeTab === 'all') {
+      products = allProducts.filter(p => matchesQuery(p, matchedProductFields(p)));
+      articles = allArticles.filter(a => matchesQuery(a, matchedArticleFields(a)));
+    } else if (activeTab === 'new') {
+      // New arrivals: latest 6 products + 3 latest articles
+      products = allProducts.filter(p => matchesQuery(p, matchedProductFields(p))).slice(0, 6);
+      articles = sortArticlesByDate(allArticles.filter(a => matchesQuery(a, matchedArticleFields(a)))).slice(0, 3);
+    } else if (activeTab === 'blog') {
+      articles = allArticles.filter(a => matchesQuery(a, matchedArticleFields(a)));
+    } else {
+      products = allProducts.filter(p => p.category === activeTab && matchesQuery(p, matchedProductFields(p)));
+    }
+
+    if (activeTab !== 'new') {
+      articles = sortArticlesByDate(articles);
+    }
+
+    const total = products.length + articles.length;
+
+    countEl.textContent = total === 0
+      ? 'No results found'
+      : `Showing ${total} result${total !== 1 ? 's' : ''} (${products.length} product${products.length !== 1 ? 's' : ''}, ${articles.length} article${articles.length !== 1 ? 's' : ''})`;
+
+    if (total === 0) {
+      container.innerHTML = '';
+      noResults.classList.remove('hidden');
+      return;
+    }
+
+    noResults.classList.add('hidden');
+
+    // Interleave products and articles in the same grid
+    const cards = [];
+    if (activeTab === 'all' || activeTab === 'new') {
+      // Interleave: alternate product, article, product, article...
+      const maxLen = Math.max(products.length, articles.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (i < products.length) cards.push({ type: 'product', data: products[i] });
+        if (i < articles.length) cards.push({ type: 'article', data: articles[i] });
+      }
+    } else if (activeTab === 'blog') {
+      articles.forEach(a => cards.push({ type: 'article', data: a }));
+    } else {
+      products.forEach(p => cards.push({ type: 'product', data: p }));
+    }
+
+    container.innerHTML = cards.map(c =>
+      c.type === 'product' ? renderProductCard(c.data) : renderArticleCard(c.data)
+    ).join('');
+  }
+
+  // --- Tab switching ---
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const target = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    if (target) target.classList.add('active');
+    renderResults();
+  }
+
+  // --- Nav search handler ---
+  window.handleNavSearch = function(e) {
+    e.preventDefault();
+    const input = document.getElementById('navSearchInput') || document.getElementById('mobileNavSearchInput');
+    const val = input ? input.value.trim() : '';
+    if (val) {
+      window.location.href = `search.html?q=${encodeURIComponent(val)}`;
+    }
+  };
+
+  // --- Init ---
+  async function init() {
+    // Read URL params
+    const params = new URLSearchParams(window.location.search);
+    query = params.get('q') || '';
+    const urlTab = params.get('tab') || 'all';
+
+    // Sync search inputs
+    const navInput = document.getElementById('navSearchInput');
+    const mobileNavInput = document.getElementById('mobileNavSearchInput');
+    if (navInput && query) navInput.value = query;
+    if (mobileNavInput && query) mobileNavInput.value = query;
+
+    // Load data
+    try {
+      const [prodResp, blogResp] = await Promise.all([
+        fetch('data/products.json'),
+        fetch('data/blog.json'),
+      ]);
+      allProducts = await prodResp.json();
+      allArticles = await blogResp.json();
+      document.getElementById('productCount').textContent = allProducts.length;
+      document.getElementById('articleCount').textContent = allArticles.length;
+    } catch (err) {
+      console.error('Failed to load data:', err);
+    }
+
+    // Tab clicks
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Apply URL tab
+    if (urlTab !== 'all') {
+      setTimeout(() => switchTab(urlTab), 100);
+    } else {
+      renderResults();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

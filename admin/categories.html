@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分类管理 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
+    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
+      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
+      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="sidebar-link active"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
+      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-serif font-bold">分类管理</h1>
+      <button onclick="openEditor()" class="bg-[#2D5A3D] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-plus mr-1"></i> 新增分类</button>
+    </div>
+
+    <!-- Type tabs -->
+    <div class="flex gap-2 mb-4">
+      <button class="type-tab active text-xs px-4 py-1.5 rounded-full border border-[#2D5A3D] bg-[#2D5A3D] text-white font-medium" data-type="all">全部</button>
+      <button class="type-tab text-xs px-4 py-1.5 rounded-full border border-gray-200 text-gray-500 hover:border-[#2D5A3D]" data-type="product">产品分类</button>
+      <button class="type-tab text-xs px-4 py-1.5 rounded-full border border-gray-200 text-gray-500 hover:border-[#2D5A3D]" data-type="article">文章分类</button>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
+          <th class="p-4 font-medium">分类 ID</th><th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
+        </tr></thead>
+        <tbody id="categoryTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Editor Modal -->
+    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)closeEditor()">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新增分类</h2><button onclick="closeEditor()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
+        <form id="categoryForm" class="grid gap-4">
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类 ID（英文小写，用于数据存储）</label><input id="edId" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称（中文显示名）</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">类型</label>
+            <select id="edType" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+              <option value="product">产品分类</option>
+              <option value="article">文章分类</option>
+            </select>
+          </div>
+          <div class="flex gap-3 justify-end pt-4 border-t border-gray-100">
+            <button type="button" onclick="closeEditor()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
+            <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
+  <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
+  <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
+  <a href="articles.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
+  <a href="categories.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
+  <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
+  <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
+  <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
+</nav>
+
+<script>
+  const API = '/api'; let token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...opts.headers } });
+    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/admin/login.html'; }
+    return res;
+  }
+
+  let allCategories = [], editingId = null, filterType = 'all';
+
+  function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  async function loadCategories() {
+    allCategories = await (await api('/categories')).json();
+    renderTable();
+  }
+
+  function renderTable() {
+    const data = filterType === 'all' ? allCategories : allCategories.filter(c => c.type === filterType);
+    const typeNames = { product: '产品分类', article: '文章分类' };
+    document.getElementById('categoryTable').innerHTML = data.map(c => `
+      <tr class="border-b border-gray-50 hover:bg-gray-50/50">
+        <td class="p-4 font-mono text-xs text-gray-500">${escape(c.id)}</td>
+        <td class="p-4 font-medium">${escape(c.name)}</td>
+        <td class="p-4"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${typeNames[c.type] || c.type}</span></td>
+        <td class="p-4 text-gray-400 text-xs">${c.sort_order}</td>
+        <td class="p-4"><button onclick="editCategory('${c.id}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteCategory('${c.id}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  function openEditor(cat) {
+    editingId = cat ? cat.id : null;
+    document.getElementById('editorTitle').textContent = cat ? '编辑: ' + cat.name : '新增分类';
+    document.getElementById('edId').value = cat ? cat.id : '';
+    document.getElementById('edId').disabled = !!cat;
+    document.getElementById('edName').value = cat ? cat.name : '';
+    document.getElementById('edType').value = cat ? cat.type : 'product';
+    document.getElementById('editorModal').classList.remove('hidden');
+  }
+
+  function closeEditor() {
+    document.getElementById('editorModal').classList.add('hidden');
+    editingId = null;
+    document.getElementById('edId').disabled = false;
+  }
+
+  document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      id: document.getElementById('edId').value.trim(),
+      name: document.getElementById('edName').value.trim(),
+      type: document.getElementById('edType').value,
+    };
+    if (!data.id || !data.name) { alert('请填写分类 ID 和名称'); return; }
+    try {
+      if (editingId) { await api('/categories/' + editingId, { method: 'PUT', body: JSON.stringify(data) }); }
+      else { await api('/categories', { method: 'POST', body: JSON.stringify(data) }); }
+      closeEditor(); loadCategories();
+    } catch(e) { alert('操作失败: ' + e.message); }
+  });
+
+  function editCategory(id) { const c = allCategories.find(x => x.id === id); if (c) openEditor(c); }
+
+  async function deleteCategory(id) {
+    if (!confirm('确认删除此分类？\n注意：删除分类不会删除该分类下的产品/文章。')) return;
+    try { await api('/categories/' + id, { method: 'DELETE' }); loadCategories(); }
+    catch(e) { alert('删除失败: ' + e.message); }
+  }
+
+  // Type filter tabs
+  document.querySelectorAll('.type-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.type-tab').forEach(b => {
+        b.classList.remove('active', 'bg-[#2D5A3D]', 'text-white', 'border-[#2D5A3D]');
+        b.classList.add('border-gray-200', 'text-gray-500');
+      });
+      btn.classList.add('active', 'bg-[#2D5A3D]', 'text-white', 'border-[#2D5A3D]');
+      btn.classList.remove('border-gray-200', 'text-gray-500');
+      filterType = btn.dataset.type;
+      renderTable();
+    });
+  });
+
+  loadCategories();
+</script>
+</body>
+</html>
