@@ -16,5 +16,6 @@ RUN mkdir -p uploads data
 # Expose port
 EXPOSE 3000
 
-# Start server
-CMD ["node", "server.js"]
+# Start server (start.sh handles volume symlinks)
+RUN chmod +x start.sh
+CMD ["/bin/sh", "start.sh"]

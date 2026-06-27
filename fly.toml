@@ -16,9 +16,5 @@ app = "lightcirle"
   min_machines_running = 1
 
 [[mounts]]
-  source = "data"
-  destination = "/app/data"
-
-[[mounts]]
-  source = "uploads"
-  destination = "/app/uploads"
+  source = "storage"
+  destination = "/app/volume"
