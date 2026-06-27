@@ -1,0 +1,42 @@
+# fly.toml — lightcirle deployment on Fly.io
+app = "lightcirle"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false   # Keep alive for B2B site
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[mounts]]
+  source = "data"
+  destination = "/app/data"
+
+[[mounts]]
+  source = "uploads"
+  destination = "/app/uploads"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 3000
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [[services.concurrency]]
+    type = "connections"
+    hard_limit = 100
+    soft_limit = 50

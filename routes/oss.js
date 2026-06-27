@@ -1,72 +1,86 @@
-// lightcirle — OSS Helper
-// Creates and returns an OSS client using settings from the database
-const OSS = require('ali-oss');
+# Cloudflare R2 Helper (S3-compatible object storage)
+# Requires: npm install @aws-sdk/client-s3
+# Configure via admin Settings page → OSS tab
+
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getDb } = require('../db/schema');
+const fs = require('fs');
 
-let ossClient = null;
-let ossConfig = null;
+let r2Client = null;
+let r2Config = null;
 
-function getOssConfig() {
+function getR2Config() {
   const db = getDb();
   const s = db.prepare('SELECT * FROM settings WHERE id = 1').get();
   if (!s || !s.oss_enabled) return null;
   return {
     enabled: !!s.oss_enabled,
-    region: s.oss_region,
-    bucket: s.oss_bucket,
+    endpoint: s.oss_region,         // R2 endpoint URL, e.g. https://<accountid>.r2.cloudflarestorage.com
+    bucket: s.oss_bucket,           // R2 bucket name
     accessKeyId: s.oss_access_key_id,
     accessKeySecret: s.oss_access_key_secret,
-    cdnDomain: s.oss_cdn_domain,
+    publicUrl: s.oss_cdn_domain,    // R2 public URL, e.g. https://media.lightcirle.com
     prefix: s.brand_name || 'lightcirle',
   };
 }
 
 function getClient() {
-  const config = getOssConfig();
+  const config = getR2Config();
   if (!config || !config.enabled) return null;
 
-  // Recreate client if config changed
-  if (!ossClient || JSON.stringify(config) !== JSON.stringify(ossConfig)) {
-    ossConfig = config;
-    ossClient = new OSS({
-      region: config.region,
-      bucket: config.bucket,
-      accessKeyId: config.accessKeyId,
-      accessKeySecret: config.accessKeySecret,
-      secure: true,
+  if (!r2Client || JSON.stringify(config) !== JSON.stringify(r2Config)) {
+    r2Config = config;
+    r2Client = new S3Client({
+      region: 'auto',
+      endpoint: config.endpoint,
+      credentials: {
+        accessKeyId: config.accessKeyId,
+        secretAccessKey: config.accessKeySecret,
+      },
+      forcePathStyle: true,  // Required for R2
     });
   }
-  return ossClient;
+  return r2Client;
 }
 
-// Upload file to OSS
-// folder: 'products', 'articles', 'site'
+// Upload file to R2
+// folder: 'products', 'articles', 'site', 'company'
 async function uploadToOss(localPath, filename, folder = 'site') {
-  const config = getOssConfig();
-  if (!config) throw new Error('OSS not configured');
+  const config = getR2Config();
+  if (!config) throw new Error('R2 not configured');
 
   const client = getClient();
-  const ossPath = config.prefix + '/' + folder + '/' + filename;
+  const key = config.prefix + '/' + folder + '/' + filename;
+  const fileContent = fs.readFileSync(localPath);
 
-  const result = await client.put(ossPath, localPath);
-  const url = config.cdnDomain
-    ? config.cdnDomain.replace(/\/$/, '') + '/' + ossPath
-    : result.url;
+  await client.send(new PutObjectCommand({
+    Bucket: config.bucket,
+    Key: key,
+    Body: fileContent,
+  }));
 
-  return { url, ossPath, filename };
+  const url = config.publicUrl
+    ? config.publicUrl.replace(/\/$/, '') + '/' + key
+    : config.endpoint.replace(/\/$/, '') + '/' + config.bucket + '/' + key;
+
+  return { url, ossPath: key, filename };
 }
 
-// Delete file from OSS
+// Delete file from R2
 async function deleteFromOss(ossPath) {
+  const config = getR2Config();
+  if (!config) return;
   const client = getClient();
-  if (!client) return;
-  await client.delete(ossPath);
+  await client.send(new DeleteObjectCommand({
+    Bucket: config.bucket,
+    Key: ossPath,
+  }));
 }
 
-// Check if OSS is enabled
+// Check if R2 is enabled
 function isOssEnabled() {
-  const config = getOssConfig();
+  const config = getR2Config();
   return config && config.enabled;
 }
 
-module.exports = { uploadToOss, deleteFromOss, isOssEnabled, getOssConfig };
+module.exports = { uploadToOss, deleteFromOss, isOssEnabled, getR2Config };
