@@ -1,31 +1,36 @@
-# fly.toml — lightcirle deployment on Fly.io
-app = "lightcirle"
-primary_region = "hkg"
+# fly.toml app configuration file generated for lightcirle on 2026-06-27T05:37:58Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'lightcirle'
+primary_region = 'ams'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [env]
-  NODE_ENV = "production"
-  PORT = "3000"
+  NODE_ENV = 'production'
+  PORT = '3000'
+
+[[mounts]]
+  source = 'storage'
+  destination = '/app/volume'
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
-  auto_stop_machines = false
+  auto_stop_machines = 'off'
   auto_start_machines = true
   min_machines_running = 1
 
   [http_service.concurrency]
-    type = "requests"
+    type = 'requests'
     hard_limit = 100
     soft_limit = 50
 
-[[mounts]]
-  source = "storage"
-  destination = "/app/volume"
-
 [[vm]]
-  memory = "1gb"
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 256
