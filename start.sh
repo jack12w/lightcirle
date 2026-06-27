@@ -9,9 +9,17 @@ VOLUME_DIR="/app/volume"
 # Ensure volume subdirectories exist
 mkdir -p "$VOLUME_DIR/data" "$VOLUME_DIR/uploads"
 
-# Create symlinks (force in case they exist from a previous run)
-ln -sfn "$VOLUME_DIR/data" /app/data
-ln -sfn "$VOLUME_DIR/uploads" /app/uploads
+# Remove existing directories that Dockerfile created (they block symlinks)
+rm -rf /app/data /app/uploads
+
+# Create symlinks to volume
+ln -s "$VOLUME_DIR/data" /app/data
+ln -s "$VOLUME_DIR/uploads" /app/uploads
+
+# Verify the symlinks work
+ls -la /app/data /app/uploads > /dev/null 2>&1
+
+echo "startup: volume symlinks created successfully"
 
 # Start the application
 exec node server.js
