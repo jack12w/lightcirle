@@ -2,9 +2,22 @@
 # Requires: npm install @aws-sdk/client-s3
 # Configure via admin Settings page → OSS tab
 
-const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getDb } = require('../db/schema');
 const fs = require('fs');
+
+// Lazy-load S3 client to avoid crash if package not installed
+let S3Client, PutObjectCommand, DeleteObjectCommand;
+let s3Available = false;
+try {
+  const s3 = require('@aws-sdk/client-s3');
+  S3Client = s3.S3Client;
+  PutObjectCommand = s3.PutObjectCommand;
+  DeleteObjectCommand = s3.DeleteObjectCommand;
+  s3Available = true;
+  console.log('R2/S3 SDK loaded successfully');
+} catch(e) {
+  console.warn('@aws-sdk/client-s3 not available, R2 uploads disabled. Run: npm install @aws-sdk/client-s3');
+}
 
 let r2Client = null;
 let r2Config = null;
@@ -15,16 +28,17 @@ function getR2Config() {
   if (!s || !s.oss_enabled) return null;
   return {
     enabled: !!s.oss_enabled,
-    endpoint: s.oss_region,         // R2 endpoint URL, e.g. https://<accountid>.r2.cloudflarestorage.com
-    bucket: s.oss_bucket,           // R2 bucket name
+    endpoint: s.oss_region,
+    bucket: s.oss_bucket,
     accessKeyId: s.oss_access_key_id,
     accessKeySecret: s.oss_access_key_secret,
-    publicUrl: s.oss_cdn_domain,    // R2 public URL, e.g. https://media.lightcirle.com
+    publicUrl: s.oss_cdn_domain,
     prefix: s.brand_name || 'lightcirle',
   };
 }
 
 function getClient() {
+  if (!s3Available) return null;
   const config = getR2Config();
   if (!config || !config.enabled) return null;
 
@@ -37,17 +51,16 @@ function getClient() {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.accessKeySecret,
       },
-      forcePathStyle: true,  // Required for R2
+      forcePathStyle: true,
     });
   }
   return r2Client;
 }
 
-// Upload file to R2
-// folder: 'products', 'articles', 'site', 'company'
 async function uploadToOss(localPath, filename, folder = 'site') {
   const config = getR2Config();
   if (!config) throw new Error('R2 not configured');
+  if (!s3Available) throw new Error('@aws-sdk/client-s3 not installed');
 
   const client = getClient();
   const key = config.prefix + '/' + folder + '/' + filename;
@@ -66,8 +79,8 @@ async function uploadToOss(localPath, filename, folder = 'site') {
   return { url, ossPath: key, filename };
 }
 
-// Delete file from R2
 async function deleteFromOss(ossPath) {
+  if (!s3Available) return;
   const config = getR2Config();
   if (!config) return;
   const client = getClient();
@@ -77,8 +90,8 @@ async function deleteFromOss(ossPath) {
   }));
 }
 
-// Check if R2 is enabled
 function isOssEnabled() {
+  if (!s3Available) return false;
   const config = getR2Config();
   return config && config.enabled;
 }

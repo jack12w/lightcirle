@@ -1,24 +1,21 @@
-# Use Debian-based Node.js (better-sqlite3 compatibility)
-FROM node:20-slim
+# Use full Node.js image (includes all build tools)
+FROM node:20
 
 WORKDIR /app
 
-# Install better-sqlite3 build dependencies (debian-based)
-RUN apt-get update && apt-get install -y python3 make g++ build-essential && rm -rf /var/lib/apt/lists/*
-
-# Install dependencies
+# Install dependencies (better-sqlite3 compiles natively)
 COPY package*.json ./
 RUN npm install --production
 
 # Copy application
 COPY . .
 
-# Create required directories (will be replaced by symlinks in start.sh)
+# Create required directories (replaced by symlinks on start)
 RUN mkdir -p uploads data
 
 # Expose port
 EXPOSE 3000
 
-# Start server (start.sh handles volume symlinks)
+# Start script handles volume symlinks
 RUN chmod +x start.sh
 CMD ["/bin/sh", "start.sh"]
