@@ -1,24 +1,21 @@
-# Use official Node.js image
-FROM node:20-alpine
+# Use Node.js 22 (required by @aws-sdk/client-s3)
+FROM node:22
 
 WORKDIR /app
 
-# Install build tools needed for better-sqlite3 native compilation
-RUN apk add --no-cache python3 make g++
-
-# Install dependencies
+# Install dependencies (better-sqlite3 compiles natively)
 COPY package*.json ./
 RUN npm install --production
 
 # Copy application
 COPY . .
 
-# Create required directories
+# Create required directories (replaced by symlinks on start)
 RUN mkdir -p uploads data
 
 # Expose port
 EXPOSE 3000
 
-# Start server (start.sh handles volume symlinks)
+# Start script handles volume symlinks
 RUN chmod +x start.sh
 CMD ["/bin/sh", "start.sh"]
