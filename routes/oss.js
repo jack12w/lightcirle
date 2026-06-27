@@ -49,7 +49,6 @@ function getClient() {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.accessKeySecret,
       },
-      forcePathStyle: true,
     });
   }
   return r2Client;
