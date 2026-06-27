@@ -276,9 +276,13 @@
       });
       var d = await r.json();
       if (r.ok) {
-        msg.textContent = '密码修改成功！'; msg.className = 'text-xs ml-2 text-green-400';
+        msg.textContent = '密码修改成功！2秒后需重新登录...'; msg.className = 'text-xs ml-2 text-green-400';
         document.getElementById('sCurrentPassword').value = '';
         document.getElementById('sNewPassword').value = '';
+        setTimeout(function() {
+          localStorage.removeItem('token');
+          window.location.href = '/admin/login.html';
+        }, 2000);
       } else {
         msg.textContent = d.error; msg.className = 'text-xs ml-2 text-red-400';
       }
