@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
 // POST /api/categories (auth required)
 router.post('/', authenticate, (req, res) => {
   const db = getDb();
-  const { id, name, type, image } = req.body;
+  const { id, name, type } = req.body;
   if (!id || !name) {
     return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'ID and name are required' });
   }
@@ -32,20 +32,20 @@ router.post('/', authenticate, (req, res) => {
   }
 
   const maxOrder = db.prepare('SELECT MAX(sort_order) as m FROM categories').get();
-  db.prepare('INSERT INTO categories (id, name, type, sort_order, image) VALUES (?, ?, ?, ?, ?)').run(id, name, type || 'product', (maxOrder.m || 0) + 1, image || '');
+  db.prepare('INSERT INTO categories (id, name, type, sort_order) VALUES (?, ?, ?, ?)').run(id, name, type || 'product', (maxOrder.m || 0) + 1);
   res.status(201).json({ id, message: '分类已创建' });
 });
 
 // PUT /api/categories/:id (auth required)
 router.put('/:id', authenticate, (req, res) => {
   const db = getDb();
-  const { name, image } = req.body;
+  const { name } = req.body;
   if (!name) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'Name is required' });
 
   const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found' });
 
-  db.prepare('UPDATE categories SET name = ?, image = ? WHERE id = ?').run(name, image || '', req.params.id);
+  db.prepare('UPDATE categories SET name = ? WHERE id = ?').run(name, req.params.id);
   res.json({ message: '分类已更新' });
 });
 

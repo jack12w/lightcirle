@@ -64,16 +64,6 @@
               <option value="article">文章分类</option>
             </select>
           </div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类封面图</label>
-            <div class="flex items-center gap-3">
-              <img id="edImagePreview" class="w-12 h-12 rounded-lg border border-gray-100 hidden object-cover">
-              <div id="edImagePlaceholder" class="w-12 h-12 rounded-lg border border-dashed border-gray-200 flex items-center justify-center text-gray-300"><i class="fas fa-image"></i></div>
-              <button type="button" onclick="document.getElementById('edImageInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs hover:border-[#2D5A3D] transition-colors"><i class="fas fa-upload mr-1"></i> 上传</button>
-              <button type="button" onclick="clearEdImage()" class="text-xs text-red-400 hover:text-red-600">清除</button>
-            </div>
-            <input type="hidden" id="edImage" value="">
-            <input type="file" id="edImageInput" accept="image/*" class="hidden" onchange="uploadEdImage(this)">
-          </div>
           <div class="flex gap-3 justify-end pt-4 border-t border-gray-100">
             <button type="button" onclick="closeEditor()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
             <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存</button>
@@ -135,47 +125,7 @@
     document.getElementById('edId').disabled = !!cat;
     document.getElementById('edName').value = cat ? cat.name : '';
     document.getElementById('edType').value = cat ? cat.type : 'product';
-    document.getElementById('edImage').value = cat ? (cat.image || '') : '';
-    updateEdImagePreview(cat ? cat.image : '');
     document.getElementById('editorModal').classList.remove('hidden');
-  }
-
-  function updateEdImagePreview(url) {
-    const img = document.getElementById('edImagePreview');
-    const placeholder = document.getElementById('edImagePlaceholder');
-    if (url) {
-      img.src = url; img.classList.remove('hidden');
-      placeholder.classList.add('hidden');
-    } else {
-      img.classList.add('hidden');
-      placeholder.classList.remove('hidden');
-    }
-  }
-
-  function clearEdImage() {
-    document.getElementById('edImage').value = '';
-    document.getElementById('edImageInput').value = '';
-    updateEdImagePreview('');
-  }
-
-  async function uploadEdImage(input) {
-    if (!input.files || !input.files[0]) return;
-    const formData = new FormData();
-    formData.append('file', input.files[0]);
-    formData.append('folder', 'categories');
-    try {
-      const res = await fetch(API + '/upload', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + token },
-        body: formData
-      });
-      if (!res.ok) throw new Error('Upload failed');
-      const data = await res.json();
-      document.getElementById('edImage').value = data.url;
-      updateEdImagePreview(data.url);
-    } catch(e) {
-      alert('上传失败: ' + e.message);
-    }
   }
 
   function closeEditor() {
@@ -190,7 +140,6 @@
       id: document.getElementById('edId').value.trim(),
       name: document.getElementById('edName').value.trim(),
       type: document.getElementById('edType').value,
-      image: document.getElementById('edImage').value,
     };
     if (!data.id || !data.name) { alert('请填写分类 ID 和名称'); return; }
     try {

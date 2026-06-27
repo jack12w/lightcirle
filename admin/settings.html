@@ -103,16 +103,6 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-3">
-        <h2 class="font-semibold text-base"><i class="fas fa-lock mr-2 text-[#C4926E]"></i>修改管理员密码</h2>
-        <div class="grid sm:grid-cols-2 gap-3">
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">当前密码</label><input id="sCurrentPassword" type="password" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="输入当前密码"></div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">新密码（至少6位）</label><input id="sNewPassword" type="password" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="输入新密码"></div>
-        </div>
-        <button type="button" onclick="changePassword()" class="bg-[#C4926E] text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-[#A67B5B] transition-colors"><i class="fas fa-key mr-1"></i> 修改密码</button>
-        <span id="pwdMsg" class="text-xs ml-2"></span>
-      </div>
-
       <div class="flex gap-3 justify-end pt-2">
         <button type="submit" class="bg-[#2D5A3D] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-save mr-2"></i> 保存设置</button>
       </div>
@@ -260,33 +250,6 @@
       el.classList.add('opacity-0', 'translate-x-4');
       setTimeout(function() { el.classList.add('hidden'); }, 300);
     }, 2000);
-  }
-
-  async function changePassword() {
-    var cur = document.getElementById('sCurrentPassword').value;
-    var news = document.getElementById('sNewPassword').value;
-    var msg = document.getElementById('pwdMsg');
-    if (!cur || !news) { msg.textContent = '请填写当前密码和新密码'; msg.className = 'text-xs ml-2 text-red-400'; return; }
-    if (news.length < 6) { msg.textContent = '新密码至少6位'; msg.className = 'text-xs ml-2 text-red-400'; return; }
-    try {
-      var r = await fetch(API + '/auth/change-password', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currentPassword: cur, newPassword: news })
-      });
-      var d = await r.json();
-      if (r.ok) {
-        msg.textContent = '密码修改成功！2秒后需重新登录...'; msg.className = 'text-xs ml-2 text-green-400';
-        document.getElementById('sCurrentPassword').value = '';
-        document.getElementById('sNewPassword').value = '';
-        setTimeout(function() {
-          localStorage.removeItem('token');
-          window.location.href = '/admin/login.html';
-        }, 2000);
-      } else {
-        msg.textContent = d.error; msg.className = 'text-xs ml-2 text-red-400';
-      }
-    } catch(e) { msg.textContent = e.message; msg.className = 'text-xs ml-2 text-red-400'; }
   }
 
   load();

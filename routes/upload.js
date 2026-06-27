@@ -74,7 +74,7 @@ router.post('/', authenticate, upload.single('file'), async (req, res) => {
     res.status(201).json({ id, filename, originalName: originalname, filePath, mimeType: mimetype, fileSize: size, folder, url: filePath });
 
   } catch (err) {
-    console.error('Upload failed:', err.message, err.stack);
+    console.error('Upload failed:', err.message);
     // Clean up local file on error
     try { fs.unlinkSync(localPath); } catch(e) {}
     res.status(500).json({ title: 'Upload Error', status: 500, detail: '上传失败: ' + err.message });

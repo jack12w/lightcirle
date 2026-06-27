@@ -133,7 +133,7 @@ window.SITE_CONFIG = {
   faviconPath: '${(s.favicon_path || '').replace(/'/g, "\\'")}',
 };
 
-(function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};var f=document.querySelector('link[rel*=\"icon\"]')||document.createElement('link');f.rel='icon';var href=window.SITE_CONFIG.faviconPath||'/favicon.svg';f.href=href;if(/\\.svg$/i.test(href))f.type='image/svg+xml';else if(/\\.png$/i.test(href))f.type='image/png';else if(/\\.ico$/i.test(href))f.type='image/x-icon';if(!f.parentNode)document.head.appendChild(f);})();
+(function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};var f=document.querySelector('link[rel*=\"icon\"]')||document.createElement('link');f.rel='icon';f.href=window.SITE_CONFIG.faviconPath||'/favicon.ico';if(!f.parentNode)document.head.appendChild(f);})();
 `;
     fs.writeFileSync(path.join(__dirname, '..', 'js', 'config.js'), configContent, 'utf8');
     console.log('config.js synced from database');

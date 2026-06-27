@@ -1,21 +1,10 @@
-// Cloudflare R2 Helper (S3-compatible object storage)
-// Requires: npm install @aws-sdk/client-s3
-// Configure via admin Settings page → OSS tab
+# Cloudflare R2 Helper (S3-compatible object storage)
+# Requires: npm install @aws-sdk/client-s3
+# Configure via admin Settings page → OSS tab
 
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getDb } = require('../db/schema');
 const fs = require('fs');
-
-let S3Client, PutObjectCommand, DeleteObjectCommand;
-let s3Available = false;
-try {
-  const s3 = require('@aws-sdk/client-s3');
-  S3Client = s3.S3Client;
-  PutObjectCommand = s3.PutObjectCommand;
-  DeleteObjectCommand = s3.DeleteObjectCommand;
-  s3Available = true;
-} catch(e) {
-  console.warn('@aws-sdk/client-s3 not installed, R2 disabled');
-}
 
 let r2Client = null;
 let r2Config = null;
@@ -26,17 +15,16 @@ function getR2Config() {
   if (!s || !s.oss_enabled) return null;
   return {
     enabled: !!s.oss_enabled,
-    endpoint: (s.oss_region || '').replace(/\/$/, ''),
-    bucket: s.oss_bucket || '',
-    accessKeyId: s.oss_access_key_id || '',
-    accessKeySecret: s.oss_access_key_secret || '',
-    publicUrl: (s.oss_cdn_domain || '').replace(/\/$/, ''),
-    prefix: (s.brand_name || 'lightcirle').replace(/\//g, '-'),
+    endpoint: s.oss_region,         // R2 endpoint URL, e.g. https://<accountid>.r2.cloudflarestorage.com
+    bucket: s.oss_bucket,           // R2 bucket name
+    accessKeyId: s.oss_access_key_id,
+    accessKeySecret: s.oss_access_key_secret,
+    publicUrl: s.oss_cdn_domain,    // R2 public URL, e.g. https://media.lightcirle.com
+    prefix: s.brand_name || 'lightcirle',
   };
 }
 
 function getClient() {
-  if (!s3Available) return null;
   const config = getR2Config();
   if (!config || !config.enabled) return null;
 
@@ -49,18 +37,19 @@ function getClient() {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.accessKeySecret,
       },
+      forcePathStyle: true,  // Required for R2
     });
   }
   return r2Client;
 }
 
+// Upload file to R2
+// folder: 'products', 'articles', 'site', 'company'
 async function uploadToOss(localPath, filename, folder = 'site') {
   const config = getR2Config();
   if (!config) throw new Error('R2 not configured');
-  if (!s3Available) throw new Error('@aws-sdk/client-s3 not installed');
 
   const client = getClient();
-  // Key format: lightcirle/site/filename.jpg (clean, no bucket in path)
   const key = config.prefix + '/' + folder + '/' + filename;
   const fileContent = fs.readFileSync(localPath);
 
@@ -70,46 +59,26 @@ async function uploadToOss(localPath, filename, folder = 'site') {
     Body: fileContent,
   }));
 
-  // R2 public URL always needs a CDN/public domain
-  // r2.dev format: https://pub-xxx.r2.dev/<bucket>/<key>
-  // Custom domain:  https://media.lightcirle.com/<key>
-  let url;
-  if (config.publicUrl) {
-    const isR2Dev = config.publicUrl.includes('r2.dev');
-    url = isR2Dev
-      ? config.publicUrl + '/' + config.bucket + '/' + key
-      : config.publicUrl + '/' + key;
-  } else {
-    // Guess the r2.dev public URL from the endpoint
-    // endpoint: https://xxx.r2.cloudflarestorage.com
-    // r2.dev:   https://pub-xxx.r2.dev
-    const accountId = config.endpoint.match(/https:\/\/([^.]+)\.r2/)?.[1] || '';
-    if (accountId) {
-      url = 'https://pub-' + accountId + '.r2.dev/' + key;
-    } else {
-      // fallback: leave a note
-      url = '需要配置CDN域名: /' + key;
-    }
-  }
+  const url = config.publicUrl
+    ? config.publicUrl.replace(/\/$/, '') + '/' + key
+    : config.endpoint.replace(/\/$/, '') + '/' + config.bucket + '/' + key;
 
-  console.log('R2 upload:', key, '→', url);
   return { url, ossPath: key, filename };
 }
 
+// Delete file from R2
 async function deleteFromOss(ossPath) {
-  if (!s3Available) return;
   const config = getR2Config();
   if (!config) return;
   const client = getClient();
-  if (!client) return;
   await client.send(new DeleteObjectCommand({
     Bucket: config.bucket,
     Key: ossPath,
   }));
 }
 
+// Check if R2 is enabled
 function isOssEnabled() {
-  if (!s3Available) return false;
   const config = getR2Config();
   return config && config.enabled;
 }

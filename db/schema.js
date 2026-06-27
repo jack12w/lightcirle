@@ -171,8 +171,6 @@ function initSchema() {
     "ALTER TABLE company_info ADD COLUMN equipment_title TEXT NOT NULL DEFAULT 'Advanced Equipment for Premium Results'",
     "ALTER TABLE company_info ADD COLUMN equipment_desc TEXT NOT NULL DEFAULT 'Our factory is equipped with industry-leading machinery to ensure every stitch meets international quality standards.'",
     "ALTER TABLE company_info ADD COLUMN equipment_list TEXT NOT NULL DEFAULT '[]'",
-    // Categories
-    "ALTER TABLE categories ADD COLUMN image TEXT NOT NULL DEFAULT ''",
   ];
 
   for (const sql of migrations) {
