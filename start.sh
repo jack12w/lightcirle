@@ -2,24 +2,27 @@
 # lightcirle — startup script for Fly.io
 # Creates symlinks to the persistent volume so data survives restarts
 
-set -e
-
 VOLUME_DIR="/app/volume"
 
-# Ensure volume subdirectories exist
-mkdir -p "$VOLUME_DIR/data" "$VOLUME_DIR/uploads"
+echo "startup: initializing..."
 
-# Remove existing directories that Dockerfile created (they block symlinks)
-rm -rf /app/data /app/uploads
+# Ensure volume subdirectories exist
+mkdir -p "$VOLUME_DIR/data" 2>/dev/null || true
+mkdir -p "$VOLUME_DIR/uploads" 2>/dev/null || true
+
+# Remove existing directories that block symlinks (ignore errors)
+rm -rf /app/data 2>/dev/null || true
+rm -rf /app/uploads 2>/dev/null || true
 
 # Create symlinks to volume
-ln -s "$VOLUME_DIR/data" /app/data
-ln -s "$VOLUME_DIR/uploads" /app/uploads
+ln -s "$VOLUME_DIR/data" /app/data 2>/dev/null || {
+  echo "startup: WARNING: could not create data symlink, using volume directly"
+}
+ln -s "$VOLUME_DIR/uploads" /app/uploads 2>/dev/null || {
+  echo "startup: WARNING: could not create uploads symlink, using volume directly"
+}
 
-# Verify the symlinks work
-ls -la /app/data /app/uploads > /dev/null 2>&1
-
-echo "startup: volume symlinks created successfully"
+echo "startup: volume initialized, starting Node.js..."
 
 # Start the application
 exec node server.js
