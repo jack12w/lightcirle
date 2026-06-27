@@ -71,10 +71,14 @@ async function uploadToOss(localPath, filename, folder = 'site') {
   }));
 
   // R2 public URL always needs a CDN/public domain
-  // If none configured, use the r2.dev public subdomain format
+  // r2.dev format: https://pub-xxx.r2.dev/<bucket>/<key>
+  // Custom domain:  https://media.lightcirle.com/<key>
   let url;
   if (config.publicUrl) {
-    url = config.publicUrl + '/' + key;
+    const isR2Dev = config.publicUrl.includes('r2.dev');
+    url = isR2Dev
+      ? config.publicUrl + '/' + config.bucket + '/' + key
+      : config.publicUrl + '/' + key;
   } else {
     // Guess the r2.dev public URL from the endpoint
     // endpoint: https://xxx.r2.cloudflarestorage.com
