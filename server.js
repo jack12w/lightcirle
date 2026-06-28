@@ -9,9 +9,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Init Database ---
+console.log('server: initializing database...');
 initSchema();
 ensureAdmin('admin', 'admin123');
 ensureSettings();
+const dbPath = path.join(__dirname, 'data', 'lightcirle.db');
+try {
+  const stat = fs.statSync(dbPath);
+  console.log(`server: database at ${dbPath} (${(stat.size/1024).toFixed(1)} KB)`);
+} catch(e) {
+  console.log(`server: database at ${dbPath} (not yet created)`);
+}
 
 // --- Middleware ---
 app.use(cors({ origin: true, credentials: true }));
