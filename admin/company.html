@@ -100,8 +100,8 @@
         </div>
       </div>
       <div class="flex gap-3 mb-4">
-        <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="uploadGalleryImage(this)">
-        <button onclick="document.getElementById('galleryInput').click()" class="border-2 border-dashed border-gray-300 hover:border-[#2D5A3D] text-gray-400 hover:text-[#2D5A3D] px-5 py-3 rounded-xl text-sm transition-colors"><i class="fas fa-cloud-upload-alt mr-2"></i>从媒体库选择</button>
+        <input type="file" id="galleryInput" accept="image/*" multiple class="hidden" onchange="uploadGalleryImages(this)">
+        <button onclick="document.getElementById('galleryInput').click()" class="border-2 border-dashed border-gray-300 hover:border-[#2D5A3D] text-gray-400 hover:text-[#2D5A3D] px-5 py-3 rounded-xl text-sm transition-colors"><i class="fas fa-cloud-upload-alt mr-2"></i>本地上传</button>
         <button onclick="openMediaPicker()" class="border border-gray-200 px-5 py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-2"></i>从媒体库选择</button>
       </div>
       <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
@@ -171,6 +171,19 @@
       <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
     </nav>
   </main>
+
+  <!-- Media Picker Modal -->
+  <div id="mediaPickerModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)closeMediaPicker()">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-serif font-bold">从媒体库选择</h2>
+        <button onclick="closeMediaPicker()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+      </div>
+      <div id="mediaPickerGrid" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 max-h-96 overflow-y-auto">
+        <p class="text-gray-400 text-sm col-span-full">加载中...</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -282,31 +295,63 @@
   }
 
   function openMediaPicker() {
-    // Open media tab in a modal/dialog
-    const w = window.open('media.html?picker=company', 'mediaPicker', 'width=900,height=700');
-    window.addEventListener('message', e => {
-      if (e.data && e.data.type === 'media-pick') {
-        gallery.push(e.data.url);
-        renderGallery();
-        w.close();
-      }
-    });
+    const modal = document.getElementById('mediaPickerModal');
+    modal.classList.remove('hidden');
+    loadMediaList();
   }
 
-  function uploadGalleryImage(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('folder', 'company');
-    fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd })
-      .then(r => r.json())
-      .then(data => {
-        gallery.push(data.url);
-        renderGallery();
-        input.value = '';
-      })
-      .catch(e => showToast('上传失败: ' + e.message));
+  function closeMediaPicker() {
+    document.getElementById('mediaPickerModal').classList.add('hidden');
+  }
+
+  async function loadMediaList() {
+    const grid = document.getElementById('mediaPickerGrid');
+    grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full">加载中...</p>';
+    try {
+      const res = await fetch(API + '/media?limit=200');
+      const files = await res.json();
+      if (!Array.isArray(files) || !files.length) {
+        grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full">媒体库为空</p>';
+        return;
+      }
+      grid.innerHTML = files.map(f => {
+        const url = f.filePath || '';
+        return '<div class="relative rounded-lg overflow-hidden border border-gray-100 hover:border-[#2D5A3D] cursor-pointer transition-colors" onclick="pickMediaItem(\'' + url.replace(/'/g, "\\'") + '\')">' +
+          '<img src="' + url + '" class="w-full h-24 object-cover">' +
+          '<div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">' +
+          '<span class="opacity-0 hover:opacity-100 bg-[#2D5A3D] text-white text-xs px-2 py-1 rounded">选择</span></div>' +
+          '</div>';
+      }).join('');
+    } catch(e) {
+      grid.innerHTML = '<p class="text-red-400 text-sm col-span-full">加载失败</p>';
+    }
+  }
+
+  function pickMediaItem(url) {
+    gallery.push(url);
+    renderGallery();
+    closeMediaPicker();
+  }
+
+  async function uploadGalleryImages(input) {
+    const files = input.files;
+    if (!files || !files.length) { input.value = ''; return; }
+    showToast('正在上传 ' + files.length + ' 个文件...');
+    let done = 0, errors = 0;
+    for (let i = 0; i < files.length; i++) {
+      const fd = new FormData();
+      fd.append('file', files[i]);
+      fd.append('folder', 'company');
+      try {
+        const res = await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+        const data = await res.json();
+        if (data.url) { gallery.push(data.url); renderGallery(); }
+        else { errors++; }
+      } catch(e) { errors++; }
+      done++;
+    }
+    showToast('上传完成: ' + (files.length - errors) + ' 成功' + (errors ? ', ' + errors + ' 失败' : ''));
+    input.value = '';
   }
 
   // --- Load / Save ---
