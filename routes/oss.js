@@ -51,6 +51,7 @@ async function uploadToOss(localPath, filename, folder = 'site') {
 
   const client = getClient();
   const key = config.prefix + '/' + folder + '/' + filename;
+  console.log('[OSS] prefix=' + config.prefix + ' folder=' + folder + ' key=' + key);
   const fileContent = fs.readFileSync(localPath);
 
   await client.send(new PutObjectCommand({
@@ -63,6 +64,7 @@ async function uploadToOss(localPath, filename, folder = 'site') {
     ? config.publicUrl.replace(/\/$/, '') + '/' + key
     : config.endpoint.replace(/\/$/, '') + '/' + config.bucket + '/' + key;
 
+  console.log('[OSS] publicUrl=' + config.publicUrl + ' finalURL=' + url);
   return { url, ossPath: key, filename };
 }
 
