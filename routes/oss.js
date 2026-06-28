@@ -1,6 +1,6 @@
-# Cloudflare R2 Helper (S3-compatible object storage)
-# Requires: npm install @aws-sdk/client-s3
-# Configure via admin Settings page → OSS tab
+// Cloudflare R2 Helper (S3-compatible object storage)
+// Requires: npm install @aws-sdk/client-s3
+// Configure via admin Settings page → OSS tab
 
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getDb } = require('../db/schema');
