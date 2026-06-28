@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { initSchema, ensureAdmin, ensureSettings, getDb } = require('./db/schema');
 
 const app = express();
@@ -30,6 +31,17 @@ app.use((req, res, next) => {
 });
 
 // --- Static Files ---
+// Serve js/config.js from persistent volume (survives deploys)
+app.get('/js/config.js', (req, res) => {
+  const volPath = path.join(__dirname, 'data', 'config.js');
+  const builtinPath = path.join(__dirname, 'js', 'config.js');
+  try {
+    if (fs.existsSync(volPath)) {
+      return res.sendFile(volPath);
+    }
+  } catch(e) {}
+  res.sendFile(builtinPath);
+});
 app.use(express.static(__dirname));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
