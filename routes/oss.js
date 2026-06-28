@@ -20,7 +20,8 @@ function getR2Config() {
     accessKeyId: s.oss_access_key_id,
     accessKeySecret: s.oss_access_key_secret,
     publicUrl: s.oss_cdn_domain,    // R2 public URL, e.g. https://media.lightcirle.com
-    prefix: s.oss_prefix || s.brand_name || 'lightcirle',
+    prefix: s.brand_name || 'lightcirle',
+    urlPrefix: s.oss_prefix || '',    // R2 public access prefix, e.g. 'lightcirle-media'
   };
 }
 
@@ -61,7 +62,7 @@ async function uploadToOss(localPath, filename, folder = 'site') {
   }));
 
   const url = config.publicUrl
-    ? config.publicUrl.replace(/\/$/, '') + '/' + key
+    ? config.publicUrl.replace(/\/$/, '') + (config.urlPrefix ? '/' + config.urlPrefix : '') + '/' + key
     : config.endpoint.replace(/\/$/, '') + '/' + config.bucket + '/' + key;
 
   console.log('[OSS] publicUrl=' + config.publicUrl + ' finalURL=' + url);
