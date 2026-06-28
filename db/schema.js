@@ -163,6 +163,7 @@ function initSchema() {
     "ALTER TABLE settings ADD COLUMN oss_access_key_secret TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE settings ADD COLUMN oss_cdn_domain TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE settings ADD COLUMN favicon_path TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE settings ADD COLUMN oss_prefix TEXT NOT NULL DEFAULT ''",
     // Media columns
     "ALTER TABLE media ADD COLUMN folder TEXT NOT NULL DEFAULT 'site'",
     "ALTER TABLE media ADD COLUMN oss_path TEXT NOT NULL DEFAULT ''",

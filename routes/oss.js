@@ -20,7 +20,7 @@ function getR2Config() {
     accessKeyId: s.oss_access_key_id,
     accessKeySecret: s.oss_access_key_secret,
     publicUrl: s.oss_cdn_domain,    // R2 public URL, e.g. https://media.lightcirle.com
-    prefix: s.brand_name || 'lightcirle',
+    prefix: s.oss_prefix || s.brand_name || 'lightcirle',
   };
 }
 

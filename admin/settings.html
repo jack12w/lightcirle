@@ -98,6 +98,7 @@
             <div><label class="block text-xs font-medium text-gray-500 mb-1">AccessKey ID</label><input id="sOssKeyId" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
             <div><label class="block text-xs font-medium text-gray-500 mb-1">AccessKey Secret</label><input id="sOssKeySecret" type="password" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
             <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">CDN 域名（可选）</label><input id="sOssCdn" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="https://cdn.lightcirle.com"></div>
+            <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">R2 路径前缀（可选）</label><input id="sOssPrefix" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="留空则使用品牌名，如 lightcirle-media/lightcirle"><p class="text-xs text-gray-400 mt-1">上传文件的 R2 Key 前缀。例如填 lightcirle-media/lightcirle，则上传路径为 prefix/site/xxx.jpg</p></div>
           </div>
           <p class="text-xs text-amber-600 bg-amber-50 p-3 rounded-xl">安全提醒：建议使用 RAM 子账号（仅授权 OSS 的 PutObject + DeleteObject），Bucket 设为公共读。</p>
         </div>
@@ -161,6 +162,7 @@
     document.getElementById('sOssKeyId').value = s.oss?.accessKeyId || '';
     document.getElementById('sOssKeySecret').value = s.oss?.accessKeySecret || '';
     document.getElementById('sOssCdn').value = s.oss?.cdnDomain || '';
+    document.getElementById('sOssPrefix').value = s.oss?.prefix || '';
     toggleOssFields();
     // Load favicon
     document.getElementById('sFaviconPath').value = s.faviconPath || '';
@@ -230,6 +232,7 @@
         accessKeyId: document.getElementById('sOssKeyId').value,
         accessKeySecret: document.getElementById('sOssKeySecret').value,
         cdnDomain: document.getElementById('sOssCdn').value,
+        prefix: document.getElementById('sOssPrefix').value,
       },
       faviconPath: document.getElementById('sFaviconPath').value,
     };
