@@ -21,6 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
   <script src="js/config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -195,12 +196,7 @@
     <div class="tab-bar mb-8 flex flex-wrap gap-2" id="tabBar">
       <button class="tab-btn active" data-tab="all">All</button>
       <button class="tab-btn" data-tab="new">New</button>
-      <button class="tab-btn" data-tab="yoga-pants">Yoga Pants</button>
-      <button class="tab-btn" data-tab="sports-bras">Sports Bras</button>
-      <button class="tab-btn" data-tab="yoga-outerwear">Outerwear</button>
-      <button class="tab-btn" data-tab="hoodies">Hoodies</button>
-      <button class="tab-btn" data-tab="sets">Sets</button>
-      <button class="tab-btn" data-tab="seamless">Seamless</button>
+      <span id="productTabsAnchor"></span>
       <button class="tab-btn" data-tab="blog">Blog</button>
     </div>
 
@@ -290,20 +286,9 @@
   let activeTab = 'all';
   let query = '';
 
-  // --- Category display names ---
-  const categoryNames = {
-    'yoga-pants': 'Yoga Pants',
-    'sports-bras': 'Sports Bras',
-    'yoga-outerwear': 'Yoga Outerwear',
-    'hoodies': 'Hoodies',
-    'sets': 'Matching Sets',
-    'seamless': 'Seamless',
-  };
-  const blogCategoryNames = {
-    'fabric-knowledge': 'Fabric Knowledge',
-    'business-tips': 'Business Tips',
-    'industry-news': 'Industry News',
-  };
+  // --- Category display names (loaded from API) ---
+  let categoryNames = {};
+  let blogCategoryNames = {};
 
   function slugify(text) {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -482,19 +467,56 @@
 
     // Load data
     try {
-      const [prodResp, blogResp] = await Promise.all([
+      const [prodResp, blogResp, catResp] = await Promise.all([
         fetch('data/products.json'),
         fetch('data/blog.json'),
+        fetch(window.location.origin + '/api/categories'),
       ]);
       allProducts = await prodResp.json();
       allArticles = await blogResp.json();
+      const categories = await catResp.json();
+
+      // Build category name maps
+      categories.forEach(function(c) {
+        if (c.type === 'product') categoryNames[c.id] = c.name;
+        else if (c.type === 'article') blogCategoryNames[c.id] = c.name;
+      });
+
+      // Insert product category tabs between New and Blog
+      var anchor = document.getElementById('productTabsAnchor');
+      if (anchor) {
+        categories.filter(function(c) { return c.type === 'product'; }).forEach(function(c) {
+          var btn = document.createElement('button');
+          btn.className = 'tab-btn';
+          btn.dataset.tab = c.id;
+          btn.textContent = c.name;
+          btn.addEventListener('click', function() { switchTab(c.id); });
+          anchor.before(btn);
+        });
+      }
+
       document.getElementById('productCount').textContent = allProducts.length;
       document.getElementById('articleCount').textContent = allArticles.length;
     } catch (err) {
       console.error('Failed to load data:', err);
+      // Fallback: hardcoded category names if API unavailable
+      categoryNames = { 'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Matching Sets','seamless':'Seamless' };
+      blogCategoryNames = { 'fabric-knowledge':'Fabric Knowledge','business-tips':'Business Tips','industry-news':'Industry News' };
+      // Insert fallback product tabs
+      var anchor = document.getElementById('productTabsAnchor');
+      if (anchor) {
+        Object.keys(categoryNames).forEach(function(id) {
+          var btn = document.createElement('button');
+          btn.className = 'tab-btn';
+          btn.dataset.tab = id;
+          btn.textContent = categoryNames[id];
+          btn.addEventListener('click', function() { switchTab(id); });
+          anchor.before(btn);
+        });
+      }
     }
 
-    // Tab clicks
+    // Tab clicks (All / New / Blog are static)
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });

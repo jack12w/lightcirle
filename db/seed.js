@@ -63,15 +63,15 @@ if (!hasData('articles')) {
 
 // Seed categories (INSERT OR IGNORE = safe to run even if data exists)
 const categories = [
-  { id: 'yoga-pants', name: '瑜伽裤', type: 'product' },
-  { id: 'sports-bras', name: '运动文胸', type: 'product' },
-  { id: 'yoga-outerwear', name: '瑜伽外套', type: 'product' },
-  { id: 'hoodies', name: '卫衣', type: 'product' },
-  { id: 'sets', name: '套装', type: 'product' },
-  { id: 'seamless', name: '无缝专区', type: 'product' },
-  { id: 'fabric-knowledge', name: '面料知识', type: 'article' },
-  { id: 'business-tips', name: '商业建议', type: 'article' },
-  { id: 'industry-news', name: '行业动态', type: 'article' },
+  { id: 'yoga-pants', name: 'Yoga Pants', type: 'product' },
+  { id: 'sports-bras', name: 'Sports Bras', type: 'product' },
+  { id: 'yoga-outerwear', name: 'Yoga Outerwear', type: 'product' },
+  { id: 'hoodies', name: 'Hoodies', type: 'product' },
+  { id: 'sets', name: 'Matching Sets', type: 'product' },
+  { id: 'seamless', name: 'Seamless', type: 'product' },
+  { id: 'fabric-knowledge', name: 'Fabric Knowledge', type: 'article' },
+  { id: 'business-tips', name: 'Business Tips', type: 'article' },
+  { id: 'industry-news', name: 'Industry News', type: 'article' },
 ];
 
 const insertCat = db.prepare('INSERT OR IGNORE INTO categories (id, name, type, sort_order) VALUES (?, ?, ?, ?)');
