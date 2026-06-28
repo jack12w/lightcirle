@@ -162,7 +162,7 @@
     if (!input.files || !input.files[0]) return;
     const formData = new FormData();
     formData.append('file', input.files[0]);
-    formData.append('folder', 'categories');
+    formData.append('folder', 'site');
     try {
       const res = await fetch(API + '/upload', {
         method: 'POST',
