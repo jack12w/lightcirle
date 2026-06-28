@@ -322,31 +322,32 @@
     <!-- Factory Gallery -->
     <div class="mb-16 animate-on-scroll">
       <h3 class="text-xl lg:text-2xl font-serif font-bold mb-8 text-center">Inside Our Factory</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" id="factoryGallery">
         <div class="gallery-item">
-          <img src="assets/images/factory/1.jpg" alt="Advanced sewing production line at lightcirle factory" loading="lazy" class="w-full h-full object-cover">
+          <img src="assets/images/factory/1.jpg" alt="Advanced sewing production line" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
           <img src="assets/images/factory/2.jpg" alt="Quality inspection station" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
-          <img src="assets/images/factory/3.jpg" alt="Fabric warehouse and material storage" loading="lazy" class="w-full h-full object-cover">
+          <img src="assets/images/factory/3.jpg" alt="Fabric warehouse" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
-          <img src="assets/images/factory/4.jpg" alt="Pattern making and sample development" loading="lazy" class="w-full h-full object-cover">
+          <img src="assets/images/factory/4.jpg" alt="Pattern making" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
-          <img src="assets/images/factory/5.jpg" alt="Professional cutting equipment" loading="lazy" class="w-full h-full object-cover">
+          <img src="assets/images/factory/5.jpg" alt="Cutting equipment" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
-          <img src="assets/images/factory/6.jpg" alt="Finished product packaging area" loading="lazy" class="w-full h-full object-cover">
+          <img src="assets/images/factory/6.jpg" alt="Packaging area" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
-          <img src="assets/images/factory/7.jpg" alt="Modern stitching machinery" loading="lazy" class="w-full h-full object-cover">
+          <img src="assets/images/factory/7.jpg" alt="Stitching machinery" loading="lazy" class="w-full h-full object-cover">
         </div>
         <div class="gallery-item">
           <img src="assets/images/factory/8.jpg" alt="Fabric quality testing" loading="lazy" class="w-full h-full object-cover">
         </div>
+      </div>
       </div>
     </div>
 
@@ -655,6 +656,16 @@ document.addEventListener('DOMContentLoaded', function() {
         eqListEl.innerHTML = data.equipmentList.map(function(item) {
           return '<div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>' + escapeHtml(item) + '</span></div>';
         }).join('');
+      }
+
+      // Update factory gallery images from API
+      if (data.gallery && data.gallery.length > 0) {
+        var galleryGrid = document.getElementById('factoryGallery');
+        if (galleryGrid) {
+          galleryGrid.innerHTML = data.gallery.map(function(url) {
+            return '<div class="gallery-item"><img src="' + url + '" alt="Factory" loading="lazy" class="w-full h-full object-cover"></div>';
+          }).join('');
+        }
       }
     } catch(e) { /* silently skip if API fails */ }
   };
