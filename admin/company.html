@@ -331,6 +331,11 @@
     gallery.push(url);
     renderGallery();
     closeMediaPicker();
+    saveGalleryOnly();
+  }
+
+  async function saveGalleryOnly() {
+    await saveCompany();
   }
 
   async function uploadGalleryImages(input) {
@@ -352,6 +357,7 @@
     }
     showToast('上传完成: ' + (files.length - errors) + ' 成功' + (errors ? ', ' + errors + ' 失败' : ''));
     input.value = '';
+    saveGalleryOnly();
   }
 
   // --- Load / Save ---
