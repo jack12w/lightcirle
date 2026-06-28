@@ -49,7 +49,6 @@ router.get('/', (req, res) => {
       accessKeyId: s.oss_access_key_id || '',
       accessKeySecret: s.oss_access_key_secret || '',
       cdnDomain: s.oss_cdn_domain || '',
-      prefix: s.oss_prefix || '',
     },
     faviconPath: s.favicon_path || '',
     dbSize: dbSize,
@@ -67,7 +66,7 @@ router.put('/', authenticate, (req, res) => {
       site_title=?, site_description=?, moq=?, location=?, year_established=?, countries_shipped=?,
       colors_primary=?, colors_primary_light=?, colors_primary_dark=?,
       colors_accent=?, colors_accent_light=?, colors_whatsapp=?,
-      oss_enabled=?, oss_region=?, oss_bucket=?, oss_access_key_id=?, oss_access_key_secret=?, oss_cdn_domain=?, oss_prefix=?,
+      oss_enabled=?, oss_region=?, oss_bucket=?, oss_access_key_id=?, oss_access_key_secret=?, oss_cdn_domain=?,
       favicon_path=?,
       updated_at=datetime('now')
     WHERE id=1
@@ -79,7 +78,7 @@ router.put('/', authenticate, (req, res) => {
     data.colors?.primary || '#2D5A3D', data.colors?.primaryLight || '#3E7B54', data.colors?.primaryDark || '#1F3F2A',
     data.colors?.accent || '#C4926E', data.colors?.accentLight || '#D4A88C', data.colors?.whatsapp || '#25D366',
     data.oss?.enabled ? 1 : 0, data.oss?.region || '', data.oss?.bucket || '',
-    data.oss?.accessKeyId || '', data.oss?.accessKeySecret || '', data.oss?.cdnDomain || '', data.oss?.prefix || '',
+    data.oss?.accessKeyId || '', data.oss?.accessKeySecret || '', data.oss?.cdnDomain || '',
     data.faviconPath || ''
   );
 
