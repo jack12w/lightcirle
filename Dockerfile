@@ -13,9 +13,6 @@ RUN npm install --production
 # Copy application
 COPY . .
 
-# Create required directories
-RUN mkdir -p uploads data
-
 # Expose port
 EXPOSE 3000
 
