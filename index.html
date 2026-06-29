@@ -446,7 +446,7 @@
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3" id="eqImageGrid">
           <img src="assets/images/factory/9.jpg" alt="Professional sewing machinery" loading="lazy" class="rounded-xl w-full h-40 object-cover">
           <img src="assets/images/factory/11.jpg" alt="Fabric inspection equipment" loading="lazy" class="rounded-xl w-full h-40 object-cover">
           <img src="assets/images/factory/12.jpg" alt="Production line overview" loading="lazy" class="rounded-xl w-full h-40 object-cover">
@@ -669,6 +669,16 @@ document.addEventListener('DOMContentLoaded', function() {
           // Empty gallery — user hasn't uploaded yet, clear hardcoded images
           galleryGrid.innerHTML = '';
         }
+      }
+      // Update equipment images from API
+      var eqImgGrid = document.getElementById('eqImageGrid');
+      if (eqImgGrid) {
+        if (data.equipmentImages && data.equipmentImages.length > 0) {
+          eqImgGrid.innerHTML = data.equipmentImages.map(function(url) {
+            return '<img src="' + url + '" alt="Equipment" loading="lazy" class="rounded-xl w-full h-40 object-cover">';
+          }).join('');
+        }
+        // else: keep hardcoded fallback images
       }
     } catch(e) { /* silently skip if API fails, keep hardcoded fallback */ }
   };

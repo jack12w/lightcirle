@@ -42,6 +42,7 @@ router.get('/', (req, res) => {
       equipmentTitle: info.equipment_title || 'Advanced Equipment for Premium Results',
       equipmentDesc: info.equipment_desc || '',
       equipmentList: JSON.parse(info.equipment_list || '[]'),
+      equipmentImages: JSON.parse(info.equipment_images || '[]'),
     });
   } catch(e) {
     res.status(500).json({ error: e.message });
@@ -57,12 +58,13 @@ router.put('/', (req, res) => {
     const gallery = JSON.stringify(data.gallery || []);
     const whyChooseUs = JSON.stringify(data.whyChooseUs || defaultWhyChooseUs);
     const equipmentList = JSON.stringify(data.equipmentList || defaultEquipmentList);
+    const equipmentImages = JSON.stringify(data.equipmentImages || []);
     d.prepare(`
       UPDATE company_info SET
         about_title=?, about_text=?,
         facility_size=?, workers=?, monthly_capacity=?, countries_shipped=?,
         capabilities=?, gallery=?,
-        why_choose_us=?, equipment_title=?, equipment_desc=?, equipment_list=?,
+        why_choose_us=?, equipment_title=?, equipment_desc=?, equipment_list=?, equipment_images=?,
         updated_at=datetime('now')
       WHERE id=1
     `).run(
@@ -70,7 +72,7 @@ router.put('/', (req, res) => {
       data.stats?.facilitySize || '3,000', data.stats?.workers || '120+',
       data.stats?.monthlyCapacity || '300K', data.stats?.countriesShipped || '30+',
       capabilities, gallery,
-      whyChooseUs, data.equipmentTitle || '', data.equipmentDesc || '', equipmentList
+      whyChooseUs, data.equipmentTitle || '', data.equipmentDesc || '', equipmentList, equipmentImages
     );
     res.json({ success: true });
   } catch(e) {
