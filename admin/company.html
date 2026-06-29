@@ -4,6 +4,7 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>公司信息 — lightcirle 管理后台</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/media-picker.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     body{font-family:'Inter',system-ui,sans-serif}
@@ -187,24 +188,12 @@
       <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
     </nav>
   </main>
-
-  <!-- Media Picker Modal -->
-  <div id="mediaPickerModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)closeMediaPicker()">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6" onclick="event.stopPropagation()">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-serif font-bold">从媒体库选择</h2>
-        <button onclick="closeMediaPicker()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
-      </div>
-      <div id="mediaPickerGrid" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 max-h-96 overflow-y-auto">
-        <p class="text-gray-400 text-sm col-span-full">加载中...</p>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
   const API = '/api';
   let token = localStorage.getItem('token');
+  window.__API_BASE = API; window.__AUTH_TOKEN = token;
   let capabilities = [];
   let gallery = [];
   let equipmentImages = [];
@@ -312,43 +301,12 @@
   }
 
   function openMediaPicker() {
-    const modal = document.getElementById('mediaPickerModal');
-    modal.classList.remove('hidden');
-    loadMediaList();
-  }
-
-  function closeMediaPicker() {
-    document.getElementById('mediaPickerModal').classList.add('hidden');
-  }
-
-  async function loadMediaList() {
-    const grid = document.getElementById('mediaPickerGrid');
-    grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full">加载中...</p>';
-    try {
-      const res = await fetch(API + '/media?limit=200');
-      const files = await res.json();
-      if (!Array.isArray(files) || !files.length) {
-        grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full">媒体库为空</p>';
-        return;
-      }
-      grid.innerHTML = files.map(f => {
-        const url = f.filePath || '';
-        return '<div class="relative rounded-lg overflow-hidden border border-gray-100 hover:border-[#2D5A3D] cursor-pointer transition-colors" onclick="pickMediaItem(\'' + url.replace(/'/g, "\\'") + '\')">' +
-          '<img src="' + url + '" class="w-full h-24 object-cover">' +
-          '<div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">' +
-          '<span class="opacity-0 hover:opacity-100 bg-[#2D5A3D] text-white text-xs px-2 py-1 rounded">选择</span></div>' +
-          '</div>';
-      }).join('');
-    } catch(e) {
-      grid.innerHTML = '<p class="text-red-400 text-sm col-span-full">加载失败</p>';
-    }
-  }
-
-  function pickMediaItem(url) {
-    gallery.push(url);
-    renderGallery();
-    closeMediaPicker();
-    saveGalleryOnly();
+    window.__mediaPickCallback = function(url) {
+      gallery.push(url);
+      renderGallery();
+      saveGalleryOnly();
+    };
+    openSharedMediaPicker();
   }
 
   async function saveGalleryOnly() {
@@ -399,39 +357,12 @@
   }
 
   function openEqMediaPicker() {
-    var modal = document.getElementById('mediaPickerModal');
-    modal.classList.remove('hidden');
-    loadMediaListForEq();
-  }
-
-  async function loadMediaListForEq() {
-    var grid = document.getElementById('mediaPickerGrid');
-    grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full">加载中...</p>';
-    try {
-      var res = await fetch(API + '/media?limit=200');
-      var files = await res.json();
-      if (!Array.isArray(files) || !files.length) {
-        grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full">媒体库为空</p>';
-        return;
-      }
-      grid.innerHTML = files.map(function(f) {
-        var url = f.filePath || '';
-        return '<div class="relative rounded-lg overflow-hidden border border-gray-100 hover:border-[#2D5A3D] cursor-pointer transition-colors" onclick="pickEqMediaItem(\'' + url.replace(/'/g, "\\'") + '\')">' +
-          '<img src="' + url + '" class="w-full h-24 object-cover">' +
-          '<div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">' +
-          '<span class="opacity-0 hover:opacity-100 bg-[#2D5A3D] text-white text-xs px-2 py-1 rounded">选择</span></div>' +
-          '</div>';
-      }).join('');
-    } catch(e) {
-      grid.innerHTML = '<p class="text-red-400 text-sm col-span-full">加载失败</p>';
-    }
-  }
-
-  function pickEqMediaItem(url) {
-    equipmentImages.push(url);
-    renderEqImages();
-    closeMediaPicker();
-    saveCompany();
+    window.__mediaPickCallback = function(url) {
+      equipmentImages.push(url);
+      renderEqImages();
+      saveCompany();
+    };
+    openSharedMediaPicker();
   }
 
   // --- Gallery Upload ---

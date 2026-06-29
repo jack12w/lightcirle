@@ -6,6 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/media-picker.js"></script>
   <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
 </head>
 <body class="bg-[#FAFAF8]">
@@ -69,6 +70,7 @@
         <div class="flex items-center gap-4">
           <img id="faviconPreview" class="w-10 h-10 rounded-lg border border-gray-100 hidden object-cover">
           <button type="button" onclick="document.getElementById('faviconInput').click()" class="px-4 py-2 border border-gray-200 rounded-xl text-sm hover:border-[#2D5A3D] transition-colors"><i class="fas fa-upload mr-1"></i> 上传图标</button>
+          <button type="button" onclick="openFaviconMediaPicker()" class="px-4 py-2 border border-gray-200 rounded-xl text-sm hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
           <button type="button" onclick="clearFavicon()" class="text-xs text-red-400 hover:text-red-600">清除</button>
         </div>
         <input type="hidden" id="sFaviconPath" value="">
@@ -129,6 +131,7 @@
 <script>
   const API = '/api'; let token = localStorage.getItem('token');
   if (!token) window.location.href = '/admin/login.html';
+  window.__API_BASE = API; window.__AUTH_TOKEN = token;
   document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
 
   async function api(path, opts = {}) {
@@ -179,6 +182,16 @@
   document.getElementById('sOssEnabled').addEventListener('change', toggleOssFields);
 
   // --- Favicon upload ---
+  function openFaviconMediaPicker() {
+    window.__mediaPickCallback = function(url) {
+      document.getElementById('sFaviconPath').value = url;
+      var preview = document.getElementById('faviconPreview');
+      preview.src = url;
+      preview.classList.remove('hidden');
+    };
+    openSharedMediaPicker();
+  }
+
   function uploadFavicon(input) {
     var file = input.files[0];
     if (!file) return;

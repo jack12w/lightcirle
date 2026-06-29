@@ -6,6 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/media-picker.js"></script>
   <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}.stat-card{background:white;border:1px solid #E5E7EB;border-radius:16px;padding:24px}</style>
 </head>
 <body class="bg-[#FAFAF8]">
@@ -77,6 +78,7 @@
             <div class="flex flex-wrap gap-2 mb-2" id="imagePreviewList"></div>
             <div class="flex gap-2">
               <button type="button" onclick="document.getElementById('imageUploadInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传图片</button>
+              <button type="button" onclick="openProductMediaPicker()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:bg-gray-50"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
               <input type="text" id="edImageUrl" class="flex-1 px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴图片URL后点击添加">
               <button type="button" onclick="addImageUrl()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">添加</button>
             </div>
@@ -107,6 +109,7 @@
 <script>
   const API = '/api'; let token = localStorage.getItem('token');
   if (!token) window.location.href = '/admin/login.html';
+  window.__API_BASE = API; window.__AUTH_TOKEN = token;
   document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
 
   async function api(path, opts = {}) {
@@ -187,6 +190,14 @@
   function removeImage(idx) {
     productImages.splice(idx, 1);
     renderImages();
+  }
+
+  function openProductMediaPicker() {
+    window.__mediaPickCallback = function(url) {
+      productImages.push(url);
+      renderImages();
+    };
+    openSharedMediaPicker();
   }
 
   async function uploadProductImage(input) {
