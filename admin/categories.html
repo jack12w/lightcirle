@@ -173,9 +173,26 @@
       const data = await res.json();
       document.getElementById('edImage').value = data.url;
       updateEdImagePreview(data.url);
+      // Auto-save if editing an existing category
+      if (editingId) {
+        await saveCategorySilent();
+      }
     } catch(e) {
       alert('上传失败: ' + e.message);
     }
+  }
+
+  async function saveCategorySilent() {
+    var data = {
+      id: document.getElementById('edId').value.trim(),
+      name: document.getElementById('edName').value.trim(),
+      type: document.getElementById('edType').value,
+      image: document.getElementById('edImage').value,
+    };
+    if (!data.id || !data.name) return;
+    try {
+      await api('/categories/' + editingId, { method: 'PUT', body: JSON.stringify(data) });
+    } catch(e) { console.error('Auto-save failed:', e); }
   }
 
   function closeEditor() {

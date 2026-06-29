@@ -658,16 +658,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
       }
 
-      // Update factory gallery images from API
-      if (data.gallery && data.gallery.length > 0) {
-        var galleryGrid = document.getElementById('factoryGallery');
-        if (galleryGrid) {
+      // Update factory gallery images from API (always replace, never show hardcoded)
+      var galleryGrid = document.getElementById('factoryGallery');
+      if (galleryGrid) {
+        if (data.gallery && data.gallery.length > 0) {
           galleryGrid.innerHTML = data.gallery.map(function(url) {
             return '<div class="gallery-item"><img src="' + url + '" alt="Factory" loading="lazy" class="w-full h-full object-cover"></div>';
           }).join('');
+        } else {
+          // Empty gallery — user hasn't uploaded yet, clear hardcoded images
+          galleryGrid.innerHTML = '';
         }
       }
-    } catch(e) { /* silently skip if API fails */ }
+    } catch(e) { /* silently skip if API fails, keep hardcoded fallback */ }
   };
   xhr.onerror = function() { /* silently skip */ };
   xhr.send();
@@ -688,25 +691,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     var catResp = await fetch(window.location.origin + '/api/categories?type=product');
     var categories = await catResp.json();
 
-    // Fetch products for fallback images
-    var prodResp = await fetch('data/products.json');
-    var products = await prodResp.json();
-
     if (!categories.length) return;
 
     grid.innerHTML = categories.map(function(cat) {
-      // Determine image: category image first, fallback to first product in category
+      // Only use category image from backend — no Unsplash fallback
       var imgSrc = cat.image || '';
-      if (!imgSrc && products) {
-        var firstProduct = products.find(function(p) { return p.category === cat.id; });
-        if (firstProduct && firstProduct.images && firstProduct.images.length) {
-          imgSrc = firstProduct.images[0];
-        }
-      }
+      var imgHtml = imgSrc
+        ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.name) + '" loading="lazy">'
+        : '<div class="flex items-center justify-center h-full text-gray-300 dark:text-gray-600"><i class="fas fa-image text-4xl"></i></div>';
       return '<a href="search.html?tab=' + cat.id + '" class="product-card home-cat-card animate-on-scroll block">' +
-        '<div class="product-image-wrap">' +
-          '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.name) + '" loading="lazy">' +
-        '</div>' +
+        '<div class="product-image-wrap">' + imgHtml + '</div>' +
         '<div class="p-3">' +
           '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.name) + '</h3>' +
           '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p>' +
@@ -725,15 +719,9 @@ document.addEventListener('DOMContentLoaded', async function() {
       {id:'seamless',name:'Seamless'}
     ];
     grid.innerHTML = fallbackCats.map(function(cat) {
-      var imgSrc = '';
-      // Try to get image from products.json (already loaded)
-      if (typeof products !== 'undefined' && products) {
-        var fp = products.find(function(p) { return p.category === cat.id; });
-        if (fp && fp.images && fp.images.length) imgSrc = fp.images[0];
-      }
       return '<a href="search.html?tab=' + cat.id + '" class="product-card home-cat-card animate-on-scroll block">' +
         '<div class="product-image-wrap">' +
-          '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.name) + '" loading="lazy">' +
+          '<div class="flex items-center justify-center h-full text-gray-300 dark:text-gray-600"><i class="fas fa-image text-4xl"></i></div>' +
         '</div>' +
         '<div class="p-3">' +
           '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.name) + '</h3>' +
