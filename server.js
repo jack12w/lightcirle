@@ -63,6 +63,30 @@ app.get('/data/blog.json', (req, res) => {
   res.sendFile(path.join(__dirname, 'data', 'blog.json'));
 });
 
+// --- 301 Redirect: legacy ?id= format → SEO slug format ---
+// So Google-indexed / shared old links auto-jump to the new pretty URL.
+function slugify(text) {
+  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+app.get('/product-detail.html', (req, res) => {
+  const id = req.query.id;
+  if (!id) return res.sendFile(path.join(__dirname, 'product-detail.html'));
+  try {
+    const product = getDb().prepare('SELECT name FROM products WHERE id = ?').get(id);
+    if (product) return res.redirect(301, `/product-detail/${slugify(product.name)}_${id}.html`);
+  } catch(e) {}
+  res.sendFile(path.join(__dirname, 'product-detail.html'));
+});
+app.get('/blog-detail.html', (req, res) => {
+  const id = req.query.id;
+  if (!id) return res.sendFile(path.join(__dirname, 'blog-detail.html'));
+  try {
+    const article = getDb().prepare('SELECT title FROM articles WHERE id = ?').get(id);
+    if (article) return res.redirect(301, `/blog-detail/${slugify(article.title)}_${id}.html`);
+  } catch(e) {}
+  res.sendFile(path.join(__dirname, 'blog-detail.html'));
+});
+
 // --- SEO-friendly Slug URLs (Alibaba-style, must be before static to win) ---
 // Product:  /product-detail/{slug}_{productId}.html
 // Article:  /blog-detail/{slug}_{articleId}.html

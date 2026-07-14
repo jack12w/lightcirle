@@ -140,11 +140,15 @@
     renderTable(products);
   }
 
+  function slugify(text) {
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
   function renderTable(data) {
     const catNames = {'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Sets','seamless':'Seamless'};
     document.getElementById('productTable').innerHTML = data.map(p => `
       <tr class="border-b border-gray-50 hover:bg-gray-50/50">
-        <td class="p-4 font-medium"><a href="/product-detail.html?id=${p.id}" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(p.name)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
+        <td class="p-4 font-medium"><a href="/product-detail/${slugify(p.name)}_${p.id}.html" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(p.name)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
         <td class="p-4 text-gray-500"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${catNames[p.category]||p.category}</span></td>
         <td class="p-4 text-gray-500">${p.moq}pcs</td>
         <td class="p-4 text-gray-500 text-xs max-w-[140px] truncate">${escape(p.fabric)}</td>
