@@ -164,8 +164,16 @@
 <script src="/js/visitor-tracker.js"></script>
 <script>
 (function() {
-  var articleId = new URLSearchParams(window.location.search).get('id');
-  if (!articleId) { window.location.href = 'search.html?tab=blog'; return; }
+  // New format: /blog-detail/{slug}_{articleId}.html (Alibaba-style)
+  // Legacy format: /blog-detail.html?id={articleId} (still supported for old links)
+  var articleId = null;
+  var pathMatch = window.location.pathname.match(/\/blog-detail\/(.+?)_(.+)\.html$/);
+  if (pathMatch) {
+    articleId = pathMatch[2]; // real ID is after the last underscore
+  } else {
+    articleId = new URLSearchParams(window.location.search).get('id');
+  }
+  if (!articleId) { window.location.href = '/search.html?tab=blog'; return; }
 
   var loadingEl = document.getElementById('loadingState');
   var contentEl = document.getElementById('articleContent');

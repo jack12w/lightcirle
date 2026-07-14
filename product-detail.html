@@ -166,7 +166,7 @@
   } else {
     productId = new URLSearchParams(window.location.search).get('id');
   }
-  if (!productId) { window.location.href = 'search.html'; return; }
+  if (!productId) { window.location.href = '/search.html'; return; }
 
   var loadingEl = document.getElementById('loadingState');
   var contentEl = document.getElementById('productContent');
@@ -243,9 +243,17 @@
     // Images / Video (Alibaba-style: video replaces first main image when present)
     var hasVideo = !!(product.video && product.video.trim());
     var mainImgSrc = (product.images && product.images.length) ? product.images[0] : '';
-    // Alibaba-style layout: vertical thumbnail column on left (desktop) / below (mobile) + square main media on right
-    html += '<div class="flex flex-col-reverse lg:flex-row gap-4">';
-    // Thumbnails column
+    // Alibaba-style layout: thumbnails left / main square right (desktop); main square top / thumbnails bottom (mobile)
+    html += '<div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4">';
+    // Main media (square, first in DOM = top on mobile)
+    html += '<div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800" id="mainMedia">';
+    if (hasVideo) {
+      html += renderVideoBlock(product.video);
+    } else if (mainImgSrc) {
+      html += '<img src="' + mainImgSrc + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
+    }
+    html += '</div>';
+    // Thumbnails column (second in DOM = below on mobile, auto width on desktop)
     html += '<div class="flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">';
     // Thumbnail 0: video (if any)
     if (hasVideo) {
@@ -257,16 +265,7 @@
       var border = (!hasVideo && i === 0) ? 'border-primary' : 'border-transparent';
       html += '<button onclick="renderMainMedia(' + i + ')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 ' + border + ' hover:border-primary/50 transition-colors"><img src="' + product.images[i] + '" alt="' + product.name + ' view ' + (i+1) + '" class="w-full h-full object-cover"></button>';
     }
-    html += '</div>';
-    // Main media (square, Alibaba-style)
-    html += '<div class="flex-1"><div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800" id="mainMedia">';
-    if (hasVideo) {
-      html += renderVideoBlock(product.video);
-    } else if (mainImgSrc) {
-      html += '<img src="' + mainImgSrc + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
-    }
-    html += '</div></div></div>';
-    // Info
+    html += '</div></div>';
     html += '<div>';
     html += '<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (categoryNames[product.category] || product.category) + '</span>';
     html += '<h1 class="text-3xl lg:text-4xl font-serif font-bold mb-4">' + product.name + '</h1>';
