@@ -102,9 +102,39 @@ function sendWithCanonical(res, file, reqPath) {
   });
 }
 app.get('/product-detail/:path', (req, res) => {
+  // Validate slug: if title was changed, 301 old-slug URL → new-slug URL
+  const match = req.params.path.match(/^(.*)_([^.]+)\.html$/);
+  if (match) {
+    const urlSlug = match[1];
+    const id = match[2];
+    try {
+      const product = getDb().prepare('SELECT name FROM products WHERE id = ?').get(id);
+      if (product) {
+        const correctSlug = slugify(product.name);
+        if (urlSlug !== correctSlug) {
+          return res.redirect(301, `/product-detail/${correctSlug}_${id}.html`);
+        }
+      }
+    } catch(e) {}
+  }
   sendWithCanonical(res, 'product-detail.html', req.path);
 });
 app.get('/blog-detail/:path', (req, res) => {
+  // Validate slug: if title was changed, 301 old-slug URL → new-slug URL
+  const match = req.params.path.match(/^(.*)_([^.]+)\.html$/);
+  if (match) {
+    const urlSlug = match[1];
+    const id = match[2];
+    try {
+      const article = getDb().prepare('SELECT title FROM articles WHERE id = ?').get(id);
+      if (article) {
+        const correctSlug = slugify(article.title);
+        if (urlSlug !== correctSlug) {
+          return res.redirect(301, `/blog-detail/${correctSlug}_${id}.html`);
+        }
+      }
+    } catch(e) {}
+  }
   sendWithCanonical(res, 'blog-detail.html', req.path);
 });
 
