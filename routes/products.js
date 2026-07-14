@@ -2,6 +2,7 @@
 const express = require('express');
 const { getDb } = require('../db/schema');
 const { authenticate } = require('./middleware');
+const { exportProducts } = require('../db/export');
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ router.get('/', (req, res) => {
     description: p.description,
     customization: JSON.parse(p.customization || '[]'),
     images: JSON.parse(p.images || '[]'),
+    video: p.video || '',
     leadTime: p.lead_time,
     certifications: JSON.parse(p.certifications || '[]'),
     createdAt: p.created_at,
@@ -51,6 +53,7 @@ router.get('/:id', (req, res) => {
     description: p.description,
     customization: JSON.parse(p.customization || '[]'),
     images: JSON.parse(p.images || '[]'),
+    video: p.video || '',
     leadTime: p.lead_time,
     certifications: JSON.parse(p.certifications || '[]'),
   });
@@ -68,17 +71,18 @@ router.post('/', authenticate, (req, res) => {
   const id = data.id || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   db.prepare(`
-    INSERT INTO products (id, name, category, moq, fabric, features, weight, sizes, colors, description, customization, images, lead_time, certifications)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO products (id, name, category, moq, fabric, features, weight, sizes, colors, description, customization, images, video, lead_time, certifications)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id, data.name, data.category || 'yoga-pants', data.moq || 50, data.fabric || '',
     JSON.stringify(data.features || []), data.weight || '',
     JSON.stringify(data.sizes || []), JSON.stringify(data.colors || []),
     data.description || '', JSON.stringify(data.customization || []),
-    JSON.stringify(data.images || []), data.leadTime || '15-25 days',
+    JSON.stringify(data.images || []), data.video || '', data.leadTime || '15-25 days',
     JSON.stringify(data.certifications || [])
   );
 
+  exportProducts();
   res.status(201).json({ id, message: 'Product created' });
 });
 
@@ -90,18 +94,20 @@ router.put('/:id', authenticate, (req, res) => {
   if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Product not found' });
 
   db.prepare(`
-    UPDATE products SET name=?, category=?, moq=?, fabric=?, features=?, weight=?, sizes=?, colors=?, description=?, customization=?, images=?, lead_time=?, certifications=?, updated_at=datetime('now')
+    UPDATE products SET name=?, category=?, moq=?, fabric=?, features=?, weight=?, sizes=?, colors=?, description=?, customization=?, images=?, video=?, lead_time=?, certifications=?, updated_at=datetime('now')
     WHERE id=?
   `).run(
     data.name, data.category, data.moq, data.fabric,
     JSON.stringify(data.features || []), data.weight,
     JSON.stringify(data.sizes || []), JSON.stringify(data.colors || []),
     data.description, JSON.stringify(data.customization || []),
-    JSON.stringify(data.images || []), data.leadTime || '15-25 days',
+    JSON.stringify(data.images || []), data.video || '',
+    data.leadTime || '15-25 days',
     JSON.stringify(data.certifications || []),
     req.params.id
   );
 
+  exportProducts();
   res.json({ message: 'Product updated' });
 });
 
@@ -112,6 +118,7 @@ router.delete('/:id', authenticate, (req, res) => {
   if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Product not found' });
 
   db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
+  exportProducts();
   res.json({ message: 'Product deleted' });
 });
 

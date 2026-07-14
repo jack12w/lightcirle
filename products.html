@@ -14,27 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { DEFAULT: '#2D5A3D', light: '#3E7B54', dark: '#1F3F2A' },
-            accent: { DEFAULT: '#C4926E', light: '#D4A88C' },
-            cream: '#FAFAF8',
-            darkbg: '#1A1D1C',
-            darksurface: '#252928',
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
@@ -199,6 +179,13 @@
 <script src="js/main.js"></script>
 <script src="js/search.js"></script>
 <script>
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  function productUrl(product) {
+    return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = 'all';
     let searchEngine;
@@ -211,7 +198,7 @@
     // Render product card
     function renderProductCard(product) {
       return `
-        <a href="product-detail.html?id=${product.id}" class="product-card block group">
+        <a href="${productUrl(product)}" class="product-card block group">
           <div class="product-image-wrap">
             <img src="${product.images[0]}" alt="${product.name}" loading="lazy">
           </div>
@@ -237,7 +224,7 @@
 
     // Initialize search
     searchEngine = new SearchEngine({
-      dataUrl: 'data/products.json',
+      dataUrl: '/data/products.json',
       searchInputId: 'searchInput',
       resultsContainerId: 'searchResults',
       resultCountId: 'resultCount',

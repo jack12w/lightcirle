@@ -15,29 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
   <script src="js/config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    var twc = window.__TW_COLORS;
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { DEFAULT: twc.primary, light: twc['primary-light'], dark: twc['primary-dark'] },
-            accent: { DEFAULT: twc.accent, light: twc['accent-light'] },
-            whatsapp: twc.whatsapp,
-            cream: twc.cream,
-            darkbg: twc.darkbg,
-            darksurface: twc.darksurface,
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
@@ -174,15 +152,21 @@
 <script src="js/main.js"></script>
 <script>
 // Load recommendations from products.json
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function productUrl(product) {
+  return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';
+}
 (function() {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'data/products.json', true);
+  xhr.open('GET', '/data/products.json', true);
   xhr.onload = function() {
     try {
       var products = JSON.parse(xhr.responseText);
       var shuffled = products.sort(function() { return 0.5 - Math.random(); }).slice(0, 4);
       var html = shuffled.map(function(p) {
-        return '<a href="product-detail.html?id=' + p.id + '" class="product-card block group">' +
+        return '<a href="' + productUrl(p) + '" class="product-card block group">' +
           '<div class="product-image-wrap h-32">' +
           '<img src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy" class="w-full h-full object-cover">' +
           '</div>' +

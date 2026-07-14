@@ -21,29 +21,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
   <script src="js/config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    var twc = window.__TW_COLORS;
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { DEFAULT: twc.primary, light: twc['primary-light'], dark: twc['primary-dark'] },
-            accent: { DEFAULT: twc.accent, light: twc['accent-light'] },
-            whatsapp: twc.whatsapp,
-            cream: twc.cream,
-            darkbg: twc.darkbg,
-            darksurface: twc.darksurface,
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
@@ -220,7 +198,37 @@
   }
 
   function articleUrl(article) {
-    return '/' + slugify(article.title) + '.html?id=' + article.id;
+    return '/blog-detail/' + slugify(article.title) + '_' + article.id + '.html';
+  }
+
+  function productUrl(product) {
+    return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';
+  }
+
+  // ===== Video helpers =====
+  function isVideoEmbed(url) {
+    return /youtube\.com|youtu\.be|bilibili\.com/i.test(url || '');
+  }
+  function videoEmbedSrc(url) {
+    if (/youtu\.be\//i.test(url)) {
+      var id = url.split('youtu.be/')[1].split(/[?#]/)[0];
+      return 'https://www.youtube.com/embed/' + id;
+    }
+    if (/youtube\.com\/watch/i.test(url)) {
+      var m = url.match(/[?&]v=([^&]+)/);
+      if (m) return 'https://www.youtube.com/embed/' + m[1];
+    }
+    if (/bilibili\.com\/video\/BV/i.test(url)) {
+      var bv = url.match(/BV[a-zA-Z0-9]+/);
+      if (bv) return 'https://player.bilibili.com/player.html?bvid=' + bv[0] + '&autoplay=0';
+    }
+    return url;
+  }
+  function renderArticleVideo(url) {
+    if (isVideoEmbed(url)) {
+      return '<div class="aspect-video rounded-2xl overflow-hidden mb-10 bg-black"><iframe src="' + videoEmbedSrc(url) + '" class="w-full h-full" allowfullscreen allow="autoplay; encrypted-media"></iframe></div>';
+    }
+    return '<div class="aspect-video rounded-2xl overflow-hidden mb-10 bg-gray-100 dark:bg-gray-800"><video src="' + url + '" controls class="w-full h-full object-cover"></video></div>';
   }
 
   // ===== Split article content at natural heading break =====
@@ -293,6 +301,11 @@
     html += '<img src="' + article.image + '" alt="' + article.title + '" class="w-full h-full object-cover">';
     html += '</div>';
 
+    // Article video at top of body (Alibaba-style: video above description)
+    if (article.video && article.video.trim()) {
+      html += renderArticleVideo(article.video);
+    }
+
     // Split content at a natural heading break for inserting product cards
     var contentParts = splitContent(article.content);
     html += '<div class="article-content">' + marked.parse(contentParts[0]) + '</div>';
@@ -304,7 +317,7 @@
       html += '<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">';
       for (var rp = 0; rp < Math.min(window.__relatedProducts.length, 3); rp++) {
         var prod = window.__relatedProducts[rp];
-        html += '<a href="product-detail.html?id=' + prod.id + '" class="product-card block"><div class="product-image-wrap">';
+        html += '<a href="' + productUrl(prod) + '" class="product-card block"><div class="product-image-wrap">';
         html += '<img src="' + prod.images[0] + '" alt="' + prod.name + '" loading="lazy" class="w-full h-full object-cover">';
         html += '</div><div class="p-3"><h4 class="font-bold text-sm line-clamp-1">' + prod.name + '</h4>';
         html += '<span class="text-xs text-primary font-semibold">MOQ ' + prod.moq + 'pcs</span>';
@@ -356,7 +369,7 @@
 
   // ===== Step 1: Load products for relevant card insertion =====
   var productXhr = new XMLHttpRequest();
-  productXhr.open('GET', 'data/products.json', true);
+  productXhr.open('GET', '/data/products.json', true);
   productXhr.onload = function() {
     try {
       var allProducts = JSON.parse(productXhr.responseText);
@@ -381,7 +394,7 @@
 
   function loadBlogData() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'data/blog.json', true);
+    xhr.open('GET', '/data/blog.json', true);
     xhr.onload = function() {
       try {
         var articles = JSON.parse(xhr.responseText);

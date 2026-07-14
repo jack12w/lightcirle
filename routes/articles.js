@@ -2,6 +2,7 @@
 const express = require('express');
 const { getDb } = require('../db/schema');
 const { authenticate } = require('./middleware');
+const { exportArticles } = require('../db/export');
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.get('/', (req, res) => {
     category: a.category,
     tags: JSON.parse(a.tags || '[]'),
     image: a.image,
+    video: a.video || '',
     excerpt: a.excerpt,
     content: a.content,
     createdAt: a.created_at,
@@ -41,6 +43,7 @@ router.get('/:id', (req, res) => {
     category: a.category,
     tags: JSON.parse(a.tags || '[]'),
     image: a.image,
+    video: a.video || '',
     excerpt: a.excerpt,
     content: a.content,
   });
@@ -58,15 +61,16 @@ router.post('/', authenticate, (req, res) => {
   const id = data.id || 'article-' + Date.now();
 
   db.prepare(`
-    INSERT INTO articles (id, title, date, author, category, tags, image, excerpt, content)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO articles (id, title, date, author, category, tags, image, video, excerpt, content)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id, data.title, data.date || new Date().toISOString().split('T')[0],
     data.author || 'lightcirle Team', data.category || 'business-tips',
-    JSON.stringify(data.tags || []), data.image || '',
+    JSON.stringify(data.tags || []), data.image || '', data.video || '',
     data.excerpt || data.content.substring(0, 200), data.content
   );
 
+  exportArticles();
   res.status(201).json({ id, message: 'Article created' });
 });
 
@@ -78,16 +82,17 @@ router.put('/:id', authenticate, (req, res) => {
   if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Article not found' });
 
   db.prepare(`
-    UPDATE articles SET title=?, date=?, author=?, category=?, tags=?, image=?, excerpt=?, content=?, updated_at=datetime('now')
+    UPDATE articles SET title=?, date=?, author=?, category=?, tags=?, image=?, video=?, excerpt=?, content=?, updated_at=datetime('now')
     WHERE id=?
   `).run(
     data.title, data.date || existing.date, data.author || 'lightcirle Team',
     data.category || 'business-tips', JSON.stringify(data.tags || []),
-    data.image || '', data.excerpt || (data.content || '').substring(0, 200),
+    data.image || '', data.video || '', data.excerpt || (data.content || '').substring(0, 200),
     data.content || '',
     req.params.id
   );
 
+  exportArticles();
   res.json({ message: 'Article updated' });
 });
 
@@ -98,6 +103,7 @@ router.delete('/:id', authenticate, (req, res) => {
   if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Article not found' });
 
   db.prepare('DELETE FROM articles WHERE id = ?').run(req.params.id);
+  exportArticles();
   res.json({ message: 'Article deleted' });
 });
 

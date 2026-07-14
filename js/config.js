@@ -37,7 +37,21 @@ window.SITE_CONFIG = {
   faviconPath: '',
 };
 
-(function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};var f=document.querySelector('link[rel*="icon"]')||document.createElement('link');f.rel='icon';f.href=window.SITE_CONFIG.faviconPath||'/favicon.ico';if(!f.parentNode)document.head.appendChild(f);})();
+(function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};
+// Sync colors to CSS variables so Tailwind (built, not CDN) picks them up
+function hexToRgb(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(function(x){return x+x}).join('');var n=parseInt(h,16);return [(n>>16)&255,(n>>8)&255,n&255].join(' ');}
+var root=document.documentElement.style;
+root.setProperty('--tc-primary',hexToRgb(c.primary));
+root.setProperty('--tc-primary-light',hexToRgb(c.primaryLight));
+root.setProperty('--tc-primary-dark',hexToRgb(c.primaryDark));
+root.setProperty('--tc-accent',hexToRgb(c.accent));
+root.setProperty('--tc-accent-light',hexToRgb(c.accentLight));
+root.setProperty('--tc-accent-dark',hexToRgb(c.accentDark||'#A67B5B'));
+root.setProperty('--tc-whatsapp',hexToRgb(c.whatsapp));
+root.setProperty('--tc-cream',hexToRgb(c.background));
+root.setProperty('--tc-darkbg',hexToRgb(c.darkBackground));
+root.setProperty('--tc-darksurface',hexToRgb(c.darksurface));
+var f=document.querySelector('link[rel*="icon"]')||document.createElement('link');f.rel='icon';f.href=window.SITE_CONFIG.faviconPath||'/favicon.ico';if(!f.parentNode)document.head.appendChild(f);})();
 
 // ===== JSON-LD Schema Injection =====
 window.injectOrganizationSchema = function() {

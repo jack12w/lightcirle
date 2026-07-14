@@ -43,8 +43,16 @@ async function loadSharedMediaList() {
     }
     grid.innerHTML = files.map(function(f) {
       var url = (f.filePath || '').replace(/'/g, "\\'");
+      var isVideo = (f.mimeType || '').startsWith('video/') || /\.(mp4|mov|webm|avi|mkv)$/i.test(url);
+      var thumb;
+      if (isVideo) {
+        thumb = '<video src="' + url + '" class="w-full h-24 object-cover" muted preload="metadata"></video>' +
+          '<div class="absolute inset-0 flex items-center justify-center pointer-events-none"><span class="w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-xs"><i class="fas fa-play"></i></span></div>';
+      } else {
+        thumb = '<img src="' + url + '" class="w-full h-24 object-cover" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23ccc%22 font-size=%2210%22>Broken</text></svg>\'">';
+      }
       return '<div class="relative rounded-lg overflow-hidden border border-gray-100 hover:border-[#2D5A3D] cursor-pointer transition-colors" onclick="sharedPickMedia(\'' + url + '\')">' +
-        '<img src="' + url + '" class="w-full h-24 object-cover" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23ccc%22 font-size=%2210%22>Broken</text></svg>\'">' +
+        thumb +
         '<div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">' +
         '<span class="opacity-0 hover:opacity-100 bg-[#2D5A3D] text-white text-xs px-2 py-1 rounded">选择</span></div>' +
         '</div>';

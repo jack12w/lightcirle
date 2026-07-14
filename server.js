@@ -50,6 +50,39 @@ app.get('/js/config.js', (req, res) => {
   } catch(e) {}
   res.sendFile(builtinPath);
 });
+
+// Serve built-in data JSON from the REAL image directory (not the volume symlink).
+// The /app/data directory is symlinked to the volume at runtime, but products.json /
+// blog.json are shipped with the image and must NOT be resolved through the symlink.
+const realDataDir = fs.realpathSync(path.join(__dirname, 'data'));
+app.get('/data/products.json', (req, res) => {
+  res.sendFile(path.join(realDataDir, 'products.json'));
+});
+app.get('/data/blog.json', (req, res) => {
+  res.sendFile(path.join(realDataDir, 'blog.json'));
+});
+
+// --- SEO-friendly Slug URLs (Alibaba-style, must be before static to win) ---
+// Product:  /product-detail/{slug}_{productId}.html
+// Article:  /blog-detail/{slug}_{articleId}.html
+// Server-side canonical rewrite so even JS-disabled crawlers see the correct URL.
+function sendWithCanonical(res, file, reqPath) {
+  fs.readFile(path.join(__dirname, file), 'utf8', (err, html) => {
+    if (err) return res.status(500).send('Error');
+    const canon = 'https://lightcirle.com' + reqPath;
+    // Replace static canonical placeholder (and any already-set value)
+    html = html.replace(/<link rel="canonical" href="[^"]*">/, '<link rel="canonical" href="' + canon + '">');
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  });
+}
+app.get('/product-detail/:path', (req, res) => {
+  sendWithCanonical(res, 'product-detail.html', req.path);
+});
+app.get('/blog-detail/:path', (req, res) => {
+  sendWithCanonical(res, 'blog-detail.html', req.path);
+});
+
 app.use(express.static(__dirname));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

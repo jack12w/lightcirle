@@ -175,6 +175,10 @@ function initSchema() {
     "ALTER TABLE company_info ADD COLUMN equipment_images TEXT NOT NULL DEFAULT '[]'",
     // Categories
     "ALTER TABLE categories ADD COLUMN image TEXT NOT NULL DEFAULT ''",
+    // Product video (Alibaba-style main image video)
+    "ALTER TABLE products ADD COLUMN video TEXT NOT NULL DEFAULT ''",
+    // Article video (top of body)
+    "ALTER TABLE articles ADD COLUMN video TEXT NOT NULL DEFAULT ''",
   ];
 
   for (const sql of migrations) {

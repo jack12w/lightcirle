@@ -5,7 +5,7 @@
   <title>产品管理 — lightcirle 管理后台</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <script src="js/media-picker.js"></script>
   <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}.stat-card{background:white;border:1px solid #E5E7EB;border-radius:16px;padding:24px}</style>
 </head>
@@ -85,6 +85,19 @@
             <input type="file" id="imageUploadInput" accept="image/*" class="hidden" onchange="uploadProductImage(this)">
             <input type="hidden" id="edImages" value="">
           </div>
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-gray-500 mb-1">产品视频（主图首位展示，支持本地视频或 YouTube/Bilibili 链接）</label>
+            <div class="mb-2" id="videoPreviewWrap"></div>
+            <div class="flex gap-2 flex-wrap">
+              <button type="button" onclick="document.getElementById('videoUploadInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传视频</button>
+              <button type="button" onclick="openProductVideoPicker()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:bg-gray-50"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
+              <input type="text" id="edVideoUrl" class="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴视频 URL（本地直链 / YouTube / Bilibili）">
+              <button type="button" onclick="setProductVideo()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">设置</button>
+              <button type="button" onclick="clearProductVideo()" class="px-3 py-1.5 border border-red-200 text-red-500 rounded-xl text-xs hover:bg-red-50"><i class="fas fa-trash mr-1"></i> 移除</button>
+            </div>
+            <input type="file" id="videoUploadInput" accept="video/*" class="hidden" onchange="uploadProductVideo(this)">
+            <input type="hidden" id="edVideo" value="">
+          </div>
           <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">描述</label><textarea id="edDesc" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-20 resize-none focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none"></textarea></div>
           <div class="col-span-2 flex gap-3 justify-end pt-4 border-t border-gray-100">
             <button type="button" onclick="closeEditor()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
@@ -157,6 +170,9 @@
     // Load images
     productImages = product ? (product.images || []).slice() : [];
     renderImages();
+    // Load video
+    productVideo = product ? (product.video || '') : '';
+    renderProductVideo();
     document.getElementById('editorModal').classList.remove('hidden');
   }
 
@@ -164,6 +180,7 @@
 
   // --- Image management ---
   var productImages = [];
+  var productVideo = '';
 
   function renderImages() {
     var container = document.getElementById('imagePreviewList');
@@ -214,6 +231,54 @@
     input.value = '';
   }
 
+  // --- Video management ---
+  function renderProductVideo() {
+    var wrap = document.getElementById('videoPreviewWrap');
+    var hidden = document.getElementById('edVideo');
+    hidden.value = productVideo;
+    if (!productVideo) { wrap.innerHTML = ''; return; }
+    var isEmbed = /youtube\.com|youtu\.be|bilibili\.com/i.test(productVideo);
+    var preview = isEmbed
+      ? '<div class="aspect-video w-full max-w-sm rounded-xl overflow-hidden border border-gray-200"><iframe src="' + productVideo + '" class="w-full h-full" allowfullscreen></iframe></div>'
+      : '<video src="' + productVideo + '" controls class="max-h-48 rounded-xl border border-gray-200"></video>';
+    wrap.innerHTML = preview + '<p class="text-[10px] text-gray-400 mt-1 truncate max-w-sm">' + productVideo + '</p>';
+  }
+
+  function setProductVideo() {
+    var url = document.getElementById('edVideoUrl').value.trim();
+    if (!url) return;
+    productVideo = url;
+    document.getElementById('edVideoUrl').value = '';
+    renderProductVideo();
+  }
+
+  function clearProductVideo() {
+    productVideo = '';
+    renderProductVideo();
+  }
+
+  function openProductVideoPicker() {
+    window.__mediaPickCallback = function(url) {
+      productVideo = url;
+      renderProductVideo();
+    };
+    openSharedMediaPicker();
+  }
+
+  async function uploadProductVideo(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'products');
+    try {
+      var res = await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+      var data = await res.json();
+      if (data.url) { productVideo = data.url; renderProductVideo(); }
+    } catch(e) { alert('上传失败: ' + e.message); }
+    input.value = '';
+  }
+
   document.getElementById('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
@@ -228,6 +293,7 @@
       colors: document.getElementById('edColors').value.split(',').map(s=>s.trim()).filter(Boolean),
       features: document.getElementById('edFeatures').value.split(',').map(s=>s.trim()).filter(Boolean),
       images: productImages,
+      video: productVideo,
       description: document.getElementById('edDesc').value,
     };
     try {

@@ -14,27 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { DEFAULT: '#2D5A3D', light: '#3E7B54', dark: '#1F3F2A' },
-            accent: { DEFAULT: '#C4926E', light: '#D4A88C' },
-            cream: '#FAFAF8',
-            darkbg: '#1A1D1C',
-            darksurface: '#252928',
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
@@ -178,9 +158,9 @@
       <div>
         <h4>Popular Articles</h4>
         <ul class="space-y-2">
-          <li><a href="blog-detail.html?id=fabric-guide-01">Yoga Wear Fabrics Guide</a></li>
-          <li><a href="blog-detail.html?id=moq-guide-02">Low MOQ Manufacturing</a></li>
-          <li><a href="blog-detail.html?id=customization-process-03">Custom Manufacturing Process</a></li>
+          <li><a href="/blog-detail/the-ultimate-guide-to-yoga-wear-fabrics-nylon-vs-polyester-vs-cotton_fabric-guide-01.html">Yoga Wear Fabrics Guide</a></li>
+          <li><a href="/blog-detail/low-moq-yoga-wear-manufacturing-how-50-pieces-changes-the-game-for-small-brands_moq-guide-02.html">Low MOQ Manufacturing</a></li>
+          <li><a href="/blog-detail/from-idea-to-product-your-step-by-step-guide-to-custom-yoga-wear-manufacturing_customization-process-03.html">Custom Manufacturing Process</a></li>
         </ul>
       </div>
       <div>
@@ -208,6 +188,13 @@
 <script src="js/main.js"></script>
 <script src="js/search.js"></script>
 <script>
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  function articleUrl(article) {
+    return '/blog-detail/' + slugify(article.title) + '_' + article.id + '.html';
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = 'all';
     let searchEngine;
@@ -233,7 +220,7 @@
     function renderBlogCard(post) {
       return `
         <article class="blog-card">
-          <a href="blog-detail.html?id=${post.id}" class="block">
+          <a href="${articleUrl(post)}" class="block">
             <div class="blog-image-wrap">
               <img src="${post.image}" alt="${post.title}" loading="lazy">
             </div>
@@ -243,12 +230,12 @@
               <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${categoryNames[post.category] || post.category}</span>
               <span class="text-xs text-gray-400">${formatDate(post.date)}</span>
             </div>
-            <a href="blog-detail.html?id=${post.id}" class="block group">
+            <a href="${articleUrl(post)}" class="block group">
               <h2 class="font-serif font-bold text-xl mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors leading-snug">${post.title}</h2>
             </a>
             <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">${post.excerpt}</p>
             <div class="flex items-center justify-between">
-              <a href="blog-detail.html?id=${post.id}" class="text-primary dark:text-primary-light font-semibold text-sm hover:underline">Read More →</a>
+              <a href="${articleUrl(post)}" class="text-primary dark:text-primary-light font-semibold text-sm hover:underline">Read More →</a>
               <div class="flex gap-2">
                 ${post.tags.slice(0, 3).map(t => `<span class="text-xs text-gray-400">#${t}</span>`).join('')}
               </div>
@@ -260,7 +247,7 @@
 
     // Initialize search
     searchEngine = new SearchEngine({
-      dataUrl: 'data/blog.json',
+      dataUrl: '/data/blog.json',
       searchInputId: 'searchInput',
       resultsContainerId: 'searchResults',
       resultCountId: 'resultCount',

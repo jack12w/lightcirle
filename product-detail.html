@@ -21,29 +21,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
   <script src="js/config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    var twc = window.__TW_COLORS;
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { DEFAULT: twc.primary, light: twc['primary-light'], dark: twc['primary-dark'] },
-            accent: { DEFAULT: twc.accent, light: twc['accent-light'] },
-            whatsapp: twc.whatsapp,
-            cream: twc.cream,
-            darkbg: twc.darkbg,
-            darksurface: twc.darksurface,
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">
@@ -178,7 +156,16 @@
 <script src="js/visitor-tracker.js"></script>
 <script>
 (function() {
-  var productId = new URLSearchParams(window.location.search).get('id');
+  // --- Parse product ID from URL ---
+  // New format: /product-detail/{slug}_{productId}.html (Alibaba-style)
+  // Legacy format: /product-detail.html?id={productId} (still supported for old links)
+  var productId = null;
+  var pathMatch = window.location.pathname.match(/\/product-detail\/(.+?)_(.+)\.html$/);
+  if (pathMatch && pathMatch[2]) {
+    productId = pathMatch[2]; // real ID is after the last underscore
+  } else {
+    productId = new URLSearchParams(window.location.search).get('id');
+  }
   if (!productId) { window.location.href = 'search.html'; return; }
 
   var loadingEl = document.getElementById('loadingState');
@@ -209,8 +196,41 @@
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
 
+  // ===== Video helpers (shared with blog-detail) =====
+  function isVideoEmbed(url) {
+    return /youtube\.com|youtu\.be|bilibili\.com/i.test(url || '');
+  }
+  function videoEmbedSrc(url) {
+    // Normalize YouTube / Bilibili into embeddable iframe src
+    if (/youtu\.be\//i.test(url)) {
+      var id = url.split('youtu.be/')[1].split(/[?#]/)[0];
+      return 'https://www.youtube.com/embed/' + id;
+    }
+    if (/youtube\.com\/watch/i.test(url)) {
+      var m = url.match(/[?&]v=([^&]+)/);
+      if (m) return 'https://www.youtube.com/embed/' + m[1];
+    }
+    if (/bilibili\.com\/video\/BV/i.test(url)) {
+      var bv = url.match(/BV[a-zA-Z0-9]+/);
+      if (bv) return 'https://player.bilibili.com/player.html?bvid=' + bv[0] + '&autoplay=0';
+    }
+    return url; // assume already embeddable
+  }
+  function renderVideoBlock(url, extraClass) {
+    if (isVideoEmbed(url)) {
+      return '<div class="' + (extraClass || '') + ' aspect-[3/4] rounded-2xl overflow-hidden bg-black">' +
+        '<iframe src="' + videoEmbedSrc(url) + '" class="w-full h-full" allowfullscreen allow="autoplay; encrypted-media"></iframe></div>';
+    }
+    return '<div class="' + (extraClass || '') + ' aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">' +
+      '<video src="' + url + '" autoplay muted loop playsinline controls class="w-full h-full object-cover"></video></div>';
+  }
+
+  function articleUrlSafe(article) {
+    return '/blog-detail/' + slugify(article.title) + '_' + article.id + '.html';
+  }
+
   function productUrl(product) {
-    return '/' + slugify(product.name) + '.html?id=' + product.id;
+    return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';
   }
 
   function renderProduct(product) {
@@ -220,13 +240,25 @@
     if (desc) desc.setAttribute('content', product.name + ': ' + product.description.substring(0, 150) + '... MOQ ' + product.moq + 'pcs.');
 
     var html = '<div class="grid lg:grid-cols-2 gap-12 lg:gap-16">';
-    // Images
-    html += '<div><div class="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4">';
-    html += '<img src="' + product.images[0] + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
+    // Images / Video (Alibaba-style: video replaces first main image when present)
+    var hasVideo = !!(product.video && product.video.trim());
+    var mainImgSrc = (product.images && product.images.length) ? product.images[0] : '';
+    html += '<div><div class="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4" id="mainMedia">';
+    if (hasVideo) {
+      html += renderVideoBlock(product.video);
+    } else if (mainImgSrc) {
+      html += '<img src="' + mainImgSrc + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
+    }
     html += '</div><div class="flex gap-3">';
+    // Thumbnail 0: video (if any)
+    if (hasVideo) {
+      html += '<button onclick="renderMainMedia(\'video\')" class="w-20 h-20 rounded-xl overflow-hidden border-2 border-primary hover:border-primary/50 transition-colors relative bg-black flex items-center justify-center">' +
+        '<i class="fas fa-play text-white/80 text-lg"></i>' +
+        '<span class="absolute bottom-0.5 left-0.5 w-4 h-4 rounded-full bg-white/80 text-[#2D5A3D] text-[8px] flex items-center justify-center"><i class="fas fa-film"></i></span></button>';
+    }
     for (var i = 0; i < product.images.length; i++) {
-      var border = i === 0 ? 'border-primary' : 'border-transparent';
-      html += '<button onclick="document.getElementById(\'mainImage\').src=\'' + product.images[i] + '\'" class="w-20 h-20 rounded-xl overflow-hidden border-2 ' + border + ' hover:border-primary/50 transition-colors"><img src="' + product.images[i] + '" alt="' + product.name + ' view ' + (i+1) + '" class="w-full h-full object-cover"></button>';
+      var border = (!hasVideo && i === 0) ? 'border-primary' : 'border-transparent';
+      html += '<button onclick="renderMainMedia(' + i + ')" class="w-20 h-20 rounded-xl overflow-hidden border-2 ' + border + ' hover:border-primary/50 transition-colors"><img src="' + product.images[i] + '" alt="' + product.name + ' view ' + (i+1) + '" class="w-full h-full object-cover"></button>';
     }
     html += '</div></div>';
     // Info
@@ -294,6 +326,7 @@
     if (loadingEl) loadingEl.style.display = 'none';
     contentEl.classList.remove('hidden');
     window.__renderedProduct = product;
+    window.__currentProduct = product;
     // Update canonical URL with slug
     var canonLink = document.querySelector('link[rel="canonical"]');
     if (canonLink) canonLink.setAttribute('href', 'https://lightcirle.com' + productUrl(product));
@@ -305,6 +338,20 @@
       { name: product.name, url: productUrl(product) }
     ]);
   }
+
+  // ===== Switch main media (video / image) on thumbnail click =====
+  window.renderMainMedia = function(index) {
+    var p = window.__currentProduct;
+    if (!p) return;
+    var mainMedia = document.getElementById('mainMedia');
+    if (!mainMedia) return;
+    if (index === 'video') {
+      mainMedia.innerHTML = renderVideoBlock(p.video);
+    } else {
+      var img = (p.images && p.images[index]) ? p.images[index] : '';
+      mainMedia.innerHTML = '<img src="' + img + '" alt="' + p.name + '" class="w-full h-full object-cover">';
+    }
+  };
 
   // ===== Factory Strength & Related Knowledge Module =====
   function renderFactoryKnowledgeSection(product) {
@@ -372,7 +419,7 @@
       factoryHtml += '<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">';
       for (var ra = 0; ra < Math.min(window.__relatedArticles.length, 3); ra++) {
         var art = window.__relatedArticles[ra];
-        factoryHtml += '<a href="blog-detail.html?id=' + art.id + '" class="block bg-gray-50 dark:bg-gray-800/40 rounded-xl p-4 hover:bg-primary/5 dark:hover:bg-primary-light/5 transition-colors group">';
+        factoryHtml += '<a href="' + articleUrlSafe(art) + '" class="block bg-gray-50 dark:bg-gray-800/40 rounded-xl p-4 hover:bg-primary/5 dark:hover:bg-primary-light/5 transition-colors group">';
         factoryHtml += '<span class="text-xs font-semibold text-accent uppercase tracking-wider">' + (window.__articleCatNames && window.__articleCatNames[art.category] ? window.__articleCatNames[art.category] : art.category) + '</span>';
         factoryHtml += '<h4 class="font-bold text-sm mt-1 group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2">' + art.title + '</h4>';
         factoryHtml += '<p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">' + (art.excerpt || '') + '</p>';
@@ -435,7 +482,7 @@
 
   // Load blog data for related articles
   var blogXhr = new XMLHttpRequest();
-  blogXhr.open('GET', 'data/blog.json', true);
+  blogXhr.open('GET', '/data/blog.json', true);
   blogXhr.onload = function() {
     try {
       var allArticles = JSON.parse(blogXhr.responseText);
@@ -462,7 +509,7 @@
 
   // Load data and render
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'data/products.json', true);
+  xhr.open('GET', '/data/products.json', true);
   xhr.onload = function() {
     try {
       var products = JSON.parse(xhr.responseText);

@@ -24,29 +24,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
   <script src="js/config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    var twc = window.__TW_COLORS;
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { DEFAULT: twc.primary, light: twc['primary-light'], dark: twc['primary-dark'] },
-            accent: { DEFAULT: twc.accent, light: twc['accent-light'], dark: twc['accent-dark'] },
-            whatsapp: twc.whatsapp,
-            cream: twc.cream,
-            darkbg: twc.darkbg,
-            darksurface: twc.darksurface,
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream text-gray-900 dark:bg-darkbg dark:text-gray-200 transition-colors duration-300">

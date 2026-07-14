@@ -2,6 +2,10 @@ node_modules/
 .env
 .env.production
 *.db*
+*.db-shm
+*.db-wal
+# Runtime-generated config (re-exported from DB on settings save, do not commit)
+data/config.js
 uploads/*
 !uploads/.gitkeep
 .DS_Store

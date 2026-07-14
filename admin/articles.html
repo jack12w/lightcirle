@@ -6,7 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <script src="js/media-picker.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
@@ -74,6 +74,19 @@
             <img id="coverPreview" class="mt-2 max-h-24 rounded-lg hidden object-cover border border-gray-100">
             <input type="file" id="articleImageInput" accept="image/*" class="hidden" onchange="uploadArticleImage(this)">
           </div>
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-gray-500 mb-1">文章视频（正文顶部展示，支持本地视频或 YouTube/Bilibili 链接）</label>
+            <div class="mb-2" id="articleVideoPreviewWrap"></div>
+            <div class="flex gap-2 flex-wrap">
+              <button type="button" onclick="document.getElementById('articleVideoUploadInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传视频</button>
+              <button type="button" onclick="openArticleVideoPicker()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:bg-gray-50"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
+              <input type="text" id="edArticleVideoUrl" class="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴视频 URL（本地直链 / YouTube / Bilibili）">
+              <button type="button" onclick="setArticleVideo()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">设置</button>
+              <button type="button" onclick="clearArticleVideo()" class="px-3 py-1.5 border border-red-200 text-red-500 rounded-xl text-xs hover:bg-red-50"><i class="fas fa-trash mr-1"></i> 移除</button>
+            </div>
+            <input type="file" id="articleVideoUploadInput" accept="video/*" class="hidden" onchange="uploadArticleVideo(this)">
+            <input type="hidden" id="edArticleVideo" value="">
+          </div>
           <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">摘要</label><textarea id="edExcerpt" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-16 resize-none"></textarea></div>
           <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">正文（Markdown）</label><textarea id="edContent" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-64 resize-none"></textarea></div>
           <div class="col-span-2 flex gap-3 justify-end pt-4 border-t border-gray-100">
@@ -108,7 +121,7 @@
     return res;
   }
 
-  let articles = [], editingId = null;
+  let articles = [], editingId = null, articleVideo = '';
   function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   async function loadArticles() {
@@ -136,6 +149,8 @@
     document.getElementById('edExcerpt').value = article ? article.excerpt : '';
     document.getElementById('edContent').value = article ? article.content : '';
     previewCover(article ? article.image : '');
+    articleVideo = article ? (article.video || '') : '';
+    renderArticleVideo();
     document.getElementById('editorModal').classList.remove('hidden');
   }
 
@@ -177,6 +192,54 @@
     input.value = '';
   }
 
+  // --- Article video management ---
+  function renderArticleVideo() {
+    var wrap = document.getElementById('articleVideoPreviewWrap');
+    var hidden = document.getElementById('edArticleVideo');
+    hidden.value = articleVideo;
+    if (!articleVideo) { wrap.innerHTML = ''; return; }
+    var isEmbed = /youtube\.com|youtu\.be|bilibili\.com/i.test(articleVideo);
+    var preview = isEmbed
+      ? '<div class="aspect-video w-full max-w-sm rounded-xl overflow-hidden border border-gray-200"><iframe src="' + articleVideo + '" class="w-full h-full" allowfullscreen></iframe></div>'
+      : '<video src="' + articleVideo + '" controls class="max-h-48 rounded-xl border border-gray-200"></video>';
+    wrap.innerHTML = preview + '<p class="text-[10px] text-gray-400 mt-1 truncate max-w-sm">' + articleVideo + '</p>';
+  }
+
+  function setArticleVideo() {
+    var url = document.getElementById('edArticleVideoUrl').value.trim();
+    if (!url) return;
+    articleVideo = url;
+    document.getElementById('edArticleVideoUrl').value = '';
+    renderArticleVideo();
+  }
+
+  function clearArticleVideo() {
+    articleVideo = '';
+    renderArticleVideo();
+  }
+
+  function openArticleVideoPicker() {
+    window.__mediaPickCallback = function(url) {
+      articleVideo = url;
+      renderArticleVideo();
+    };
+    openSharedMediaPicker();
+  }
+
+  async function uploadArticleVideo(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'articles');
+    try {
+      var res = await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+      var data = await res.json();
+      if (data.url) { articleVideo = data.url; renderArticleVideo(); }
+    } catch(e) { alert('上传失败: ' + e.message); }
+    input.value = '';
+  }
+
   document.getElementById('articleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
@@ -186,6 +249,7 @@
       author: document.getElementById('edAuthor').value,
       tags: document.getElementById('edTags').value.split(',').map(s=>s.trim()).filter(Boolean),
       image: document.getElementById('edImage').value,
+      video: articleVideo,
       excerpt: document.getElementById('edExcerpt').value,
       content: document.getElementById('edContent').value,
     };
