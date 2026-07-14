@@ -141,7 +141,7 @@
   }
 
   function slugify(text) {
-    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
   }
 
   function renderTable(data) {

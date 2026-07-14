@@ -153,7 +153,7 @@
 <script>
 // Load recommendations from products.json
 function slugify(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
 }
 function productUrl(product) {
   return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';

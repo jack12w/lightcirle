@@ -269,7 +269,7 @@
   let blogCategoryNames = {};
 
   function slugify(text) {
-    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
   }
   function productUrl(p) { return '/product-detail/' + slugify(p.name) + '_' + p.id + '.html'; }
   function articleUrl(a) { return '/blog-detail/' + slugify(a.title) + '_' + a.id + '.html'; }

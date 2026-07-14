@@ -66,7 +66,7 @@ app.get('/data/blog.json', (req, res) => {
 // --- 301 Redirect: legacy ?id= format → SEO slug format ---
 // So Google-indexed / shared old links auto-jump to the new pretty URL.
 function slugify(text) {
-  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
 }
 app.get('/product-detail.html', (req, res) => {
   const id = req.query.id;
