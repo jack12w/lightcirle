@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    'E:/个人学习/agent/yoga/yoga-b2b/**/*.html',
-    'E:/个人学习/agent/yoga/yoga-b2b/js/**/*.js',
-    'E:/个人学习/agent/yoga/yoga-b2b/admin/**/*.html',
-    'E:/个人学习/agent/yoga/yoga-b2b/admin/**/*.js',
-    '!E:/个人学习/agent/yoga/yoga-b2b/node_modules/**',
-    '!E:/个人学习/agent/yoga/yoga-b2b/uploads/**',
+    './**/*.html',
+    './js/**/*.js',
+    './admin/**/*.html',
+    './admin/**/*.js',
+    '!./node_modules/**',
+    '!./uploads/**',
   ],
   darkMode: 'class',
   theme: {
