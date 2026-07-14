@@ -17,6 +17,7 @@ ensureAdmin('admin', 'admin123');
 ensureSettings();
 seedIfEmpty();
 exportAll();
+normalizeProductIds();
 const dbPath = path.join(__dirname, 'data', 'lightcirle.db');
 try {
   const stat = fs.statSync(dbPath);
@@ -68,22 +69,59 @@ app.get('/data/blog.json', (req, res) => {
 function slugify(text) {
   return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
 }
+
+// Normalize products whose id is a long title-slug (causes URL duplication like /slug_fulltitle).
+// Runs idempotently at startup; reassigns a short p-xxxxxx id and re-exports JSON.
+function normalizeProductIds() {
+  try {
+    const db = getDb();
+    const rows = db.prepare('SELECT id, name FROM products').all();
+    let changed = false;
+    for (const r of rows) {
+      const titleSlug = slugify(r.name);
+      const isTitleLike = r.id.length > 40 || (r.id.length > 30 && r.id === titleSlug);
+      if (isTitleLike) {
+        let nid;
+        do { nid = 'p-' + Math.random().toString(36).slice(2, 8); } while (db.prepare('SELECT 1 FROM products WHERE id = ?').get(nid));
+        db.prepare('UPDATE products SET id = ? WHERE id = ?').run(nid, r.id);
+        console.log(`normalizeProductIds: "${r.id}" -> "${nid}"`);
+        changed = true;
+      }
+    }
+    if (changed) exportAll();
+  } catch (e) {
+    console.error('normalizeProductIds error:', e.message);
+  }
+}
 app.get('/product-detail.html', (req, res) => {
   const id = req.query.id;
   if (!id) return res.sendFile(path.join(__dirname, 'product-detail.html'));
-  try {
-    const product = getDb().prepare('SELECT name FROM products WHERE id = ?').get(id);
-    if (product) return res.redirect(301, `/product-detail/${slugify(product.name)}_${id}.html`);
-  } catch(e) {}
+  const db = getDb();
+  let product = null;
+  try { product = db.prepare('SELECT id, name FROM products WHERE id = ?').get(id); } catch(e) {}
+  if (!product) {
+    // legacy id might actually be a title-slug (pre-normalization) → match by slug
+    try {
+      const rows = db.prepare('SELECT id, name FROM products').all();
+      for (const r of rows) { if (slugify(r.name) === slugify(id)) { product = r; break; } }
+    } catch(e) {}
+  }
+  if (product) return res.redirect(301, `/product-detail/${slugify(product.name)}_${product.id}.html`);
   res.sendFile(path.join(__dirname, 'product-detail.html'));
 });
 app.get('/blog-detail.html', (req, res) => {
   const id = req.query.id;
   if (!id) return res.sendFile(path.join(__dirname, 'blog-detail.html'));
-  try {
-    const article = getDb().prepare('SELECT title FROM articles WHERE id = ?').get(id);
-    if (article) return res.redirect(301, `/blog-detail/${slugify(article.title)}_${id}.html`);
-  } catch(e) {}
+  const db = getDb();
+  let article = null;
+  try { article = db.prepare('SELECT id, title FROM articles WHERE id = ?').get(id); } catch(e) {}
+  if (!article) {
+    try {
+      const rows = db.prepare('SELECT id, title FROM articles').all();
+      for (const r of rows) { if (slugify(r.title) === slugify(id)) { article = r; break; } }
+    } catch(e) {}
+  }
+  if (article) return res.redirect(301, `/blog-detail/${slugify(article.title)}_${article.id}.html`);
   res.sendFile(path.join(__dirname, 'blog-detail.html'));
 });
 
@@ -102,38 +140,53 @@ function sendWithCanonical(res, file, reqPath) {
   });
 }
 app.get('/product-detail/:path', (req, res) => {
-  // Validate slug: if title was changed, 301 old-slug URL → new-slug URL
+  // Validate slug / id: if title changed OR id was normalized, 301 → canonical clean URL
   const match = req.params.path.match(/^(.*)_([^.]+)\.html$/);
-  if (match) {
-    const urlSlug = match[1];
-    const id = match[2];
+  const urlSlug = match ? match[1] : req.params.path.replace(/\.html$/, '');
+  const id = match ? match[2] : null;
+  const db = getDb();
+  let product = null;
+  if (id) {
+    try { product = db.prepare('SELECT id, name FROM products WHERE id = ?').get(id); } catch(e) {}
+  }
+  if (!product && urlSlug) {
+    // slug fallback: covers normalized ids (old long id) and changed titles
     try {
-      const product = getDb().prepare('SELECT name FROM products WHERE id = ?').get(id);
-      if (product) {
-        const correctSlug = slugify(product.name);
-        if (urlSlug !== correctSlug) {
-          return res.redirect(301, `/product-detail/${correctSlug}_${id}.html`);
-        }
-      }
+      const rows = db.prepare('SELECT id, name FROM products').all();
+      for (const r of rows) { if (slugify(r.name) === urlSlug) { product = r; break; } }
     } catch(e) {}
+  }
+  if (product) {
+    const correctSlug = slugify(product.name);
+    const correctId = product.id;
+    if (urlSlug !== correctSlug || id !== correctId) {
+      return res.redirect(301, `/product-detail/${correctSlug}_${correctId}.html`);
+    }
   }
   sendWithCanonical(res, 'product-detail.html', req.path);
 });
 app.get('/blog-detail/:path', (req, res) => {
-  // Validate slug: if title was changed, 301 old-slug URL → new-slug URL
+  // Validate slug / id: if title changed OR id was normalized, 301 → canonical clean URL
   const match = req.params.path.match(/^(.*)_([^.]+)\.html$/);
-  if (match) {
-    const urlSlug = match[1];
-    const id = match[2];
+  const urlSlug = match ? match[1] : req.params.path.replace(/\.html$/, '');
+  const id = match ? match[2] : null;
+  const db = getDb();
+  let article = null;
+  if (id) {
+    try { article = db.prepare('SELECT id, title FROM articles WHERE id = ?').get(id); } catch(e) {}
+  }
+  if (!article && urlSlug) {
     try {
-      const article = getDb().prepare('SELECT title FROM articles WHERE id = ?').get(id);
-      if (article) {
-        const correctSlug = slugify(article.title);
-        if (urlSlug !== correctSlug) {
-          return res.redirect(301, `/blog-detail/${correctSlug}_${id}.html`);
-        }
-      }
+      const rows = db.prepare('SELECT id, title FROM articles').all();
+      for (const r of rows) { if (slugify(r.title) === urlSlug) { article = r; break; } }
     } catch(e) {}
+  }
+  if (article) {
+    const correctSlug = slugify(article.title);
+    const correctId = article.id;
+    if (urlSlug !== correctSlug || id !== correctId) {
+      return res.redirect(301, `/blog-detail/${correctSlug}_${correctId}.html`);
+    }
   }
   sendWithCanonical(res, 'blog-detail.html', req.path);
 });

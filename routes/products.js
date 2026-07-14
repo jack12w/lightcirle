@@ -6,6 +6,23 @@ const { exportProducts } = require('../db/export');
 
 const router = express.Router();
 
+// Keep in sync with server.js slugify (60-char cap) to avoid 301 loops
+function slugify(text) {
+  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+}
+// Generate a clean short id; never use the full title as id (prevents URL duplication)
+function genProductId(data, db) {
+  const proposed = String(data.id || '').trim();
+  const titleSlug = slugify(data.name || '');
+  const clean = /^[a-z0-9][a-z0-9-]{0,39}$/.test(proposed) && proposed !== titleSlug;
+  if (clean && !db.prepare('SELECT 1 FROM products WHERE id = ?').get(proposed)) {
+    return proposed;
+  }
+  let id;
+  do { id = 'p-' + Math.random().toString(36).slice(2, 8); } while (db.prepare('SELECT 1 FROM products WHERE id = ?').get(id));
+  return id;
+}
+
 // GET /api/products
 router.get('/', (req, res) => {
   const db = getDb();
@@ -64,11 +81,11 @@ router.post('/', authenticate, (req, res) => {
   const db = getDb();
   const data = req.body;
 
-  if (!data.name || !data.id) {
-    return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'Name and ID are required' });
+  if (!data.name) {
+    return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'Name is required' });
   }
 
-  const id = data.id || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const id = genProductId(data, db);
 
   db.prepare(`
     INSERT INTO products (id, name, category, moq, fabric, features, weight, sizes, colors, description, customization, images, video, lead_time, certifications)
