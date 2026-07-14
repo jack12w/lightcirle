@@ -123,13 +123,19 @@
 
   let articles = [], editingId = null, articleVideo = '';
   function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  // slugify — keep in sync with server.js / blog-*.html (60-char cap, word boundary)
+  function slugify(text) {
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      .replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+  }
+  function articlePreviewUrl(a) { return '/blog-detail/' + slugify(a.title) + '_' + a.id + '.html'; }
 
   async function loadArticles() {
     articles = await (await api('/articles')).json();
     const catNames = {'fabric-knowledge':'Fabric Knowledge','business-tips':'Business Tips','industry-news':'Industry News'};
     document.getElementById('articleTable').innerHTML = articles.map(a => `
       <tr class="border-b border-gray-50 hover:bg-gray-50/50">
-        <td class="p-4 font-medium max-w-[300px] truncate"><a href="/blog-detail.html?id=${a.id}" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(a.title)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
+        <td class="p-4 font-medium max-w-[300px] truncate"><a href="${articlePreviewUrl(a)}" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(a.title)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
         <td class="p-4"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${catNames[a.category]||a.category}</span></td>
         <td class="p-4 text-gray-500 text-xs">${a.date}</td>
         <td class="p-4"><button onclick="editArticle('${a.id}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteArticle('${a.id}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
