@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const { initSchema, ensureAdmin, ensureSettings, getDb } = require('./db/schema');
+const { seedIfEmpty } = require('./db/seed');
+const { exportAll } = require('./db/export');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +15,8 @@ console.log('server: initializing database...');
 initSchema();
 ensureAdmin('admin', 'admin123');
 ensureSettings();
+seedIfEmpty();
+exportAll();
 const dbPath = path.join(__dirname, 'data', 'lightcirle.db');
 try {
   const stat = fs.statSync(dbPath);
@@ -51,15 +55,12 @@ app.get('/js/config.js', (req, res) => {
   res.sendFile(builtinPath);
 });
 
-// Serve built-in data JSON from the REAL image directory (not the volume symlink).
-// The /app/data directory is symlinked to the volume at runtime, but products.json /
-// blog.json are shipped with the image and must NOT be resolved through the symlink.
-const realDataDir = fs.realpathSync(path.join(__dirname, 'data'));
+// Serve data JSON (regenerated from DB by exportAll() on every startup & after admin edits)
 app.get('/data/products.json', (req, res) => {
-  res.sendFile(path.join(realDataDir, 'products.json'));
+  res.sendFile(path.join(__dirname, 'data', 'products.json'));
 });
 app.get('/data/blog.json', (req, res) => {
-  res.sendFile(path.join(realDataDir, 'blog.json'));
+  res.sendFile(path.join(__dirname, 'data', 'blog.json'));
 });
 
 // --- SEO-friendly Slug URLs (Alibaba-style, must be before static to win) ---
