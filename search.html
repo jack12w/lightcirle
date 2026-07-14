@@ -227,9 +227,9 @@
         <h4>Resources</h4>
         <ul class="space-y-2">
           <li><a href="search.html?tab=blog">Expert Articles</a></li>
-          <li><a href="/blog-detail/the-ultimate-guide-to-yoga-wear-fabrics-nylon-vs-polyester-vs-cotton_fabric-guide-01.html">Fabric Guide</a></li>
-          <li><a href="/blog-detail/low-moq-yoga-wear-manufacturing-how-50-pieces-changes-the-game-for-small-brands_moq-guide-02.html">Low MOQ Guide</a></li>
-          <li><a href="/blog-detail/from-idea-to-product-your-step-by-step-guide-to-custom-yoga-wear-manufacturing_customization-process-03.html">Custom Process</a></li>
+          <li><a href="/blog-detail/the-ultimate-guide-to-yoga-wear-fabrics-nylon-vs-polyester_fabric-guide-01.html">Fabric Guide</a></li>
+          <li><a href="/blog-detail/low-moq-yoga-wear-manufacturing-how-50-pieces-changes-the_moq-guide-02.html">Low MOQ Guide</a></li>
+          <li><a href="/blog-detail/from-idea-to-product-your-step-by-step-guide-to-custom-yoga_customization-process-03.html">Custom Process</a></li>
         </ul>
       </div>
       <div>
@@ -269,7 +269,10 @@
   let blogCategoryNames = {};
 
   function slugify(text) {
-    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+    let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const MAX = 60;
+  if (s.length > MAX) { const cut = s.lastIndexOf('-', MAX - 1); s = cut > 0 ? s.slice(0, cut) : s.slice(0, MAX); }
+  return s;
   }
   function productUrl(p) { return '/product-detail/' + slugify(p.name) + '_' + p.id + '.html'; }
   function articleUrl(a) { return '/blog-detail/' + slugify(a.title) + '_' + a.id + '.html'; }

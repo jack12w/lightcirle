@@ -158,9 +158,9 @@
       <div>
         <h4>Popular Articles</h4>
         <ul class="space-y-2">
-          <li><a href="/blog-detail/the-ultimate-guide-to-yoga-wear-fabrics-nylon-vs-polyester-vs-cotton_fabric-guide-01.html">Yoga Wear Fabrics Guide</a></li>
-          <li><a href="/blog-detail/low-moq-yoga-wear-manufacturing-how-50-pieces-changes-the-game-for-small-brands_moq-guide-02.html">Low MOQ Manufacturing</a></li>
-          <li><a href="/blog-detail/from-idea-to-product-your-step-by-step-guide-to-custom-yoga-wear-manufacturing_customization-process-03.html">Custom Manufacturing Process</a></li>
+          <li><a href="/blog-detail/the-ultimate-guide-to-yoga-wear-fabrics-nylon-vs-polyester_fabric-guide-01.html">Yoga Wear Fabrics Guide</a></li>
+          <li><a href="/blog-detail/low-moq-yoga-wear-manufacturing-how-50-pieces-changes-the_moq-guide-02.html">Low MOQ Manufacturing</a></li>
+          <li><a href="/blog-detail/from-idea-to-product-your-step-by-step-guide-to-custom-yoga_customization-process-03.html">Custom Manufacturing Process</a></li>
         </ul>
       </div>
       <div>
@@ -189,7 +189,10 @@
 <script src="/js/search.js"></script>
 <script>
   function slugify(text) {
-    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+    let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const MAX = 60;
+  if (s.length > MAX) { const cut = s.lastIndexOf('-', MAX - 1); s = cut > 0 ? s.slice(0, cut) : s.slice(0, MAX); }
+  return s;
   }
   function articleUrl(article) {
     return '/blog-detail/' + slugify(article.title) + '_' + article.id + '.html';

@@ -67,7 +67,10 @@ app.get('/data/blog.json', (req, res) => {
 // --- 301 Redirect: legacy ?id= format → SEO slug format ---
 // So Google-indexed / shared old links auto-jump to the new pretty URL.
 function slugify(text) {
-  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+  let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const MAX = 60;
+  if (s.length > MAX) { const cut = s.lastIndexOf('-', MAX - 1); s = cut > 0 ? s.slice(0, cut) : s.slice(0, MAX); }
+  return s;
 }
 
 // Normalize products whose id is a long title-slug (causes URL duplication like /slug_fulltitle).

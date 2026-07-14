@@ -5,27 +5,27 @@
   <url><loc>https://lightcirle.com/products.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://lightcirle.com/blog.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <!-- Product Details -->
-  <url><loc>https://lightcirle.com/product-detail.html?id=leggings-01</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=leggings-02</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=leggings-03</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=bra-01</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=bra-02</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=bra-03</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=outerwear-01</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=outerwear-02</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=hoodie-01</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=hoodie-02</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=set-01</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=set-02</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=set-03</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=seamless-01</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=seamless-02</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lightcirle.com/product-detail.html?id=seamless-03</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/high-waist-yoga-leggings_leggings-01.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/scrunch-booty-yoga-leggings_leggings-02.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/flared-yoga-leggings_leggings-03.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/cross-back-sports-bra_bra-01.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/longline-sports-bra_bra-02.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/one-shoulder-sports-bra_bra-03.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/zip-up-yoga-jacket_outerwear-01.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/yoga-bolero-shrug_outerwear-02.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/cropped-yoga-hoodie_hoodie-01.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/oversized-yoga-sweatshirt_hoodie-02.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/classic-2-piece-yoga-set-bra-leggings_set-01.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/ribbed-3-piece-yoga-set-bra-leggings-jacket_set-02.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/plus-size-yoga-set-bra-leggings_set-03.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/seamless-yoga-leggings_seamless-01.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/seamless-yoga-shorts_seamless-02.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lightcirle.com/product-detail/seamless-knit-bra-shorts-set_seamless-03.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- Blog Details -->
-  <url><loc>https://lightcirle.com/blog-detail.html?id=fabric-guide-01</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lightcirle.com/blog-detail.html?id=moq-guide-02</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lightcirle.com/blog-detail.html?id=customization-process-03</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lightcirle.com/blog-detail.html?id=yoga-wear-trends-2026-04</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lightcirle.com/blog-detail.html?id=private-label-05</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lightcirle.com/blog-detail.html?id=shipping-logistics-06</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lightcirle.com/blog-detail/the-ultimate-guide-to-yoga-wear-fabrics-nylon-vs-polyester_fabric-guide-01.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lightcirle.com/blog-detail/low-moq-yoga-wear-manufacturing-how-50-pieces-changes-the_moq-guide-02.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lightcirle.com/blog-detail/from-idea-to-product-your-step-by-step-guide-to-custom-yoga_customization-process-03.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lightcirle.com/blog-detail/yoga-wear-trends-2026-what-s-hot-and-what-your-customers_yoga-wear-trends-2026-04.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lightcirle.com/blog-detail/private-label-vs-oem-vs-odm-which-manufacturing-model-is_private-label-05.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lightcirle.com/blog-detail/international-shipping-for-yoga-wear-ddp-ddu-and-what-b2b_shipping-logistics-06.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

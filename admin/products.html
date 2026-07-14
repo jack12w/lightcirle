@@ -141,7 +141,10 @@
   }
 
   function slugify(text) {
-    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+    let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const MAX = 60;
+  if (s.length > MAX) { const cut = s.lastIndexOf('-', MAX - 1); s = cut > 0 ? s.slice(0, cut) : s.slice(0, MAX); }
+  return s;
   }
 
   function renderTable(data) {

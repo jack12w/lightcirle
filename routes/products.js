@@ -8,7 +8,10 @@ const router = express.Router();
 
 // Keep in sync with server.js slugify (60-char cap) to avoid 301 loops
 function slugify(text) {
-  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^(.{60})(?:-[^-]*|[^-\s])*$/, '$1').replace(/-$/, '');
+  let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const MAX = 60;
+  if (s.length > MAX) { const cut = s.lastIndexOf('-', MAX - 1); s = cut > 0 ? s.slice(0, cut) : s.slice(0, MAX); }
+  return s;
 }
 // Generate a clean short id; never use the full title as id (prevents URL duplication)
 function genProductId(data, db) {
