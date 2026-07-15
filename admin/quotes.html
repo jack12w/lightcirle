@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>报价线索 — lightcirle 管理后台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #FAFAF8; color: #1F2937; }
+    a { text-decoration: none; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: #fff; border-right: 1px solid #E5E7EB; position: fixed; left: 0; top: 0; height: 100vh; display: flex; flex-direction: column; z-index: 40; }
+    .sidebar .brand { padding: 20px; border-bottom: 1px solid #F3F4F6; }
+    .sidebar .brand a { font-size: 20px; font-family: 'Playfair Display', serif; font-weight: 700; color: #2D5A3D; }
+    .sidebar .brand p { margin: 2px 0 0; font-size: 12px; color: #9CA3AF; }
+    .sidebar nav { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; overflow-y: auto; }
+    .s-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 10px; font-size: 14px; color: #6B7280; transition: all .2s; }
+    .s-link:hover, .s-link.active { background: rgba(45,90,61,.08); color: #2D5A3D; }
+    .s-link.active { font-weight: 600; }
+    .sidebar .foot { padding: 12px 12px 16px; border-top: 1px solid #F3F4F6; }
+    .main { flex: 1; margin-left: 240px; padding: 32px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 26px; margin: 0 0 4px; }
+    .sub { color: #9CA3AF; font-size: 13px; margin-bottom: 20px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .stat { background: #fff; border: 1px solid #E5E7EB; border-radius: 16px; padding: 16px 20px; min-width: 120px; }
+    .stat .n { font-size: 22px; font-weight: 700; color: #2D5A3D; }
+    .stat .l { font-size: 12px; color: #9CA3AF; margin-top: 2px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .filter-btn { font-size: 12px; padding: 6px 14px; border-radius: 999px; border: 1px solid #E5E7EB; background: #fff; color: #6B7280; cursor: pointer; transition: all .2s; }
+    .filter-btn:hover { border-color: #2D5A3D; }
+    .filter-btn.active { background: #2D5A3D; color: #fff; border-color: #2D5A3D; }
+    .card { background: #fff; border: 1px solid #E5E7EB; border-radius: 16px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { text-align: left; padding: 14px 16px; color: #9CA3AF; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; border-bottom: 1px solid #F3F4F6; }
+    tbody td { padding: 14px 16px; border-bottom: 1px solid #F3F4F6; vertical-align: top; }
+    tbody tr:hover { background: #FAFAF8; }
+    .company { font-weight: 600; }
+    .muted { color: #6B7280; font-size: 12px; }
+    .chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: #F3F4F6; color: #6B7280; }
+    .badge-new { background: #EFF6FF; color: #2563EB; }
+    .badge-contacted { background: #FEF3C7; color: #B45309; }
+    .badge-quoted { background: #EDE9FE; color: #6D28D9; }
+    .badge-won { background: #DCFCE7; color: #15803D; }
+    .badge-lost { background: #FEE2E2; color: #B91C1C; }
+    select.status-sel { padding: 6px 10px; border-radius: 10px; border: 1px solid #E5E7EB; font-size: 12px; background: #fff; cursor: pointer; color: #374151; }
+    .notes { white-space: pre-wrap; color: #6B7280; font-size: 12px; max-width: 280px; }
+    .empty { padding: 48px; text-align: center; color: #9CA3AF; }
+    .color-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 1px solid #D1D5DB; vertical-align: middle; margin-right: 6px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+    .search-input { flex: 1; min-width: 240px; padding: 10px 14px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 13px; background: #fff; color: #374151; outline: none; transition: border-color .2s; }
+    .search-input:focus { border-color: #2D5A3D; }
+    .export-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #2D5A3D; background: #2D5A3D; color: #fff; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
+    .export-btn:hover { background: #1F3F2A; }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px; }
+      .card { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar (self-contained; mirrors other admin pages, adds Quotes) -->
+  <aside class="sidebar">
+    <div class="brand">
+      <a href="dashboard.html">lightcirle</a>
+      <p>管理后台</p>
+    </div>
+    <nav>
+      <a href="dashboard.html" class="s-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
+      <a href="products.html" class="s-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
+      <a href="articles.html" class="s-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
+      <a href="categories.html" class="s-link"><i class="fas fa-tags w-5"></i>分类管理</a>
+      <a href="company.html" class="s-link"><i class="fas fa-building w-5"></i>公司信息</a>
+      <a href="visitors.html" class="s-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
+      <a href="quotes.html" class="s-link active"><i class="fas fa-file-invoice-dollar w-5"></i>报价线索</a>
+      <a href="settings.html" class="s-link"><i class="fas fa-cog w-5"></i>站点设置</a>
+      <a href="media.html" class="s-link"><i class="fas fa-images w-5"></i>媒体库</a>
+    </nav>
+    <div class="foot">
+      <a href="#" id="logoutBtn" class="s-link" style="color:#F87171"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>报价线索</h1>
+    <p class="sub">来自官网「Get a Quote」向导的客户询价，可在后台跟进状态。</p>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" class="search-input" placeholder="搜索 公司 / 联系人 / 邮箱 / 电话 / 备注…">
+      <button id="exportBtn" class="export-btn"><i class="fas fa-download"></i> 导出 CSV</button>
+    </div>
+
+    <div class="filters" id="filterBar"></div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>公司 / 联系人</th>
+            <th>联系方式</th>
+            <th>品类</th>
+            <th>数量</th>
+            <th>颜色</th>
+            <th>状态</th>
+            <th>需求详情</th>
+            <th>提交时间</th>
+          </tr>
+        </thead>
+        <tbody id="quoteTable"></tbody>
+      </table>
+      <div class="empty" id="emptyState" style="display:none">暂无线索</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const API = '/api';
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = '/admin/login.html';
+  document.getElementById('logoutBtn').addEventListener('click', e => {
+    e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html';
+  });
+
+  async function api(path, opts = {}) {
+    const res = await fetch(API + path, {
+      ...opts,
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+    });
+    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/admin/login.html'; }
+    return res;
+  }
+
+  const STATUS_LABELS = { new: '新线索', contacted: '已联系', quoted: '已报价', won: '已成交', lost: '已放弃' };
+  const STATUS_ORDER = ['new', 'contacted', 'quoted', 'won', 'lost'];
+  let quotes = [], activeFilter = 'all', searchQuery = '';
+
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function renderStats() {
+    const counts = { all: quotes.length };
+    STATUS_ORDER.forEach(s => counts[s] = quotes.filter(q => q.status === s).length);
+    const el = document.getElementById('stats');
+    el.innerHTML = STATUS_ORDER.map(s =>
+      `<div class="stat"><div class="n">${counts[s]}</div><div class="l">${STATUS_LABELS[s]}</div></div>`
+    ).join('');
+  }
+
+  function renderFilters() {
+    const bar = document.getElementById('filterBar');
+    const opts = [{ k: 'all', l: '全部' }].concat(STATUS_ORDER.map(s => ({ k: s, l: STATUS_LABELS[s] })));
+    bar.innerHTML = opts.map(o =>
+      `<button class="filter-btn ${activeFilter === o.k ? 'active' : ''}" data-k="${o.k}">${o.l}</button>`
+    ).join('');
+    bar.querySelectorAll('.filter-btn').forEach(b => {
+      b.onclick = () => { activeFilter = b.dataset.k; renderFilters(); renderTable(); };
+    });
+  }
+
+  // Combined filter: status + free-text search
+  function getVisible() {
+    const q = searchQuery.trim().toLowerCase();
+    let data = activeFilter === 'all' ? quotes : quotes.filter(x => x.status === activeFilter);
+    if (q) {
+      data = data.filter(x => [x.company, x.name, x.email, x.whatsapp, x.notes, x.category, x.fabric, x.budget]
+        .some(f => (f || '').toLowerCase().includes(q)));
+    }
+    return data;
+  }
+
+  function renderTable() {
+    const data = getVisible();
+    const tbody = document.getElementById('quoteTable');
+    const empty = document.getElementById('emptyState');
+    if (!data.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    tbody.innerHTML = data.map(q => {
+      const contact = esc(q.name) + (q.email ? `<div class="muted">${esc(q.email)}</div>` : '') + (q.whatsapp ? `<div class="muted">${esc(q.whatsapp)}</div>` : '');
+      const color = (q.colorHex ? `<span class="color-dot" style="background:${esc(q.colorHex)}"></span>` : '') + esc(q.color || '');
+      const custom = (q.customization && q.customization.length) ? `<div class="muted">定制: ${esc(q.customization.join('，'))}</div>` : '';
+      const detail = [
+        q.fabric ? `<div>面料: ${esc(q.fabric)}</div>` : '',
+        q.delivery ? `<div>交期: ${esc(q.delivery)}</div>` : '',
+        q.budget ? `<div>预算: ${esc(q.budget)}</div>` : '',
+        custom,
+        q.notes ? `<div class="notes" style="margin-top:4px">${esc(q.notes)}</div>` : ''
+      ].join('');
+      const options = STATUS_ORDER.map(s => `<option value="${s}" ${q.status === s ? 'selected' : ''}>${STATUS_LABELS[s]}</option>`).join('');
+      return `<tr>
+        <td><div class="company">${esc(q.company || '—')}</div></td>
+        <td>${contact}</td>
+        <td><span class="chip">${esc(q.category || '—')}</span></td>
+        <td>${esc(q.qty ? q.qty + ' pcs' : '—')}</td>
+        <td>${color || '—'}</td>
+        <td><span class="badge-${esc(q.status)}" style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:600">${STATUS_LABELS[q.status] || q.status}</span><br><select class="status-sel" data-id="${q.id}" style="margin-top:6px">${options}</select></td>
+        <td>${detail || '—'}</td>
+        <td class="muted">${esc((q.createdAt || '').replace('T', ' '))}</td>
+      </tr>`;
+    }).join('');
+
+    tbody.querySelectorAll('.status-sel').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const id = sel.dataset.id;
+        try {
+          const res = await api('/quotes/' + id, { method: 'PATCH', body: JSON.stringify({ status: sel.value }) });
+          if (res.ok) {
+            const q = quotes.find(x => String(x.id) === id);
+            if (q) q.status = sel.value;
+            renderStats(); renderTable();
+          } else { alert('更新失败'); }
+        } catch (e) { alert('更新失败: ' + e.message); }
+      });
+    });
+  }
+
+  function csvCell(v) {
+    const s = String(v == null ? '' : v);
+    return '"' + s.replace(/"/g, '""').replace(/\r\n|\r|\n/g, ' ') + '"';
+  }
+
+  function exportCsv() {
+    const data = getVisible();
+    if (!data.length) { alert('当前没有可导出的线索'); return; }
+    const headers = ['ID', '公司', '联系人', '邮箱', 'WhatsApp', '品类', '数量', '颜色', '色值', '面料/工艺', '定制项', '期望交期', '预算', '状态', '备注', '提交时间'];
+    const rows = data.map(q => [
+      q.id, q.company, q.name, q.email, q.whatsapp, q.category, q.qty,
+      q.color, q.colorHex, q.fabric,
+      (q.customization && q.customization.length) ? q.customization.join('，') : '',
+      q.delivery, q.budget, STATUS_LABELS[q.status] || q.status, q.notes, q.createdAt
+    ]);
+    const csv = [headers.map(csvCell).join(','), ...rows.map(r => r.map(csvCell).join(','))].join('\r\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = url; a.download = 'quote-leads-' + stamp + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('searchInput').addEventListener('input', e => { searchQuery = e.target.value; renderTable(); });
+  document.getElementById('exportBtn').addEventListener('click', exportCsv);
+
+  async function load() {
+    try {
+      const res = await api('/quotes');
+      quotes = res.ok ? await res.json() : [];
+    } catch (e) { quotes = []; }
+    renderStats(); renderFilters(); renderTable();
+  }
+
+  load();
+</script>
+</body>
+</html>

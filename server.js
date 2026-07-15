@@ -207,6 +207,7 @@ app.use('/api/media', require('./routes/media'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/company', require('./routes/company'));
 app.use('/api/visitors', require('./routes/visitors'));
+app.use('/api/quotes', require('./routes/quotes'));
 
 // --- Admin pages ---
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'login.html')));

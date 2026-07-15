@@ -12,6 +12,8 @@
     .sidebar-link:hover, .sidebar-link.active { background: rgba(45,90,61,0.08); color: #2D5A3D; }
     .sidebar-link.active { font-weight: 600; }
     .stat-card { background: white; border: 1px solid #E5E7EB; border-radius: 16px; padding: 24px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
   </style>
 </head>
 <body class="bg-[#FAFAF8]">
@@ -50,11 +52,16 @@
       </div>
 
       <!-- Stats -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="statsContainer">
+      <div class="stats-grid mb-8" id="statsContainer">
         <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-tshirt mr-2 text-[#2D5A3D]"></i>产品数</p><p id="prodCount" class="text-3xl font-bold mt-2">—</p></div>
         <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-newspaper mr-2 text-[#C4926E]"></i>文章数</p><p id="artCount" class="text-3xl font-bold mt-2">—</p></div>
         <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-tags mr-2 text-[#2D5A3D]"></i>分类数</p><p id="catCount" class="text-3xl font-bold mt-2">—</p></div>
         <div class="stat-card"><p class="text-sm text-gray-500"><i class="fas fa-database mr-2 text-[#C4926E]"></i>数据库</p><p id="dbSize" class="text-3xl font-bold mt-2">—</p></div>
+        <a href="quotes.html" class="stat-card hover:border-[#2D5A3D] transition-colors" style="text-decoration:none">
+          <p class="text-sm text-gray-500"><i class="fas fa-file-invoice-dollar mr-2 text-[#C4926E]"></i>未处理线索</p>
+          <p id="leadCount" class="text-3xl font-bold mt-2 text-[#C4926E]">—</p>
+          <p class="text-xs text-gray-400 mt-1">待跟进询价 →</p>
+        </a>
       </div>
 
       <!-- Recent Products -->
@@ -104,15 +111,17 @@
 
     async function load() {
       try {
-        const [prod, art, sets] = await Promise.all([
+        const [prod, art, sets, qLeads] = await Promise.all([
           (await api('/products')).json(), (await api('/articles')).json(),
-          (await api('/settings')).json()
+          (await api('/settings')).json(), (await api('/quotes')).json()
         ]);
         document.getElementById('prodCount').textContent = prod.length;
         document.getElementById('artCount').textContent = art.length;
         const cats = [...new Set(prod.map(p => p.category))];
         document.getElementById('catCount').textContent = cats.length;
         document.getElementById('dbSize').textContent = sets.dbSize || '—';
+        const newLeads = Array.isArray(qLeads) ? qLeads.filter(q => q.status === 'new').length : 0;
+        document.getElementById('leadCount').textContent = newLeads;
 
         // Recent products (4)
         document.getElementById('recentProducts').innerHTML = prod.slice(0, 5).map(p => 

@@ -151,6 +151,30 @@ function initSchema() {
 
     CREATE INDEX IF NOT EXISTS idx_visitor_session ON visitor_logs(session_id);
     CREATE INDEX IF NOT EXISTS idx_visitor_entry ON visitor_logs(entry_time);
+
+    -- Custom quote requests (lead capture from the "Get a Quote" wizard)
+    CREATE TABLE IF NOT EXISTS quote_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL DEFAULT '',
+      company TEXT NOT NULL DEFAULT '',
+      email TEXT NOT NULL DEFAULT '',
+      whatsapp TEXT NOT NULL DEFAULT '',
+      category TEXT NOT NULL DEFAULT '',
+      qty TEXT NOT NULL DEFAULT '',
+      color TEXT NOT NULL DEFAULT '',
+      color_hex TEXT NOT NULL DEFAULT '',
+      fabric TEXT NOT NULL DEFAULT '',
+      customization TEXT NOT NULL DEFAULT '[]',
+      delivery TEXT NOT NULL DEFAULT '',
+      budget TEXT NOT NULL DEFAULT '',
+      notes TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'new',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_quote_status ON quote_requests(status);
+    CREATE INDEX IF NOT EXISTS idx_quote_created ON quote_requests(created_at);
   `);
 
   // --- Migrations (add columns that may be missing in existing DB) ---
