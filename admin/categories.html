@@ -73,7 +73,7 @@
               <button type="button" onclick="openCatMediaPicker()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
               <button type="button" onclick="clearEdImage()" class="text-xs text-red-400 hover:text-red-600">清除</button>
             </div>
-            <p class="text-[11px] text-gray-400 mt-2">提示：编辑已有分类时，上传/选择封面后会自动保存；新建分类需点击「保存」后图片才生效。</p>
+            <p class="text-[11px] text-gray-400 mt-2">提示：上传或选择封面后将自动保存，无需点击「保存」。新建分类需先填写 ID 与名称，封面会随分类一并自动创建。</p>
             <input type="hidden" id="edImage" value="">
             <input type="file" id="edImageInput" accept="image/*" class="hidden" onchange="uploadEdImage(this)">
           </div>
@@ -161,13 +161,18 @@
     document.getElementById('edImage').value = '';
     document.getElementById('edImageInput').value = '';
     updateEdImagePreview('');
+    if (editingId) saveCategorySilent();
   }
 
   function openCatMediaPicker() {
-    window.__mediaPickCallback = function(url) {
+    window.__mediaPickCallback = async function(url) {
       document.getElementById('edImage').value = url;
       updateEdImagePreview(url);
-      if (editingId) saveCategorySilent();
+      if (editingId) {
+        await saveCategorySilent();
+      } else {
+        await ensureCategoryExists();
+      }
     };
     openSharedMediaPicker();
   }
@@ -187,9 +192,11 @@
       const data = await res.json();
       document.getElementById('edImage').value = data.url;
       updateEdImagePreview(data.url);
-      // Auto-save if editing an existing category
+      // Auto-save: for existing category just update; for new category create it with the image
       if (editingId) {
         await saveCategorySilent();
+      } else {
+        await ensureCategoryExists();
       }
     } catch(e) {
       alert('上传失败: ' + e.message);
@@ -207,6 +214,32 @@
     try {
       await api('/categories/' + editingId, { method: 'PUT', body: JSON.stringify(data) });
     } catch(e) { console.error('Auto-save failed:', e); }
+  }
+
+  // For a new (not-yet-saved) category: create it on first image action so the image persists,
+  // then flip the modal into edit mode so subsequent changes auto-save.
+  async function ensureCategoryExists() {
+    if (editingId) return true;
+    const id = document.getElementById('edId').value.trim();
+    const name = document.getElementById('edName').value.trim();
+    if (!id || !name) {
+      // Cannot create without id/name yet — keep image locally, it will be saved on explicit submit
+      return false;
+    }
+    try {
+      const res = await api('/categories', { method: 'POST', body: JSON.stringify({
+        id, name, type: document.getElementById('edType').value, image: document.getElementById('edImage').value
+      })});
+      if (res.ok) {
+        const d = await res.json();
+        editingId = (d && d.id) || id;
+        document.getElementById('editorTitle').textContent = '编辑: ' + name;
+        document.getElementById('edId').disabled = true;
+        loadCategories();
+        return true;
+      }
+    } catch(e) { console.error('Auto-create failed:', e); }
+    return false;
   }
 
   function closeEditor() {
