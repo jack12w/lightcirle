@@ -6,6 +6,8 @@ node_modules/
 *.db-wal
 # Runtime-generated config (re-exported from DB on settings save, do not commit)
 data/config.js
+# Debug / preview-only HTML files (never commit)
+*-preview.html
 uploads/*
 !uploads/.gitkeep
 .DS_Store

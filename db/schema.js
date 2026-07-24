@@ -46,6 +46,7 @@ function initSchema() {
       oss_access_key_secret TEXT NOT NULL DEFAULT '',
       oss_cdn_domain TEXT NOT NULL DEFAULT '',
       favicon_path TEXT NOT NULL DEFAULT '',
+      business_hours TEXT NOT NULL DEFAULT 'Mon-Sat, 9AM-6PM (GMT+8)',
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -188,6 +189,7 @@ function initSchema() {
     "ALTER TABLE settings ADD COLUMN oss_cdn_domain TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE settings ADD COLUMN favicon_path TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE settings ADD COLUMN oss_prefix TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE settings ADD COLUMN business_hours TEXT NOT NULL DEFAULT 'Mon-Sat, 9AM-6PM (GMT+8)'",
     // Media columns
     "ALTER TABLE media ADD COLUMN folder TEXT NOT NULL DEFAULT 'site'",
     "ALTER TABLE media ADD COLUMN oss_path TEXT NOT NULL DEFAULT ''",

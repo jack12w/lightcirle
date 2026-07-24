@@ -51,6 +51,7 @@ router.get('/', (req, res) => {
       cdnDomain: s.oss_cdn_domain || '',
     },
     faviconPath: s.favicon_path || '',
+    businessHours: s.business_hours || 'Mon-Sat, 9AM-6PM (GMT+8)',
     dbSize: dbSize,
   });
 });
@@ -91,6 +92,7 @@ router.put('/', authenticate, (req, res) => {
       cdnDomain:    data.oss?.cdnDomain    ?? cur.oss_cdn_domain    ?? '',
     },
     faviconPath: data.faviconPath ?? cur.favicon_path ?? '',
+    businessHours: data.businessHours ?? cur.business_hours ?? 'Mon-Sat, 9AM-6PM (GMT+8)',
   };
 
   db.prepare(`
@@ -98,9 +100,9 @@ router.put('/', authenticate, (req, res) => {
       brand_name=?, brand_tagline=?, brand_domain=?, whatsapp_number=?, email_address=?,
       site_title=?, site_description=?, moq=?, location=?, year_established=?, countries_shipped=?,
       colors_primary=?, colors_primary_light=?, colors_primary_dark=?,
-      colors_accent=?, colors_accent_light=?, colors_whatsapp=?,
+      colors_accent=?, colors_accent_light=?,       colors_whatsapp=?,
       oss_enabled=?, oss_region=?, oss_bucket=?, oss_access_key_id=?, oss_access_key_secret=?, oss_cdn_domain=?,
-      favicon_path=?,
+      favicon_path=?, business_hours=?,
       updated_at=datetime('now')
     WHERE id=1
   `).run(
@@ -110,7 +112,7 @@ router.put('/', authenticate, (req, res) => {
     merged.colors.accent, merged.colors.accentLight, merged.colors.whatsapp,
     merged.oss.enabled ? 1 : 0, merged.oss.region, merged.oss.bucket,
     merged.oss.accessKeyId, merged.oss.accessKeySecret, merged.oss.cdnDomain,
-    merged.faviconPath
+    merged.faviconPath, merged.businessHours
   );
 
   // Also write to config.js for the static site
@@ -157,6 +159,7 @@ function buildConfigFileContent() {
     yearEstablished: s.year_established || 2016,
     countriesShipped: s.countries_shipped || 30,
     faviconPath: s.favicon_path || '',
+    businessHours: s.business_hours || 'Mon-Sat, 9AM-6PM (GMT+8)',
   };
 
   // Preserve the builtin file's tail (favicon/CSS-var sync + JSON-LD schema injectors):

@@ -48,6 +48,7 @@
           <div><label class="block text-xs font-medium text-gray-500 mb-1">WhatsApp 号码</label><input id="sWhatsApp" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">邮箱地址</label><input id="sEmail" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">所在位置</label><input id="sLocation" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">营业时间</label><input id="sBusinessHours" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none" placeholder="Mon-Sat, 9AM-6PM (GMT+8)"></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">最低起订量</label><input id="sMoq" type="number" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none"></div>
         </div>
       </div>
@@ -148,6 +149,7 @@
     document.getElementById('sWhatsApp').value = s.whatsappNumber || '';
     document.getElementById('sEmail').value = s.emailAddress || '';
     document.getElementById('sLocation').value = s.location || '';
+    document.getElementById('sBusinessHours').value = s.businessHours || '';
     document.getElementById('sMoq').value = s.moq || 50;
     document.getElementById('sSiteTitle').value = s.siteTitle || '';
     document.getElementById('sSiteDesc').value = s.siteDescription || '';
@@ -225,6 +227,7 @@
       whatsappNumber: document.getElementById('sWhatsApp').value,
       emailAddress: document.getElementById('sEmail').value,
       location: document.getElementById('sLocation').value,
+      businessHours: document.getElementById('sBusinessHours').value,
       moq: parseInt(document.getElementById('sMoq').value) || 50,
       siteTitle: document.getElementById('sSiteTitle').value,
       siteDescription: document.getElementById('sSiteDesc').value,

@@ -35,6 +35,7 @@ window.SITE_CONFIG = {
   yearEstablished: 2016,
   countriesShipped: 30,
   faviconPath: '',
+  businessHours: 'Mon-Sat, 9AM-6PM (GMT+8)',
 };
 
 (function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};

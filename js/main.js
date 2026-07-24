@@ -100,6 +100,24 @@ function initSiteContact() {
 
   // 3) Fix displayed WhatsApp default number
   replaceTextContent(document.body, '+86 123 4567 8900', waDisplay);
+
+  // 4) Fix displayed location (footer) — backend "所在位置" now drives this
+  const loc = cfg.location || 'Guangzhou, China';
+  replaceTextContent(document.body, 'Guangzhou, China', loc);
+
+  // 5) Fix displayed business hours (footer) — backend "营业时间" now drives this
+  const hours = cfg.businessHours || 'Mon-Sat, 9AM-6PM (GMT+8)';
+  replaceTextContent(document.body, 'Mon-Sat, 9AM-6PM (GMT+8)', hours);
+
+  // 6) Fix clickable WhatsApp links (wa.me/...) so they use the live number,
+  //    not the hardcoded default in each page's footer/CTA.
+  const waNum = (cfg.whatsappNumber || '').replace(/\D/g, '');
+  if (waNum) {
+    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(function(a) {
+      const href = a.getAttribute('href') || '';
+      a.setAttribute('href', href.replace(/wa\.me\/\d+/, 'wa.me/' + waNum));
+    });
+  }
 }
 
 // Helper: format raw WhatsApp number for display (e.g. "8612345678900" → "+86 123 4567 8900")
