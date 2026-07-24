@@ -88,56 +88,89 @@ router.put('/', authenticate, (req, res) => {
   res.json({ message: 'Settings updated' });
 });
 
+function buildConfigFileContent() {
+  const db = getDb();
+  const s = db.prepare('SELECT * FROM settings WHERE id = 1').get();
+  if (!s) return null;
+
+  const live = {
+    brandName: s.brand_name,
+    brandTagline: s.brand_tagline || '',
+    brandDomain: s.brand_domain,
+    brandFullDomain: 'https://' + s.brand_domain,
+    colors: {
+      primary: s.colors_primary,
+      primaryLight: s.colors_primary_light,
+      primaryDark: s.colors_primary_dark,
+      accent: s.colors_accent,
+      accentLight: s.colors_accent_light,
+      accentDark: '#A67B5B',
+      whatsapp: s.colors_whatsapp,
+      background: '#FAFAF8',
+      surface: '#FFFFFF',
+      text: '#2C2C2C',
+      textMuted: '#6B7280',
+      border: '#E5E7EB',
+      darkBackground: '#1A1D1C',
+      darkSurface: '#252928',
+      darkText: '#E8E6E3',
+      darkTextMuted: '#9CA3AF',
+      darkBorder: '#374151',
+    },
+    whatsappNumber: s.whatsapp_number,
+    emailAddress: s.email_address,
+    siteTitle: s.site_title || '',
+    siteDescription: s.site_description || '',
+    moq: s.moq || 50,
+    location: s.location || 'Guangzhou, China',
+    yearEstablished: s.year_established || 2016,
+    countriesShipped: s.countries_shipped || 30,
+    faviconPath: s.favicon_path || '',
+  };
+
+  // Preserve the builtin file's tail (favicon/CSS-var sync + JSON-LD schema injectors):
+  // only replace the `window.SITE_CONFIG = { ... };` block with live values.
+  const builtinPath = path.join(__dirname, '..', 'js', 'config.js');
+  let builtin = '';
+  try { builtin = fs.readFileSync(builtinPath, 'utf8'); } catch (e) { builtin = ''; }
+
+  const marker = 'window.SITE_CONFIG =';
+  const idx = builtin.indexOf(marker);
+  if (idx === -1) {
+    // builtin missing — fall back to a minimal but valid file
+    return 'window.SITE_CONFIG = ' + JSON.stringify(live, null, 2) + ';\n';
+  }
+  const open = builtin.indexOf('{', idx);
+  let depth = 0, end = -1;
+  for (let i = open; i < builtin.length; i++) {
+    if (builtin[i] === '{') depth++;
+    else if (builtin[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end === -1) return 'window.SITE_CONFIG = ' + JSON.stringify(live, null, 2) + ';\n';
+
+  const head = builtin.slice(0, idx);
+  const tail = builtin.slice(end + 1); // includes the closing `;` and everything after
+  const cfgStr = 'window.SITE_CONFIG = ' + JSON.stringify(live, null, 2) + ';';
+  return head + cfgStr + tail;
+}
+
 function syncConfigToFile() {
   try {
-    const db = getDb();
-    const s = db.prepare('SELECT * FROM settings WHERE id = 1').get();
-    if (!s) return;
-
-    const configContent = `// ============================================
-// lightcirle — Site Configuration (auto-generated from admin)
-// ============================================
-
-window.SITE_CONFIG = {
-  brandName: '${s.brand_name}',
-  brandTagline: '${s.brand_tagline || ''}',
-  brandDomain: '${s.brand_domain}',
-  brandFullDomain: 'https://${s.brand_domain}',
-  colors: {
-    primary: '${s.colors_primary}',
-    primaryLight: '${s.colors_primary_light}',
-    primaryDark: '${s.colors_primary_dark}',
-    accent: '${s.colors_accent}',
-    accentLight: '${s.colors_accent_light}',
-    accentDark: '#A67B5B',
-    whatsapp: '${s.colors_whatsapp}',
-    background: '#FAFAF8',
-    surface: '#FFFFFF',
-    text: '#2C2C2C',
-    textMuted: '#6B7280',
-    border: '#E5E7EB',
-    darkBackground: '#1A1D1C',
-    darkSurface: '#252928',
-    darkText: '#E8E6E3',
-    darkTextMuted: '#9CA3AF',
-    darkBorder: '#374151',
-  },
-  whatsappNumber: '${s.whatsapp_number}',
-  emailAddress: '${s.email_address}',
-  siteTitle: '${s.site_title || ''}',
-  siteDescription: '${s.site_description || ''}',
-  moq: ${s.moq || 50},
-  location: '${s.location || 'Guangzhou, China'}',
-  yearEstablished: ${s.year_established || 2016},
-  countriesShipped: ${s.countries_shipped || 30},
-  faviconPath: '${(s.favicon_path || '').replace(/'/g, "\\'")}',
-};
-
-(function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};var f=document.querySelector('link[rel*=\"icon\"]')||document.createElement('link');f.rel='icon';var href=window.SITE_CONFIG.faviconPath||'/favicon.svg';f.href=href;if(/\.svg$/i.test(href))f.type='image/svg+xml';else if(/\.png$/i.test(href))f.type='image/png';else if(/\.ico$/i.test(href))f.type='image/x-icon';if(!f.parentNode)document.head.appendChild(f);})();
-`;
-    fs.writeFileSync(path.join(__dirname, '..', 'data', 'config.js'), configContent, 'utf8');
-    console.log('config.js synced to volume');
-  } catch(e) {
+    const content = buildConfigFileContent();
+    if (!content) return;
+    // Write to BOTH locations so the live config is picked up whether the site is
+    // served by Express (which swaps in data/config.js) or by a plain static server / Nginx
+    // (which serves js/config.js directly).
+    const targets = [
+      path.join(__dirname, '..', 'data', 'config.js'), // volume-backed, used by Express swap
+      path.join(__dirname, '..', 'js', 'config.js'),    // served directly by static hosts
+    ];
+    for (const t of targets) {
+      try { fs.writeFileSync(t, content, 'utf8'); }
+      catch (e) { console.error('Failed to write', t, ':', e.message); }
+    }
+    console.log('config.js synced (js/config.js + data/config.js)');
+  } catch (e) {
     console.error('Failed to sync config.js:', e.message);
   }
 }

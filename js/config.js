@@ -66,8 +66,8 @@ window.injectOrganizationSchema = function() {
     foundingDate: '2016',
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+86-123-4567-8900',
-      email: 'inquiry@lightcirle.com',
+      telephone: window.SITE_CONFIG.whatsappNumber || '+86-123-4567-8900',
+      email: window.SITE_CONFIG.emailAddress || 'inquiry@lightcirle.com',
       contactType: 'sales',
       availableLanguage: ['English']
     },
