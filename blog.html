@@ -262,23 +262,52 @@
       renderCard: renderBlogCard,
     });
 
-    // Category filter buttons
-    document.querySelectorAll('#categoryFilters .category-tag').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#categoryFilters .category-tag').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentCategory = btn.getAttribute('data-category');
-        searchEngine.filterByCategory(currentCategory);
+    // --- Category filters: dynamic from backend, with static fallback ---
+    function bindCategoryButtons() {
+      document.querySelectorAll('#categoryFilters .category-tag').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#categoryFilters .category-tag').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.getAttribute('data-category');
+          searchEngine.filterByCategory(currentCategory);
+        });
       });
-    });
+    }
 
-    // Pre-select from URL
-    if (urlCategory) {
-      const targetBtn = document.querySelector(`#categoryFilters [data-category="${urlCategory}"]`);
-      if (targetBtn) {
-        setTimeout(() => targetBtn.click(), 300);
+    function applyUrlCategory() {
+      if (urlCategory) {
+        const targetBtn = document.querySelector(`#categoryFilters [data-category="${urlCategory}"]`);
+        if (targetBtn) {
+          setTimeout(() => { targetBtn.click(); }, 300);
+        }
       }
     }
+
+    // Load article categories from API; keep static HTML buttons if API unavailable
+    async function loadBlogCategories() {
+      try {
+        const resp = await fetch(window.location.origin + '/api/categories?type=article');
+        if (!resp.ok) throw new Error('bad status ' + resp.status);
+        const cats = await resp.json();
+        if (!Array.isArray(cats) || !cats.length) return;
+        cats.forEach(c => { categoryNames[c.id] = c.name; });
+        const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        let html = '<button class="category-tag active" data-category="all">All Articles</button>';
+        cats.forEach(c => {
+          html += '<button class="category-tag" data-category="' + esc(c.id) + '">' + esc(c.name) + '</button>';
+        });
+        document.getElementById('categoryFilters').innerHTML = html;
+        bindCategoryButtons();
+        applyUrlCategory();
+        try { searchEngine.filterByCategory(currentCategory); } catch (e2) {}
+      } catch (e) {
+        console.warn('Categories API unavailable, using static fallback:', e);
+      }
+    }
+
+    bindCategoryButtons();
+    applyUrlCategory();
+    loadBlogCategories();
 
     if (urlSearch) {
       const input = document.getElementById('searchInput');

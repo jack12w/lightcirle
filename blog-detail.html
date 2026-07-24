@@ -203,6 +203,24 @@
     'industry-news': 'Industry News'
   };
 
+  // Refresh live article category names from backend (falls back to hardcoded map if API unavailable)
+  window.refreshArticleCategoryNames = function() {
+    try {
+      fetch(window.location.origin + '/api/categories?type=article')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(cats) {
+          if (!Array.isArray(cats)) return;
+          cats.forEach(function(c) { categoryNames[c.id] = c.name; });
+          var el = document.getElementById('articleCategoryLabel');
+          if (el && window.__currentArticle) el.textContent = categoryNames[window.__currentArticle.category] || window.__currentArticle.category;
+          document.querySelectorAll('[data-cat]').forEach(function(node) {
+            node.textContent = categoryNames[node.dataset.cat] || node.dataset.cat;
+          });
+        })
+        .catch(function() {});
+    } catch (e) {}
+  };
+
   function slugify(text) {
     let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const MAX = 60;
@@ -286,6 +304,7 @@
   };
 
   function renderArticle(article) {
+    window.__currentArticle = article;
     document.title = article.title + ' — lightcirle Blog';
     document.getElementById('pageTitle').textContent = document.title;
     var desc = document.querySelector('meta[name="description"]');
@@ -299,7 +318,7 @@
     var html = '';
     html += '<header class="mb-10">';
     html += '<div class="flex items-center gap-3 mb-4">';
-    html += '<span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">' + catName + '</span>';
+    html += '<span id="articleCategoryLabel" class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">' + catName + '</span>';
     html += '<span class="text-xs text-gray-400">' + formattedDate + '</span>';
     html += '<span class="text-xs text-gray-400">by ' + (article.author || 'lightcirle Team') + '</span>';
     html += '</div>';
@@ -373,7 +392,7 @@
       var a = related[r];
       var aUrl = articleUrl(a);
       html += '<article class="blog-card"><a href="' + aUrl + '" class="block"><div class="blog-image-wrap"><img src="' + a.image + '" alt="' + a.title + '" loading="lazy"></div></a>';
-      html += '<div class="p-5"><span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">' + (categoryNames[a.category] || a.category) + '</span>';
+      html += '<div class="p-5"><span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider" data-cat="' + a.category + '">' + (categoryNames[a.category] || a.category) + '</span>';
       html += '<a href="' + aUrl + '" class="block group mt-2"><h3 class="font-serif font-bold text-lg leading-snug group-hover:text-primary dark:group-hover:text-primary-light transition-colors">' + a.title + '</h3></a>';
       html += '<p class="text-sm text-gray-500 dark:text-gray-400 mt-2 line-clamp-2">' + a.excerpt + '</p></div></article>';
     }
@@ -421,6 +440,7 @@
         }
         renderArticle(article);
         renderRelated(articles, articleId);
+        if (window.refreshArticleCategoryNames) window.refreshArticleCategoryNames();
         // Inject Article + Breadcrumb schema
         if (window.injectArticleSchema) injectArticleSchema(article);
         if (window.injectBreadcrumbSchema) injectBreadcrumbSchema([

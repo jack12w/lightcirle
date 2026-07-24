@@ -194,6 +194,23 @@
     'seamless': 'Seamless'
   };
 
+  // Refresh the live category name label from backend (falls back to the hardcoded map above if API unavailable)
+  window.refreshProductCategoryName = function() {
+    try {
+      fetch(window.location.origin + '/api/categories?type=product')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(cats) {
+          if (!Array.isArray(cats)) return;
+          cats.forEach(function(c) { categoryNames[c.id] = c.name; });
+          var p = window.__currentProduct;
+          if (!p) return;
+          var el = document.getElementById('productCategoryLabel');
+          if (el) el.textContent = categoryNames[p.category] || p.category;
+        })
+        .catch(function() {});
+    } catch (e) {}
+  };
+
   function slugify(text) {
     let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const MAX = 60;
@@ -272,7 +289,7 @@
     }
     html += '</div></div>';
     html += '<div>';
-    html += '<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (categoryNames[product.category] || product.category) + '</span>';
+    html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (categoryNames[product.category] || product.category) + '</span>';
     html += '<h1 class="text-3xl lg:text-4xl font-serif font-bold mb-4">' + product.name + '</h1>';
     html += '<p class="text-gray-600 dark:text-gray-400 text-lg mb-6">' + product.description + '</p>';
     // Specs
@@ -336,6 +353,7 @@
     contentEl.classList.remove('hidden');
     window.__renderedProduct = product;
     window.__currentProduct = product;
+    if (window.refreshProductCategoryName) window.refreshProductCategoryName();
     // Update canonical URL with slug
     var canonLink = document.querySelector('link[rel="canonical"]');
     if (canonLink) canonLink.setAttribute('href', 'https://lightcirle.com' + productUrl(product));

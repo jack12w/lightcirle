@@ -319,5 +319,32 @@
 <script src="/js/config.js"></script>
 <script src="/js/main.js"></script>
 <script src="/js/quote.js"></script>
+<script>
+// Dynamically populate the quote category dropdown from backend categories.
+// Keeps the static <option>s above as a fallback when the API is unavailable.
+(function () {
+  var sel = document.getElementById('q-category');
+  if (!sel) return;
+  try {
+    fetch(window.location.origin + '/api/categories?type=product')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (cats) {
+        if (!Array.isArray(cats) || !cats.length) return; // keep static fallback
+        var esc = function (s) {
+          return String(s).replace(/[&<>"']/g, function (m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+          });
+        };
+        var html = '<option value="" disabled selected>Select a category…</option>';
+        cats.forEach(function (c) {
+          html += '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>';
+        });
+        html += '<option value="other">Other / Mixed</option>';
+        sel.innerHTML = html;
+      })
+      .catch(function () {});
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
