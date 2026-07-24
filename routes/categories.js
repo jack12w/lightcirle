@@ -36,26 +36,66 @@ router.post('/', authenticate, (req, res) => {
   res.status(201).json({ id, message: '分类已创建' });
 });
 
+// Fallback PUT for IDs with special characters (e.g. 'Sports Skirts/Dresses')
+// Usage: PUT /api/categories/update?id=Sports%20Skirts%2FDresses
+// MUST be defined before /:id so it takes priority
+router.put('/update', authenticate, (req, res) => {
+  const db = getDb();
+  const { name, image } = req.body;
+  const id = req.query.id;
+  if (!name) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'Name is required' });
+  if (!id) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'ID query parameter is required' });
+
+  const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(id);
+  if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found: ' + id });
+
+  db.prepare('UPDATE categories SET name = ?, image = ? WHERE id = ?').run(name, image || '', id);
+  res.json({ message: '分类已更新' });
+});
+
 // PUT /api/categories/:id (auth required)
 router.put('/:id', authenticate, (req, res) => {
   const db = getDb();
   const { name, image } = req.body;
   if (!name) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'Name is required' });
 
-  const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
-  if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found' });
+  const id = req.params.id || req.query.id;
+  if (!id) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'ID is required' });
 
-  db.prepare('UPDATE categories SET name = ?, image = ? WHERE id = ?').run(name, image || '', req.params.id);
+  const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(id);
+  if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found: ' + id });
+
+  db.prepare('UPDATE categories SET name = ?, image = ? WHERE id = ?').run(name, image || '', id);
   res.json({ message: '分类已更新' });
+});
+
+// Fallback DELETE for IDs with special characters
+// Usage: DELETE /api/categories/remove?id=Sports%20Skirts%2FDresses
+// MUST be defined before /:id so it takes priority
+router.delete('/remove', authenticate, (req, res) => {
+  const db = getDb();
+  const id = req.query.id;
+  if (!id) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'ID query parameter is required' });
+
+  const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(id);
+  if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found: ' + id });
+
+  db.prepare('DELETE FROM categories WHERE id = ?').run(id);
+  res.json({ message: '分类已删除' });
 });
 
 // DELETE /api/categories/:id (auth required)
 router.delete('/:id', authenticate, (req, res) => {
   const db = getDb();
-  const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
-  if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found' });
 
-  db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
+  // Support both path param and query param (?id=...)
+  const id = req.params.id || req.query.id;
+  if (!id) return res.status(422).json({ title: 'Validation Error', status: 422, detail: 'ID is required' });
+
+  const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(id);
+  if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Category not found: ' + id });
+
+  db.prepare('DELETE FROM categories WHERE id = ?').run(id);
   res.json({ message: '分类已删除' });
 });
 

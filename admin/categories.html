@@ -203,6 +203,13 @@
     }
   }
 
+  // Build safe category API URL — IDs containing '/' break Express path params
+  function categoryUrl(id, method) {
+    if (!id || !/[\/\?#]/.test(id)) return '/categories/' + id;
+    // Use query-param fallback routes for IDs with special characters
+    return (method === 'DELETE') ? '/categories/remove?id=' + encodeURIComponent(id) : '/categories/update?id=' + encodeURIComponent(id);
+  }
+
   async function saveCategorySilent() {
     var data = {
       id: document.getElementById('edId').value.trim(),
@@ -212,7 +219,7 @@
     };
     if (!data.id || !data.name) return;
     try {
-      await api('/categories/' + editingId, { method: 'PUT', body: JSON.stringify(data) });
+      await api(categoryUrl(editingId, 'PUT'), { method: 'PUT', body: JSON.stringify(data) });
     } catch(e) { console.error('Auto-save failed:', e); }
   }
 
@@ -258,7 +265,7 @@
     };
     if (!data.id || !data.name) { alert('请填写分类 ID 和名称'); return; }
     try {
-      if (editingId) { await api('/categories/' + editingId, { method: 'PUT', body: JSON.stringify(data) }); }
+      if (editingId) { await api(categoryUrl(editingId, 'PUT'), { method: 'PUT', body: JSON.stringify(data) }); }
       else { await api('/categories', { method: 'POST', body: JSON.stringify(data) }); }
       closeEditor(); loadCategories();
     } catch(e) { alert('操作失败: ' + e.message); }
@@ -268,7 +275,7 @@
 
   async function deleteCategory(id) {
     if (!confirm('确认删除此分类？\n注意：删除分类不会删除该分类下的产品/文章。')) return;
-    try { await api('/categories/' + id, { method: 'DELETE' }); loadCategories(); }
+    try { await api(categoryUrl(id, 'DELETE'), { method: 'DELETE' }); loadCategories(); }
     catch(e) { alert('删除失败: ' + e.message); }
   }
 

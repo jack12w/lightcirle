@@ -74,7 +74,58 @@ function initMobileMenu() {
   });
 }
 
-// --- Floating Contact Buttons ---
+// --- Dynamic Site Contact Info ---
+// Replaces hardcoded contact details (email, WhatsApp) with live SITE_CONFIG values.
+// This ensures the footer, header mailto links, and CTA sections always reflect
+// the current admin settings without requiring HTML changes on every page.
+function initSiteContact() {
+  if (!window.SITE_CONFIG) return;
+
+  const cfg = SITE_CONFIG;
+  const email = cfg.emailAddress || 'inquiry@lightcirle.com';
+  // Format WhatsApp: strip leading + if present in config, then reformat for display
+  const waRaw = cfg.whatsappNumber || '';
+  const waDisplay = waRaw ? formatWhatsApp(waRaw) : '+86 123 4567 8900';
+
+  // 1) Fix all mailto: hrefs that still point to the old default email
+  document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
+    const href = a.getAttribute('href');
+    if (href && href.indexOf('inquiry@lightcirle.com') !== -1) {
+      a.setAttribute('href', href.replace('inquiry@lightcirle.com', email));
+    }
+  });
+
+  // 2) Fix displayed email text (footer, etc.)
+  replaceTextContent(document.body, 'inquiry@lightcirle.com', email);
+
+  // 3) Fix displayed WhatsApp default number
+  replaceTextContent(document.body, '+86 123 4567 8900', waDisplay);
+}
+
+// Helper: format raw WhatsApp number for display (e.g. "8612345678900" → "+86 123 4567 8900")
+function formatWhatsApp(raw) {
+  var s = (raw || '').replace(/\D/g, ''); // digits only
+  if (!s) return raw;
+  if (s.length > 5 && s.startsWith('86')) {
+    // China format: +86 XXXX XXXX XXXX or +86 XXX XXXX XXXX
+    var rest = s.slice(2);
+    if (rest.length === 10) return '+86 ' + rest.slice(0,4) + ' ' + rest.slice(4,8) + ' ' + rest.slice(8);
+    if (rest.length === 11) return '+86 ' + rest.slice(0,3) + ' ' + rest.slice(3,7) + ' ' + rest.slice(7);
+    return '+' + s.slice(0,2) + ' ' + rest;
+  }
+  // Generic: insert space every 4 digits from right
+  var f = '+' + s;
+  return f.replace(/(\d{1,4})(?=(\d{4})+$)/g, '$1 ');
+}
+
+// Helper: safely replace exact text content in text nodes (not inside tags/attributes)
+function replaceTextContent(root, target, replacement) {
+  if (!target || target === replacement) return;
+  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+  var nodes = [];
+  while (walker.nextNode()) { if (walker.currentNode.nodeValue.indexOf(target) !== -1) nodes.push(walker.currentNode); }
+  nodes.forEach(function(n) { n.nodeValue = n.nodeValue.split(target).join(replacement); });
+}
 function initFloatingContact() {
   const container = document.getElementById('floatingContact');
   if (!container) return;
@@ -208,4 +259,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initCounters();
   setActiveNavLink();
+  initSiteContact();
 });
