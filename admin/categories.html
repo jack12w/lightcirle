@@ -6,7 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/tailwind.css">
-  <script src="/js/media-picker.js"></script>
+  <script src="/admin/js/media-picker.js"></script>
   <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
 </head>
 <body class="bg-[#FAFAF8]">
@@ -46,7 +46,7 @@
     <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
       <table class="w-full text-sm">
         <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
-          <th class="p-4 font-medium">分类 ID</th><th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
+          <th class="p-4 font-medium">分类 ID</th><th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">封面</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
         </tr></thead>
         <tbody id="categoryTable"></tbody>
       </table>
@@ -73,6 +73,7 @@
               <button type="button" onclick="openCatMediaPicker()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
               <button type="button" onclick="clearEdImage()" class="text-xs text-red-400 hover:text-red-600">清除</button>
             </div>
+            <p class="text-[11px] text-gray-400 mt-2">提示：编辑已有分类时，上传/选择封面后会自动保存；新建分类需点击「保存」后图片才生效。</p>
             <input type="hidden" id="edImage" value="">
             <input type="file" id="edImageInput" accept="image/*" class="hidden" onchange="uploadEdImage(this)">
           </div>
@@ -124,6 +125,7 @@
       <tr class="border-b border-gray-50 hover:bg-gray-50/50">
         <td class="p-4 font-mono text-xs text-gray-500">${escape(c.id)}</td>
         <td class="p-4 font-medium">${escape(c.name)}</td>
+        <td class="p-4">${c.image ? `<img src="${escape(c.image)}" class="w-10 h-10 rounded-lg object-cover border border-gray-100" onerror="this.style.display='none'">` : '<span class="text-gray-300"><i class="fas fa-image"></i></span>'}</td>
         <td class="p-4"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${typeNames[c.type] || c.type}</span></td>
         <td class="p-4 text-gray-400 text-xs">${c.sort_order}</td>
         <td class="p-4"><button onclick="editCategory('${c.id}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteCategory('${c.id}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
