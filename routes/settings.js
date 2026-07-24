@@ -121,6 +121,40 @@ router.put('/', authenticate, (req, res) => {
   res.json({ message: 'Settings updated' });
 });
 
+// Serialize an object as a JS object literal using SINGLE quotes, to match the
+// committed js/config.js style. Plain JSON.stringify would emit double quotes and
+// "pollute" the tracked file on every settings save. Properly escapes apostrophes
+// inside values and preserves escaped double-quotes / other escapes verbatim.
+// Object keys are left UNQUOTED (they are all valid JS identifiers in SITE_CONFIG),
+// so the regenerated block matches the hand-written template exactly.
+function singleQuoteStringify(obj, indent) {
+  const json = JSON.stringify(obj, null, indent == null ? 2 : indent);
+  let out = '';
+  let inStr = false;
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+    if (ch === '\\') {
+      // copy the escape sequence verbatim (e.g. \" or \n or \uXXXX)
+      out += ch + (json[i + 1] || '');
+      i++;
+      continue;
+    }
+    if (ch === '"') {
+      out += "'";
+      inStr = !inStr;
+      continue;
+    }
+    if (inStr && ch === "'") {
+      out += "\\'";
+      continue;
+    }
+    out += ch;
+  }
+  // Unquote identifier-like keys: 'brandName': -> brandName:
+  out = out.replace(/'([A-Za-z_$][A-Za-z0-9_$]*)'\s*:/g, '$1:');
+  return out;
+}
+
 function buildConfigFileContent() {
   const db = getDb();
   const s = db.prepare('SELECT * FROM settings WHERE id = 1').get();
@@ -171,8 +205,8 @@ function buildConfigFileContent() {
   const marker = 'window.SITE_CONFIG =';
   const idx = builtin.indexOf(marker);
   if (idx === -1) {
-    // builtin missing — fall back to a minimal but valid file
-    return 'window.SITE_CONFIG = ' + JSON.stringify(live, null, 2) + ';\n';
+    // builtin missing — fall back to a minimal but valid file (single-quote style)
+    return 'window.SITE_CONFIG = ' + singleQuoteStringify(live, 2) + ';\n';
   }
   const open = builtin.indexOf('{', idx);
   let depth = 0, end = -1;
@@ -180,11 +214,13 @@ function buildConfigFileContent() {
     if (builtin[i] === '{') depth++;
     else if (builtin[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
   }
-  if (end === -1) return 'window.SITE_CONFIG = ' + JSON.stringify(live, null, 2) + ';\n';
+  if (end === -1) return 'window.SITE_CONFIG = ' + singleQuoteStringify(live, 2) + ';\n';
 
   const head = builtin.slice(0, idx);
-  const tail = builtin.slice(end + 1); // includes the closing `;` and everything after
-  const cfgStr = 'window.SITE_CONFIG = ' + JSON.stringify(live, null, 2) + ';';
+  // Strip the original block's trailing `;` so we don't end up with `};;`
+  // (the new cfgStr already supplies its own `;`).
+  const tail = builtin.slice(end + 1).replace(/^;/, '');
+  const cfgStr = 'window.SITE_CONFIG = ' + singleQuoteStringify(live, 2) + ';';
   return head + cfgStr + tail;
 }
 
