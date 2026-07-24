@@ -1267,3 +1267,14 @@ h1, h2, h3, h4 {
   margin: 0;
   line-height: 1.5;
 }
+
+/* Category editor inline validation errors (scheme B) */
+.field-error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.input-error {
+  border-color: #dc2626 !important;
+}

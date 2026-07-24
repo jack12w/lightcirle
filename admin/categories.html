@@ -57,8 +57,8 @@
       <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新增分类</h2><button onclick="closeEditor()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
         <form id="categoryForm" class="grid gap-4">
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类 ID（英文小写，用于数据存储）</label><input id="edId" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"></div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称（中文显示名）</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类 ID（英文小写，用于数据存储）</label><input id="edId" oninput="validateIdInput()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"><p id="edIdError" class="field-error hidden"></p></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称（中文显示名）</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"><p id="edNameError" class="field-error hidden"></p></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">类型</label>
             <select id="edType" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
               <option value="product">产品分类</option>
@@ -135,6 +135,7 @@
 
   function openEditor(cat) {
     editingId = cat ? cat.id : null;
+    clearEditorErrors();
     document.getElementById('editorTitle').textContent = cat ? '编辑: ' + cat.name : '新增分类';
     document.getElementById('edId').value = cat ? cat.id : '';
     document.getElementById('edId').disabled = !!cat;
@@ -155,6 +156,43 @@
       img.classList.add('hidden');
       placeholder.classList.remove('hidden');
     }
+  }
+
+  // --- Category ID validation (scheme B) ---
+  // Allowed chars: lowercase a-z, digits, hyphen. No leading/trailing/consecutive hyphen.
+  function validateCategoryId(id) {
+    if (!id) return null; // empty handled by caller
+    if (!/^[a-z0-9-]+$/.test(id)) {
+      return '分类 ID 仅支持英文小写字母、数字和短横线（-），不能包含空格、中文、大写字母或 / 等符号';
+    }
+    if (/^-|-$|--/.test(id)) {
+      return '分类 ID 不能以短横线开头或结尾，也不能有连续短横线';
+    }
+    return null;
+  }
+
+  // Show/hide an inline error under an input. Pass msg=null to clear.
+  function setFieldError(inputId, errId, msg) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errId);
+    if (msg) {
+      if (err) { err.textContent = msg; err.classList.remove('hidden'); }
+      if (input) input.classList.add('input-error');
+    } else {
+      if (err) { err.textContent = ''; err.classList.add('hidden'); }
+      if (input) input.classList.remove('input-error');
+    }
+  }
+
+  // Real-time validation while typing in the ID field (new category only; edit mode is disabled)
+  function validateIdInput() {
+    const id = document.getElementById('edId').value.trim();
+    setFieldError('edId', 'edIdError', validateCategoryId(id));
+  }
+
+  function clearEditorErrors() {
+    setFieldError('edId', 'edIdError', null);
+    setFieldError('edName', 'edNameError', null);
   }
 
   function clearEdImage() {
@@ -233,6 +271,9 @@
       // Cannot create without id/name yet — keep image locally, it will be saved on explicit submit
       return false;
     }
+    // Enforce valid ID format for new categories (legacy categories with '/' keep working on edit)
+    const idErr = validateCategoryId(id);
+    if (idErr) { setFieldError('edId', 'edIdError', idErr); return false; }
     try {
       const res = await api('/categories', { method: 'POST', body: JSON.stringify({
         id, name, type: document.getElementById('edType').value, image: document.getElementById('edImage').value
@@ -257,13 +298,20 @@
 
   document.getElementById('categoryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearEditorErrors();
     const data = {
       id: document.getElementById('edId').value.trim(),
       name: document.getElementById('edName').value.trim(),
       type: document.getElementById('edType').value,
       image: document.getElementById('edImage').value,
     };
-    if (!data.id || !data.name) { alert('请填写分类 ID 和名称'); return; }
+    if (!data.id) { setFieldError('edId', 'edIdError', '请填写分类 ID'); return; }
+    if (!data.name) { setFieldError('edName', 'edNameError', '请填写分类名称'); return; }
+    // New category: enforce ID format. Existing categories (may contain legacy chars like '/') are kept as-is.
+    if (!editingId) {
+      const idErr = validateCategoryId(data.id);
+      if (idErr) { setFieldError('edId', 'edIdError', idErr); return; }
+    }
     try {
       if (editingId) { await api(categoryUrl(editingId, 'PUT'), { method: 'PUT', body: JSON.stringify(data) }); }
       else { await api('/categories', { method: 'POST', body: JSON.stringify(data) }); }
