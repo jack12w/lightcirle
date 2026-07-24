@@ -46,7 +46,7 @@
     <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
       <table class="w-full text-sm">
         <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
-          <th class="p-4 font-medium">分类 ID</th><th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">封面</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
+          <th class="p-4 font-medium">分类 ID</th><th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">封面</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">父级</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
         </tr></thead>
         <tbody id="categoryTable"></tbody>
       </table>
@@ -60,10 +60,16 @@
           <div><label class="block text-xs font-medium text-gray-500 mb-1">分类 ID（英文小写，用于数据存储）</label><input id="edId" oninput="validateIdInput()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"><p id="edIdError" class="field-error hidden"></p></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称（中文显示名）</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"><p id="edNameError" class="field-error hidden"></p></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">类型</label>
-            <select id="edType" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+            <select id="edType" onchange="onTypeChange()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
               <option value="product">产品分类</option>
               <option value="article">文章分类</option>
             </select>
+          </div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">父分类（留空 = 顶级分类）</label>
+            <select id="edParent" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+              <option value="">（顶级分类）</option>
+            </select>
+            <p id="edParentHint" class="text-[11px] text-gray-400 mt-1 hidden">该分类下已有子分类，不可再设为子分类。</p>
           </div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">分类封面图</label>
             <div class="flex items-center gap-3">
@@ -121,16 +127,49 @@
   function renderTable() {
     const data = filterType === 'all' ? allCategories : allCategories.filter(c => c.type === filterType);
     const typeNames = { product: '产品分类', article: '文章分类' };
-    document.getElementById('categoryTable').innerHTML = data.map(c => `
+    const parentName = id => { const p = allCategories.find(c => c.id === id); return p ? p.name : '—'; };
+    const childrenOf = id => data.filter(c => (c.parent_id || '') === id);
+    const tops = data.filter(c => (c.parent_id || '') === '');
+    function rowHtml(c, isChild) {
+      const indent = isChild ? ' style="padding-left:2.4rem"' : '';
+      const prefix = isChild ? '<span class="text-gray-300 mr-1">↳</span>' : '';
+      const parentLabel = (c.parent_id && c.parent_id !== '') ? escape(parentName(c.parent_id)) : '<span class="text-gray-300">—</span>';
+      return `
       <tr class="border-b border-gray-50 hover:bg-gray-50/50">
-        <td class="p-4 font-mono text-xs text-gray-500">${escape(c.id)}</td>
+        <td class="p-4 font-mono text-xs text-gray-500"${indent}>${prefix}${escape(c.id)}</td>
         <td class="p-4 font-medium">${escape(c.name)}</td>
         <td class="p-4">${c.image ? `<img src="${escape(c.image)}" class="w-10 h-10 rounded-lg object-cover border border-gray-100" onerror="this.style.display='none'">` : '<span class="text-gray-300"><i class="fas fa-image"></i></span>'}</td>
         <td class="p-4"><span class="bg-gray-100 text-xs px-2 py-0.5 rounded-full">${typeNames[c.type] || c.type}</span></td>
+        <td class="p-4 text-gray-500 text-xs">${parentLabel}</td>
         <td class="p-4 text-gray-400 text-xs">${c.sort_order}</td>
-        <td class="p-4"><button onclick="editCategory('${c.id}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteCategory('${c.id}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
-      </tr>
-    `).join('');
+        <td class="p-4"><button onclick="editCategory('${escape(c.id)}')" class="text-[#2D5A3D] hover:underline text-xs mr-3"><i class="fas fa-edit"></i> 编辑</button><button onclick="deleteCategory('${escape(c.id)}')" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-trash"></i></button></td>
+      </tr>`;
+    }
+    let html = '';
+    tops.forEach(t => {
+      html += rowHtml(t, false);
+      childrenOf(t.id).forEach(ch => { html += rowHtml(ch, true); });
+    });
+    // Safety: any child whose parent is filtered out shows as a top-level row
+    data.forEach(c => {
+      if ((c.parent_id && c.parent_id !== '') && !data.find(p => p.id === c.parent_id)) {
+        html += rowHtml(c, false);
+      }
+    });
+    document.getElementById('categoryTable').innerHTML = html;
+  }
+
+  // --- Parent category selector (方案C: two-level hierarchy) ---
+  function populateParentOptions() {
+    const type = document.getElementById('edType').value;
+    const sel = document.getElementById('edParent');
+    if (!sel) return;
+    const tops = allCategories.filter(c => (c.parent_id || '') === '' && c.type === type && c.id !== editingId);
+    sel.innerHTML = '<option value="">（顶级分类）</option>' + tops.map(c => `<option value="${escape(c.id)}">${escape(c.name)}</option>`).join('');
+  }
+
+  function onTypeChange() {
+    populateParentOptions();
   }
 
   function openEditor(cat) {
@@ -141,6 +180,19 @@
     document.getElementById('edId').disabled = !!cat;
     document.getElementById('edName').value = cat ? cat.name : '';
     document.getElementById('edType').value = cat ? cat.type : 'product';
+    populateParentOptions();
+    const edParent = document.getElementById('edParent');
+    const edParentHint = document.getElementById('edParentHint');
+    if (cat) {
+      const hasChildren = allCategories.some(c => (c.parent_id || '') === cat.id);
+      edParent.value = cat.parent_id || '';
+      edParent.disabled = hasChildren;
+      if (edParentHint) edParentHint.classList.toggle('hidden', !hasChildren);
+    } else {
+      edParent.value = '';
+      edParent.disabled = false;
+      if (edParentHint) edParentHint.classList.add('hidden');
+    }
     document.getElementById('edImage').value = cat ? (cat.image || '') : '';
     updateEdImagePreview(cat ? cat.image : '');
     document.getElementById('editorModal').classList.remove('hidden');
@@ -254,6 +306,7 @@
       name: document.getElementById('edName').value.trim(),
       type: document.getElementById('edType').value,
       image: document.getElementById('edImage').value,
+      parent_id: document.getElementById('edParent').value || '',
     };
     if (!data.id || !data.name) return;
     try {
@@ -276,7 +329,7 @@
     if (idErr) { setFieldError('edId', 'edIdError', idErr); return false; }
     try {
       const res = await api('/categories', { method: 'POST', body: JSON.stringify({
-        id, name, type: document.getElementById('edType').value, image: document.getElementById('edImage').value
+        id, name, type: document.getElementById('edType').value, image: document.getElementById('edImage').value, parent_id: document.getElementById('edParent').value || ''
       })});
       if (res.ok) {
         const d = await res.json();
@@ -304,6 +357,7 @@
       name: document.getElementById('edName').value.trim(),
       type: document.getElementById('edType').value,
       image: document.getElementById('edImage').value,
+      parent_id: document.getElementById('edParent').value || '',
     };
     if (!data.id) { setFieldError('edId', 'edIdError', '请填写分类 ID'); return; }
     if (!data.name) { setFieldError('edName', 'edNameError', '请填写分类名称'); return; }

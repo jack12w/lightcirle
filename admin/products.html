@@ -132,8 +132,46 @@
   }
 
   let products = [], editingId = null;
+  // Dynamic category metadata (方案C: two-level hierarchy)
+  let productCatNames = {'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Sets','seamless':'Seamless'};
+  let productCatTree = [];
+  let productCatLoaded = false;
 
   function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Build <option> / <optgroup> HTML from category tree (top-level + children)
+  function categoryOptionsHtml(cats) {
+    const childrenOf = id => cats.filter(c => (c.parent_id||'') === id);
+    let html = '';
+    cats.filter(c => (c.parent_id||'') === '').forEach(t => {
+      const kids = childrenOf(t.id);
+      if (kids.length) {
+        html += '<optgroup label="' + escape(t.name) + '">';
+        html += '<option value="' + escape(t.id) + '">' + escape(t.name) + '（全部）</option>';
+        kids.forEach(k => { html += '<option value="' + escape(k.id) + '">' + escape(k.name) + '</option>'; });
+        html += '</optgroup>';
+      } else {
+        html += '<option value="' + escape(t.id) + '">' + escape(t.name) + '</option>';
+      }
+    });
+    return html;
+  }
+
+  async function loadProductCategoryMeta() {
+    try {
+      const cats = await (await api('/categories?type=product')).json();
+      if (Array.isArray(cats) && cats.length) {
+        productCatTree = cats;
+        cats.forEach(c => { productCatNames[c.id] = c.name; });
+        const sel = document.getElementById('edCat');
+        const cur = sel.value;
+        sel.innerHTML = categoryOptionsHtml(cats);
+        if (cur) sel.value = cur;
+        productCatLoaded = true;
+        if (products.length) renderTable(products); // refresh labels
+      }
+    } catch (e) { /* keep static fallback options */ }
+  }
 
   async function loadProducts() {
     products = await (await api('/products')).json();
@@ -148,7 +186,7 @@
   }
 
   function renderTable(data) {
-    const catNames = {'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Sets','seamless':'Seamless'};
+    const catNames = productCatNames;
     document.getElementById('productTable').innerHTML = data.map(p => `
       <tr class="border-b border-gray-50 hover:bg-gray-50/50">
         <td class="p-4 font-medium"><a href="/product-detail/${slugify(p.name)}_${p.id}.html" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(p.name)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
@@ -324,26 +362,40 @@
     loadProducts();
   }
 
-  // Filter buttons
-  async function initFilters() {
-    const cats = [...new Set(products.map(p => p.category))];
+  // Filter buttons (hierarchical: top-level = group filter, child = exact)
+  function initFilters() {
     const bar = document.getElementById('filterBar');
     bar.innerHTML = '<button class="filter-btn active text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:border-[#2D5A3D] transition-colors">All</button>';
-    const catNames = {'yoga-pants':'Yoga Pants','sports-bras':'Sports Bras','yoga-outerwear':'Yoga Outerwear','hoodies':'Hoodies','sets':'Sets','seamless':'Seamless'};
-    cats.forEach(c => {
+    const cats = productCatTree.length ? productCatTree : products.map(p => ({ id: p.category, name: productCatNames[p.category] || p.category, parent_id: '' }));
+    const childrenOf = id => cats.filter(c => (c.parent_id||'') === id);
+    cats.filter(c => (c.parent_id||'') === '').forEach(t => {
+      const kids = childrenOf(t.id);
       const btn = document.createElement('button');
       btn.className = 'filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:border-[#2D5A3D] transition-colors';
-      btn.textContent = catNames[c] || c;
+      btn.textContent = productCatNames[t.id] || t.id;
       btn.onclick = () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        renderTable(btn.textContent === 'All' ? products : products.filter(p => p.category === c));
+        const ids = [t.id, ...kids.map(k => k.id)];
+        renderTable(products.filter(p => ids.includes(p.category)));
       };
       bar.appendChild(btn);
+      kids.forEach(k => {
+        const cbtn = document.createElement('button');
+        cbtn.className = 'filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:border-[#2D5A3D] transition-colors';
+        cbtn.style.marginLeft = '1rem';
+        cbtn.textContent = '↳ ' + (productCatNames[k.id] || k.id);
+        cbtn.onclick = () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          cbtn.classList.add('active');
+          renderTable(products.filter(p => p.category === k.id));
+        };
+        bar.appendChild(cbtn);
+      });
     });
   }
 
-  loadProducts().then(initFilters);
+  loadProducts().then(async () => { await loadProductCategoryMeta(); initFilters(); });
 </script>
 </body>
 </html>

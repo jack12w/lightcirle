@@ -194,18 +194,26 @@
     'seamless': 'Seamless'
   };
 
-  // Refresh the live category name label from backend (falls back to the hardcoded map above if API unavailable)
+  // Refresh the live category name label from backend (falls back to the hardcoded map above if API unavailable).
+  // Shows the full two-level path "Parent / Child" when the product's category has a parent.
   window.refreshProductCategoryName = function() {
     try {
       fetch(window.location.origin + '/api/categories?type=product')
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(cats) {
           if (!Array.isArray(cats)) return;
-          cats.forEach(function(c) { categoryNames[c.id] = c.name; });
+          var byId = {};
+          cats.forEach(function(c) { categoryNames[c.id] = c.name; byId[c.id] = c; });
+          function pathOf(id) {
+            var c = byId[id];
+            if (!c) return categoryNames[id] || id;
+            if (c.parent_id && c.parent_id !== '' && byId[c.parent_id]) return byId[c.parent_id].name + ' / ' + c.name;
+            return c.name;
+          }
           var p = window.__currentProduct;
           if (!p) return;
           var el = document.getElementById('productCategoryLabel');
-          if (el) el.textContent = categoryNames[p.category] || p.category;
+          if (el) el.textContent = pathOf(p.category);
         })
         .catch(function() {});
     } catch (e) {}

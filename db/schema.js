@@ -199,6 +199,8 @@ function initSchema() {
     "ALTER TABLE company_info ADD COLUMN equipment_images TEXT NOT NULL DEFAULT '[]'",
     // Categories
     "ALTER TABLE categories ADD COLUMN image TEXT NOT NULL DEFAULT ''",
+    // Categories: parent_id for two-level hierarchy (empty string = top-level)
+    "ALTER TABLE categories ADD COLUMN parent_id TEXT NOT NULL DEFAULT ''",
     // Product video (Alibaba-style main image video)
     "ALTER TABLE products ADD COLUMN video TEXT NOT NULL DEFAULT ''",
     // Article video (top of body)

@@ -269,6 +269,14 @@
           document.querySelectorAll('#categoryFilters .category-tag').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentCategory = btn.getAttribute('data-category');
+          const childrenStr = btn.getAttribute('data-children');
+          if (childrenStr) {
+            try {
+              const kids = JSON.parse(childrenStr);
+              searchEngine.filterByCategory([currentCategory, ...kids]);
+              return;
+            } catch (e) {}
+          }
           searchEngine.filterByCategory(currentCategory);
         });
       });
@@ -292,9 +300,14 @@
         if (!Array.isArray(cats) || !cats.length) return;
         cats.forEach(c => { categoryNames[c.id] = c.name; });
         const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        const childrenOf = id => cats.filter(c => (c.parent_id || '') === id);
         let html = '<button class="category-tag active" data-category="all">All Articles</button>';
-        cats.forEach(c => {
-          html += '<button class="category-tag" data-category="' + esc(c.id) + '">' + esc(c.name) + '</button>';
+        cats.filter(c => (c.parent_id || '') === '').forEach(t => {
+          const kids = childrenOf(t.id);
+          html += '<button class="category-tag" data-category="' + esc(t.id) + '"' + (kids.length ? ' data-children="' + esc(JSON.stringify(kids.map(k => k.id))) + '"' : '') + '>' + esc(t.name) + '</button>';
+          kids.forEach(k => {
+            html += '<button class="category-tag" data-category="' + esc(k.id) + '" style="margin-left:1rem">' + esc('↳ ' + k.name) + '</button>';
+          });
         });
         document.getElementById('categoryFilters').innerHTML = html;
         bindCategoryButtons();

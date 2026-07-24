@@ -336,8 +336,17 @@
           });
         };
         var html = '<option value="" disabled selected>Select a category…</option>';
-        cats.forEach(function (c) {
-          html += '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>';
+        var childrenOf = function (id) { return cats.filter(function (c) { return (c.parent_id || '') === id; }); };
+        cats.filter(function (c) { return (c.parent_id || '') === ''; }).forEach(function (t) {
+          var kids = childrenOf(t.id);
+          if (kids.length) {
+            html += '<optgroup label="' + esc(t.name) + '">';
+            html += '<option value="' + esc(t.id) + '">' + esc(t.name) + '（全部）</option>';
+            kids.forEach(function (k) { html += '<option value="' + esc(k.id) + '">' + esc(k.name) + '</option>'; });
+            html += '</optgroup>';
+          } else {
+            html += '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>';
+          }
         });
         html += '<option value="other">Other / Mixed</option>';
         sel.innerHTML = html;

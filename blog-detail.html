@@ -203,16 +203,24 @@
     'industry-news': 'Industry News'
   };
 
-  // Refresh live article category names from backend (falls back to hardcoded map if API unavailable)
+  // Refresh live article category names from backend (falls back to hardcoded map if API unavailable).
+  // Main label shows the full two-level path "Parent / Child" when applicable; related [data-cat] shows leaf name.
   window.refreshArticleCategoryNames = function() {
     try {
       fetch(window.location.origin + '/api/categories?type=article')
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(cats) {
           if (!Array.isArray(cats)) return;
-          cats.forEach(function(c) { categoryNames[c.id] = c.name; });
+          var byId = {};
+          cats.forEach(function(c) { categoryNames[c.id] = c.name; byId[c.id] = c; });
+          function pathOf(id) {
+            var c = byId[id];
+            if (!c) return categoryNames[id] || id;
+            if (c.parent_id && c.parent_id !== '' && byId[c.parent_id]) return byId[c.parent_id].name + ' / ' + c.name;
+            return c.name;
+          }
           var el = document.getElementById('articleCategoryLabel');
-          if (el && window.__currentArticle) el.textContent = categoryNames[window.__currentArticle.category] || window.__currentArticle.category;
+          if (el && window.__currentArticle) el.textContent = pathOf(window.__currentArticle.category);
           document.querySelectorAll('[data-cat]').forEach(function(node) {
             node.textContent = categoryNames[node.dataset.cat] || node.dataset.cat;
           });

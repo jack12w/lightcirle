@@ -122,7 +122,46 @@
   }
 
   let articles = [], editingId = null, articleVideo = '';
+  // Dynamic category metadata (方案C: two-level hierarchy)
+  let articleCatNames = {'fabric-knowledge':'Fabric Knowledge','business-tips':'Business Tips','industry-news':'Industry News'};
+  let articleCatTree = [];
+  let articleCatLoaded = false;
+
   function escape(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Build <option> / <optgroup> HTML from category tree (top-level + children)
+  function categoryOptionsHtml(cats) {
+    const childrenOf = id => cats.filter(c => (c.parent_id||'') === id);
+    let html = '';
+    cats.filter(c => (c.parent_id||'') === '').forEach(t => {
+      const kids = childrenOf(t.id);
+      if (kids.length) {
+        html += '<optgroup label="' + escape(t.name) + '">';
+        html += '<option value="' + escape(t.id) + '">' + escape(t.name) + '（全部）</option>';
+        kids.forEach(k => { html += '<option value="' + escape(k.id) + '">' + escape(k.name) + '</option>'; });
+        html += '</optgroup>';
+      } else {
+        html += '<option value="' + escape(t.id) + '">' + escape(t.name) + '</option>';
+      }
+    });
+    return html;
+  }
+
+  async function loadArticleCategoryMeta() {
+    try {
+      const cats = await (await api('/categories?type=article')).json();
+      if (Array.isArray(cats) && cats.length) {
+        articleCatTree = cats;
+        cats.forEach(c => { articleCatNames[c.id] = c.name; });
+        const sel = document.getElementById('edCat');
+        const cur = sel.value;
+        sel.innerHTML = categoryOptionsHtml(cats);
+        if (cur) sel.value = cur;
+        articleCatLoaded = true;
+        if (articles.length) loadArticles().then(() => {}); // refresh table labels
+      }
+    } catch (e) { /* keep static fallback options */ }
+  }
   // slugify — keep in sync with server.js / blog-*.html (60-char cap, word boundary)
   function slugify(text) {
     let s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -134,7 +173,7 @@
 
   async function loadArticles() {
     articles = await (await api('/articles')).json();
-    const catNames = {'fabric-knowledge':'Fabric Knowledge','business-tips':'Business Tips','industry-news':'Industry News'};
+    const catNames = articleCatNames;
     document.getElementById('articleTable').innerHTML = articles.map(a => `
       <tr class="border-b border-gray-50 hover:bg-gray-50/50">
         <td class="p-4 font-medium max-w-[300px] truncate"><a href="${articlePreviewUrl(a)}" target="_blank" class="hover:text-[#2D5A3D] transition-colors" title="Preview">${escape(a.title)} <i class="fas fa-external-link-alt text-[10px] text-gray-300 ml-1"></i></a></td>
@@ -271,7 +310,7 @@
   function editArticle(id) { const a = articles.find(x => x.id === id); if (a) openEditor(a); }
   async function deleteArticle(id) { if (!confirm('确认删除此文章？')) return; await api('/articles/' + id, { method: 'DELETE' }); loadArticles(); }
 
-  loadArticles();
+  loadArticles().then(() => loadArticleCategoryMeta());
 </script>
 </body>
 </html>

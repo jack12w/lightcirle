@@ -124,14 +124,21 @@ class SearchEngine {
     }
   }
 
-  // External API to filter by category
+  // External API to filter by category.
+  // Accepts a string (exact match) OR an array (match any of the given category ids).
+  // Arrays power the two-level hierarchy: a top-level group button filters by
+  // [parentId, ...childIds].
   filterByCategory(category) {
     if (!category || category === 'all') {
       return this.performSearch();
     }
+    const isArray = Array.isArray(category);
     const query = this.getQuery();
     let results = this.localData.filter(item => {
       const itemCat = (item.category || '').toLowerCase();
+      if (isArray) {
+        return category.map(c => String(c).toLowerCase()).includes(itemCat);
+      }
       return itemCat === category.toLowerCase();
     });
     if (query) {
