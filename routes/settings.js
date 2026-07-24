@@ -56,9 +56,42 @@ router.get('/', (req, res) => {
 });
 
 // PUT /api/settings (auth required)
+// Merges with the existing row so a PARTIAL update never wipes other fields.
 router.put('/', authenticate, (req, res) => {
   const db = getDb();
-  const data = req.body;
+  const data = req.body || {};
+  const cur = db.prepare('SELECT * FROM settings WHERE id = 1').get() || {};
+
+  const merged = {
+    brandName:       data.brandName       ?? cur.brand_name        ?? 'lightcirle',
+    brandTagline:    data.brandTagline    ?? cur.brand_tagline     ?? '',
+    brandDomain:     data.brandDomain     ?? cur.brand_domain      ?? 'lightcirle.com',
+    whatsappNumber:  data.whatsappNumber  ?? cur.whatsapp_number   ?? '',
+    emailAddress:    data.emailAddress    ?? cur.email_address     ?? '',
+    siteTitle:       data.siteTitle       ?? cur.site_title        ?? '',
+    siteDescription: data.siteDescription ?? cur.site_description  ?? '',
+    moq:             data.moq             ?? cur.moq               ?? 50,
+    location:        data.location        ?? cur.location          ?? '',
+    yearEstablished: data.yearEstablished ?? cur.year_established  ?? 2016,
+    countriesShipped: data.countriesShipped ?? cur.countries_shipped ?? 0,
+    colors: {
+      primary:     data.colors?.primary     ?? cur.colors_primary     ?? '#2D5A3D',
+      primaryLight: data.colors?.primaryLight ?? cur.colors_primary_light ?? '#3E7B54',
+      primaryDark:  data.colors?.primaryDark  ?? cur.colors_primary_dark  ?? '#1F3F2A',
+      accent:      data.colors?.accent      ?? cur.colors_accent      ?? '#C4926E',
+      accentLight: data.colors?.accentLight ?? cur.colors_accent_light ?? '#D4A88C',
+      whatsapp:    data.colors?.whatsapp    ?? cur.colors_whatsapp    ?? '#25D366',
+    },
+    oss: {
+      enabled:      data.oss?.enabled      ?? !!cur.oss_enabled,
+      region:       data.oss?.region       ?? cur.oss_region       ?? '',
+      bucket:       data.oss?.bucket       ?? cur.oss_bucket       ?? '',
+      accessKeyId:  data.oss?.accessKeyId  ?? cur.oss_access_key_id ?? '',
+      accessKeySecret: data.oss?.accessKeySecret ?? cur.oss_access_key_secret ?? '',
+      cdnDomain:    data.oss?.cdnDomain    ?? cur.oss_cdn_domain    ?? '',
+    },
+    faviconPath: data.faviconPath ?? cur.favicon_path ?? '',
+  };
 
   db.prepare(`
     UPDATE settings SET
@@ -71,15 +104,13 @@ router.put('/', authenticate, (req, res) => {
       updated_at=datetime('now')
     WHERE id=1
   `).run(
-    data.brandName || 'lightcirle', data.brandTagline || '',
-    data.brandDomain || 'lightcirle.com', data.whatsappNumber || '', data.emailAddress || '',
-    data.siteTitle || '', data.siteDescription || '', data.moq || 50,
-    data.location || '', data.yearEstablished || 2016, data.countriesShipped || 0,
-    data.colors?.primary || '#2D5A3D', data.colors?.primaryLight || '#3E7B54', data.colors?.primaryDark || '#1F3F2A',
-    data.colors?.accent || '#C4926E', data.colors?.accentLight || '#D4A88C', data.colors?.whatsapp || '#25D366',
-    data.oss?.enabled ? 1 : 0, data.oss?.region || '', data.oss?.bucket || '',
-    data.oss?.accessKeyId || '', data.oss?.accessKeySecret || '', data.oss?.cdnDomain || '',
-    data.faviconPath || ''
+    merged.brandName, merged.brandTagline, merged.brandDomain, merged.whatsappNumber, merged.emailAddress,
+    merged.siteTitle, merged.siteDescription, merged.moq, merged.location, merged.yearEstablished, merged.countriesShipped,
+    merged.colors.primary, merged.colors.primaryLight, merged.colors.primaryDark,
+    merged.colors.accent, merged.colors.accentLight, merged.colors.whatsapp,
+    merged.oss.enabled ? 1 : 0, merged.oss.region, merged.oss.bucket,
+    merged.oss.accessKeyId, merged.oss.accessKeySecret, merged.oss.cdnDomain,
+    merged.faviconPath
   );
 
   // Also write to config.js for the static site
