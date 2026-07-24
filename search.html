@@ -56,12 +56,12 @@
       display: flex; flex-wrap: wrap; gap: 6px;
       padding: 4px;
       background: rgba(0,0,0,0.03);
-      border-radius: 50px;
-      overflow-x: auto;
+      border-radius: 12px;
+      position: relative;
     }
     .dark .tab-bar { background: rgba(255,255,255,0.04); }
     .tab-btn {
-      padding: 10px 22px; border-radius: 50px; font-size: 0.85rem;
+      padding: 10px 22px; border-radius: 8px; font-size: 0.85rem;
       font-weight: 500; cursor: pointer; white-space: nowrap;
       border: none; background: transparent; color: #6B7280;
       transition: all 0.25s ease;
@@ -72,6 +72,25 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     .dark .tab-btn.active { background: var(--color-surface-dark); color: var(--color-primary-light); }
+
+    /* Tab bar collapse: limit to 2 rows */
+    .tab-bar-wrapper {
+      max-height: 92px; /* ~2 rows (44px per btn + gap) + padding */
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .tab-bar-wrapper.expanded { max-height: none; }
+    .tab-more-btn {
+      padding: 8px 18px; border-radius: 8px; font-size: 0.82rem;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      border: 1.5px dashed #D1D5DB; background: white; color: #6B7280;
+      transition: all 0.25s ease; margin-left: auto;
+      flex-shrink: 0;
+    }
+    .tab-more-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .dark .tab-more-btn { border-color: #4B5563; background: var(--color-surface-dark); color: #9CA3AF; }
+    .dark .tab-more-btn:hover { border-color: var(--color-primary-light); color: var(--color-primary-light); }
 
     /* Section label */
     .section-label {
@@ -173,11 +192,13 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- Tabs -->
-    <div class="tab-bar mb-8 flex flex-wrap gap-2" id="tabBar">
-      <button class="tab-btn active" data-tab="all">All</button>
-      <button class="tab-btn" data-tab="new">New</button>
-      <span id="productTabsAnchor"></span>
-      <button class="tab-btn" data-tab="blog">Blog</button>
+    <div class="tab-bar mb-8" id="tabBar">
+      <div class="tab-bar-wrapper" id="tabBarWrapper">
+        <button class="tab-btn active" data-tab="all">All</button>
+        <button class="tab-btn" data-tab="new">New</button>
+        <span id="productTabsAnchor"></span>
+        <button class="tab-btn" data-tab="blog">Blog</button>
+      </div>
     </div>
 
     <!-- Result count -->
@@ -435,6 +456,62 @@
     }
   };
 
+  // --- Tab bar collapse: show only 2 rows, "More" button at end of row 2 ---
+  function setupTabCollapse() {
+    const wrapper = document.getElementById('tabBarWrapper');
+    const tabBar = document.getElementById('tabBar');
+    if (!wrapper || !tabBar) return;
+
+    // Reset state: remove existing more button, restore all tab visibility
+    const existing = wrapper.querySelector('.tab-more-btn');
+    if (existing) existing.remove();
+    wrapper.querySelectorAll('.tab-btn').forEach(b => b.style.display = '');
+    wrapper.classList.remove('expanded');
+
+    // Decide if collapse is needed (2 rows ≈ 92px)
+    if (wrapper.scrollHeight <= 96) return;
+
+    // Create "More" button and place it INSIDE the wrapper as the last child
+    const moreBtn = document.createElement('button');
+    moreBtn.className = 'tab-more-btn';
+    moreBtn.id = 'tabMoreBtn';
+    moreBtn.setAttribute('aria-label', 'Show more categories');
+    wrapper.appendChild(moreBtn);
+
+    let hiddenCount = 0;
+
+    // Collapse: hide trailing tabs until the More button sits within the 2nd row
+    function collapse() {
+      const allTabBtns = Array.from(wrapper.querySelectorAll('.tab-btn'));
+      hiddenCount = 0;
+      for (let i = allTabBtns.length - 1; i >= 0; i--) {
+        const wRect = wrapper.getBoundingClientRect();
+        const mRect = moreBtn.getBoundingClientRect();
+        if (mRect.bottom <= wRect.bottom + 2) break; // More already fits in row 1-2
+        allTabBtns[i].style.display = 'none';
+        hiddenCount++;
+      }
+      wrapper.classList.remove('expanded');
+      moreBtn.textContent = '+ ' + hiddenCount + ' More';
+      moreBtn.setAttribute('aria-label', 'Show more categories');
+    }
+
+    // Expand: show everything
+    function expand() {
+      wrapper.querySelectorAll('.tab-btn').forEach(b => b.style.display = '');
+      wrapper.classList.add('expanded');
+      moreBtn.textContent = '− Show Less';
+      moreBtn.setAttribute('aria-label', 'Show fewer categories');
+    }
+
+    collapse();
+
+    moreBtn.addEventListener('click', function() {
+      if (wrapper.classList.contains('expanded')) collapse();
+      else expand();
+    });
+  }
+
   // --- Init ---
   async function init() {
     // Read URL params
@@ -478,6 +555,9 @@
         });
       }
 
+      // Setup collapse after tabs inserted
+      setupTabCollapse();
+
       document.getElementById('productCount').textContent = allProducts.length;
       document.getElementById('articleCount').textContent = allArticles.length;
     } catch (err) {
@@ -497,6 +577,9 @@
           anchor.before(btn);
         });
       }
+
+      // Setup collapse after fallback tabs inserted
+      setupTabCollapse();
     }
 
     // Tab clicks (All / New / Blog are static)
