@@ -41,8 +41,8 @@ router.post('/', (req, res) => {
   try {
     const info = db.prepare(`
       INSERT INTO quote_requests
-        (name, company, email, whatsapp, category, qty, color, color_hex, fabric, customization, delivery, budget, notes, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (name, company, email, whatsapp, category, qty, color, color_hex, fabric, customization, delivery, budget, notes, product, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       String(d.name).trim(),
       String(d.company).trim(),
@@ -57,6 +57,7 @@ router.post('/', (req, res) => {
       String(d.delivery || '').trim(),
       String(d.budget || '').trim(),
       String(d.notes || '').trim(),
+      String(d.product || '').trim(),
       status
     );
 
@@ -76,6 +77,7 @@ router.post('/', (req, res) => {
       delivery: String(d.delivery || '').trim(),
       budget: String(d.budget || '').trim(),
       notes: String(d.notes || '').trim(),
+      product: String(d.product || '').trim(),
     };
     // Fire-and-forget sales notification. Never blocks the response and never
     // affects the submission result even if mail is unconfigured or fails.
@@ -114,6 +116,7 @@ router.get('/', authenticate, (req, res) => {
     delivery: r.delivery,
     budget: r.budget,
     notes: r.notes,
+    product: r.product,
     status: r.status,
     createdAt: r.created_at,
     updatedAt: r.updated_at,

@@ -45,6 +45,7 @@ router.get('/', (req, res) => {
     customization: JSON.parse(p.customization || '[]'),
     images: JSON.parse(p.images || '[]'),
     video: p.video || '',
+    priceRange: p.price_range || '',
     leadTime: p.lead_time,
     certifications: JSON.parse(p.certifications || '[]'),
     createdAt: p.created_at,
@@ -74,6 +75,7 @@ router.get('/:id', (req, res) => {
     customization: JSON.parse(p.customization || '[]'),
     images: JSON.parse(p.images || '[]'),
     video: p.video || '',
+    priceRange: p.price_range || '',
     leadTime: p.lead_time,
     certifications: JSON.parse(p.certifications || '[]'),
   });
@@ -91,14 +93,14 @@ router.post('/', authenticate, (req, res) => {
   const id = genProductId(data, db);
 
   db.prepare(`
-    INSERT INTO products (id, name, category, moq, fabric, features, weight, sizes, colors, description, customization, images, video, lead_time, certifications)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO products (id, name, category, moq, fabric, features, weight, sizes, colors, description, customization, images, video, price_range, lead_time, certifications)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id, data.name, data.category || 'yoga-pants', data.moq || 50, data.fabric || '',
     JSON.stringify(data.features || []), data.weight || '',
     JSON.stringify(data.sizes || []), JSON.stringify(data.colors || []),
     data.description || '', JSON.stringify(data.customization || []),
-    JSON.stringify(data.images || []), data.video || '', data.leadTime || '15-25 days',
+    JSON.stringify(data.images || []), data.video || '', data.priceRange || '', data.leadTime || '15-25 days',
     JSON.stringify(data.certifications || [])
   );
 
@@ -114,14 +116,14 @@ router.put('/:id', authenticate, (req, res) => {
   if (!existing) return res.status(404).json({ title: 'Not Found', status: 404, detail: 'Product not found' });
 
   db.prepare(`
-    UPDATE products SET name=?, category=?, moq=?, fabric=?, features=?, weight=?, sizes=?, colors=?, description=?, customization=?, images=?, video=?, lead_time=?, certifications=?, updated_at=datetime('now')
+    UPDATE products SET name=?, category=?, moq=?, fabric=?, features=?, weight=?, sizes=?, colors=?, description=?, customization=?, images=?, video=?, price_range=?, lead_time=?, certifications=?, updated_at=datetime('now')
     WHERE id=?
   `).run(
     data.name, data.category, data.moq, data.fabric,
     JSON.stringify(data.features || []), data.weight,
     JSON.stringify(data.sizes || []), JSON.stringify(data.colors || []),
     data.description, JSON.stringify(data.customization || []),
-    JSON.stringify(data.images || []), data.video || '',
+    JSON.stringify(data.images || []), data.video || '', data.priceRange || '',
     data.leadTime || '15-25 days',
     JSON.stringify(data.certifications || []),
     req.params.id

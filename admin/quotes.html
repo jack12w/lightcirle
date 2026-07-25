@@ -141,7 +141,7 @@
     const q = searchQuery.trim().toLowerCase();
     let data = activeFilter === 'all' ? quotes : quotes.filter(x => x.status === activeFilter);
     if (q) {
-      data = data.filter(x => [x.company, x.name, x.email, x.whatsapp, x.notes, x.category, x.fabric, x.budget]
+      data = data.filter(x => [x.company, x.name, x.email, x.whatsapp, x.notes, x.category, x.fabric, x.budget, x.product]
         .some(f => (f || '').toLowerCase().includes(q)));
     }
     return data;
@@ -158,6 +158,7 @@
       const color = (q.colorHex ? `<span class="color-dot" style="background:${esc(q.colorHex)}"></span>` : '') + esc(q.color || '');
       const custom = (q.customization && q.customization.length) ? `<div class="muted">定制: ${esc(q.customization.join('，'))}</div>` : '';
       const detail = [
+        q.product ? `<div><strong>产品: ${esc(q.product)}</strong></div>` : '',
         q.fabric ? `<div>面料: ${esc(q.fabric)}</div>` : '',
         q.delivery ? `<div>交期: ${esc(q.delivery)}</div>` : '',
         q.budget ? `<div>预算: ${esc(q.budget)}</div>` : '',
@@ -200,10 +201,10 @@
   function exportCsv() {
     const data = getVisible();
     if (!data.length) { alert('当前没有可导出的线索'); return; }
-    const headers = ['ID', '公司', '联系人', '邮箱', 'WhatsApp', '品类', '数量', '颜色', '色值', '面料/工艺', '定制项', '期望交期', '预算', '状态', '备注', '提交时间'];
+    const headers = ['ID', '公司', '联系人', '邮箱', 'WhatsApp', '品类', '数量', '颜色', '色值', '产品/款式', '面料/工艺', '定制项', '期望交期', '预算', '状态', '备注', '提交时间'];
     const rows = data.map(q => [
       q.id, q.company, q.name, q.email, q.whatsapp, q.category, q.qty,
-      q.color, q.colorHex, q.fabric,
+      q.color, q.colorHex, q.product, q.fabric,
       (q.customization && q.customization.length) ? q.customization.join('，') : '',
       q.delivery, q.budget, STATUS_LABELS[q.status] || q.status, q.notes, q.createdAt
     ]);

@@ -275,25 +275,33 @@ function initStickyContact() {
   bar.className = 'sticky-contact-bar';
   const wa = 'https://wa.me/' + SITE_CONFIG.whatsappNumber + '?text=' + defaultWhatsAppMsg;
   const email = 'mailto:' + SITE_CONFIG.emailAddress + '?subject=' + defaultEmailSubject;
+  // Mobile-only Call button uses the WhatsApp number as a tel: target (native dialer)
+  const telDigits = (SITE_CONFIG.whatsappNumber || '').replace(/\D/g, '');
+  const telHref = telDigits ? 'tel:+' + telDigits : 'tel:+8612345678900';
   bar.innerHTML =
     '<div class="sticky-contact-inner">' +
       '<div class="sticky-contact-trust"><i class="fab fa-whatsapp"></i><span>Typically replies within <b>2 hours</b></span></div>' +
       '<div class="sticky-contact-actions">' +
         '<a class="sticky-btn sticky-btn-email" href="' + email + '"><i class="fas fa-envelope"></i><span>Email</span></a>' +
         '<a class="sticky-btn sticky-btn-quote" href="quote.html"><i class="fas fa-file-invoice"></i><span>Quote</span></a>' +
+        '<a class="sticky-btn sticky-btn-call" href="' + telHref + '"><i class="fas fa-phone"></i><span>Call</span></a>' +
         '<a class="sticky-btn sticky-btn-wa" href="' + wa + '" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>' +
       '</div>' +
     '</div>';
   document.body.appendChild(bar);
 
   // Let product pages deepen the CTA with the product name
-  window.setStickyProduct = function(name) {
+  window.setStickyProduct = function(name, image) {
     if (!name) return;
     const waLink = bar.querySelector('.sticky-btn-wa');
     const quoteLink = bar.querySelector('.sticky-btn-quote');
     const msg = encodeURIComponent("Hi! I'm interested in " + name);
     if (waLink) waLink.setAttribute('href', 'https://wa.me/' + SITE_CONFIG.whatsappNumber + '?text=' + msg);
-    if (quoteLink) quoteLink.setAttribute('href', 'quote.html?product=' + encodeURIComponent(name));
+    if (quoteLink) {
+      let href = 'quote.html?product=' + encodeURIComponent(name);
+      if (image) href += '&image=' + encodeURIComponent(image);
+      quoteLink.setAttribute('href', href);
+    }
   };
 
   // Reveal with a gentle slide-in

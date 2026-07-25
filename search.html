@@ -308,14 +308,16 @@
     const mailHref = 'mailto:' + cfg.emailAddress + '?subject=' + encodeURIComponent('Inquiry - ' + p.name);
     return `
       <a href="${productUrl(p)}" class="product-card block group">
-        <div class="product-image-wrap">
+        <div class="product-image-wrap relative">
           <img src="${p.images[0]}" alt="${p.name}" loading="lazy">
+          ${p.video ? '<span class="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/55 text-white flex items-center justify-center backdrop-blur-sm" title="Video"><i class="fas fa-play text-xs"></i></span>' : ''}
         </div>
         <div class="p-4 lg:p-5">
           <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${p.category}</span>
           <h3 class="font-serif font-bold text-base lg:text-lg mt-1 mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors leading-snug">${p.name}</h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">${p.fabric}</p>
           ${hasCerts ? `<div class="flex flex-wrap gap-1.5 mb-3">${p.certifications.slice(0, 3).map(c => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-[11px] font-medium"><i class="fas fa-certificate text-[10px]"></i>${c}</span>`).join('')}</div>` : ''}
+          ${p.priceRange ? `<p class="text-xs text-gray-500 dark:text-gray-400 mb-3"><i class="fas fa-tags mr-1"></i>${p.priceRange}</p>` : ''}
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light px-2.5 py-1 rounded-full">MOQ ${p.moq}pcs</span>
             <div class="flex gap-1.5">
@@ -334,8 +336,9 @@
     return `
       <article class="blog-result-card">
         <a href="${aUrl}" class="block">
-          <div class="blog-image-wrap">
+          <div class="blog-image-wrap relative">
             <img src="${a.image}" alt="${a.title}" loading="lazy">
+            ${a.video ? '<span class="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/55 text-white flex items-center justify-center backdrop-blur-sm" title="Video"><i class="fas fa-play text-xs"></i></span>' : ''}
           </div>
         </a>
         <div class="p-5">

@@ -24,6 +24,7 @@ function exportProducts() {
     customization: JSON.parse(p.customization || '[]'),
     images: JSON.parse(p.images || '[]'),
     video: p.video || '',
+    priceRange: p.price_range || '',
     leadTime: p.lead_time,
     certifications: JSON.parse(p.certifications || '[]'),
   }));

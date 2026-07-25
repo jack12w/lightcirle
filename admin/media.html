@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/css/tailwind.css">
   <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
   <script defer src="/admin/js/admin-sidebar.js"></script>
+  <script src="/admin/js/r2-upload.js"></script>
   <style>body{font-family:'Inter',system-ui,sans-serif}</style>
 </head>
 <body class="bg-[#FAFAF8]">
@@ -110,17 +111,31 @@
     });
   });
 
-  // Upload with folder
+  // Upload with folder — R2 直传（未启用 R2 时自动回退服务器）
+  var MAX_UPLOAD_MB = 150;
   document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     var fileInput = document.getElementById('fileInput');
-    if (!fileInput.files[0]) return;
-    var fd = new FormData();
-    fd.append('file', fileInput.files[0]);
-    fd.append('folder', document.getElementById('uploadFolder').value);
-    await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-    fileInput.value = '';
-    loadMedia();
+    var file = fileInput.files[0];
+    if (!file) return;
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      alert('文件大小 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB 超过 ' + MAX_UPLOAD_MB + 'MB 上限，请压缩后再上传');
+      fileInput.value = '';
+      return;
+    }
+    var btn = document.querySelector('#uploadForm button[type=submit]');
+    var oldText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> 上传中…';
+    try {
+      await directUpload(file, document.getElementById('uploadFolder').value);
+      fileInput.value = '';
+      loadMedia();
+    } catch(err) {
+      alert('上传失败: ' + err.message);
+    }
+    btn.disabled = false;
+    btn.innerHTML = oldText;
   });
 
   loadMedia();

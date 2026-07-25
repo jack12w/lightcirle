@@ -207,6 +207,10 @@ function initSchema() {
     "ALTER TABLE products ADD COLUMN video TEXT NOT NULL DEFAULT ''",
     // Article video (top of body)
     "ALTER TABLE articles ADD COLUMN video TEXT NOT NULL DEFAULT ''",
+    // Product price range (text, e.g. "$8-15 / contact for bulk" — no tiered pricing exposed)
+    "ALTER TABLE products ADD COLUMN price_range TEXT NOT NULL DEFAULT ''",
+    // Quote request: which product/style the lead inquired about (deep-linked from product pages)
+    "ALTER TABLE quote_requests ADD COLUMN product TEXT NOT NULL DEFAULT ''",
   ];
 
   for (const sql of migrations) {

@@ -45,6 +45,25 @@ router.get('/stats', (req, res) => {
   res.json({ total, products, articles, company, site });
 });
 
+// POST /api/media/register — record a media entry after a browser-direct R2 upload.
+// Body: { key, filename, originalName, contentType, size, folder, publicUrl }
+router.post('/register', authenticate, (req, res) => {
+  const db = getDb();
+  const b = req.body || {};
+  if (!b.key || !b.publicUrl) {
+    return res.status(400).json({ title: 'Bad Request', status: 400, detail: '缺少 key/publicUrl' });
+  }
+  const folder = String(b.folder || 'site').replace(/[^a-zA-Z0-9_-]/g, '');
+  const filename = b.filename || String(b.key).split('/').pop();
+  const stmt = db.prepare(`
+    INSERT INTO media (filename, original_name, file_path, mime_type, file_size, folder, oss_path)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+  stmt.run(filename, b.originalName || '', b.publicUrl, b.contentType || '', b.size || 0, folder, b.key);
+  const id = db.prepare('SELECT last_insert_rowid() as id').get().id;
+  res.status(201).json({ id, url: b.publicUrl });
+});
+
 // DELETE /api/media/:id (auth required)
 router.delete('/:id', authenticate, (req, res) => {
   const db = getDb();

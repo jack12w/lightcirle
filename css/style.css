@@ -396,6 +396,21 @@ h1, h2, h3, h4 {
   z-index: 1;
 }
 
+/* Static fallback when Three.js particles are disabled on mobile (perf) */
+.hero-canvas.hero-static {
+  background:
+    radial-gradient(circle at 25% 25%, rgba(45, 90, 61, 0.14), transparent 55%),
+    radial-gradient(circle at 75% 75%, rgba(196, 146, 110, 0.14), transparent 55%);
+}
+
+/* Long-description clamp on mobile only (PC shows full) */
+.desc-clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* --- Trust Badges --- */
 .trust-badge {
   text-align: center;
@@ -767,6 +782,24 @@ h1, h2, h3, h4 {
   transform: scale(1.06);
 }
 
+/* Factory gallery: horizontal swipe on mobile/tablet, grid on desktop
+   (unifies the feel with the product detail page gallery) */
+@media (max-width: 1023px) {
+  #factoryGallery {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  #factoryGallery .gallery-item {
+    flex: 0 0 11rem;
+    scroll-snap-align: start;
+  }
+}
+
 .capability-card {
   text-align: center;
   padding: 28px 20px;
@@ -882,6 +915,9 @@ h1, h2, h3, h4 {
 .sticky-btn-quote:hover { background: var(--color-accent-light); }
 .sticky-btn-wa { background: var(--color-whatsapp); color: #fff; }
 .sticky-btn-wa:hover { background: #1DA851; }
+/* Call button — mobile-only (native dialer). Hidden on PC. */
+.sticky-btn-call { display: none; background: #2563EB; color: #fff; }
+.sticky-btn-call:hover { background: #1D4ED8; }
 
 .has-sticky-bar { padding-bottom: 64px; }
 
@@ -891,6 +927,8 @@ h1, h2, h3, h4 {
   .sticky-btn { padding: 10px 13px; }
   .sticky-contact-inner { padding: 8px 12px; gap: 6px; }
   .has-sticky-bar { padding-bottom: 58px; }
+  /* Reveal the mobile-only Call button */
+  .sticky-btn-call { display: inline-flex; }
 }
 
 /* --- Print Styles --- */

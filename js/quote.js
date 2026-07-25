@@ -34,6 +34,48 @@
       moqHint.textContent = 'Minimum order: ' + moq + ' pcs per style.';
     }
 
+    // Prefill "Product / Style of Interest" from ?product= deep link (e.g. from a
+    // product detail page's sticky bar). Best-effort: also auto-select the matching
+    // category and pre-fill fabric when the value matches a real product.
+    (function prefillProduct() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var pname = params.get('product');
+        if (!pname) return;
+        var prodField = document.getElementById('q-product');
+        if (prodField) prodField.value = pname;
+        var pimg = params.get('image');
+        var ctx = document.getElementById('q-product-context');
+        if (ctx) {
+          ctx.style.display = 'flex';
+          ctx.style.alignItems = 'center';
+          ctx.style.gap = '12px';
+          var thumb = (pimg && pimg.trim())
+            ? '<img src="' + escapeHtml(pimg) + '" alt="' + escapeHtml(pname) + '" class="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" onerror="this.style.display=\'none\'">'
+            : '';
+          ctx.innerHTML = thumb + '<div><i class="fas fa-tag"></i> Inquiring about <strong>' +
+            escapeHtml(pname) + '</strong> — we\'ll quote this style. Adjust the details below as needed.</div>';
+        }
+        fetch('/data/products.json')
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (list) {
+            if (!Array.isArray(list)) return;
+            var match = list.find(function (x) {
+              return x && x.name && x.name.toLowerCase() === String(pname).toLowerCase();
+            });
+            if (!match) return;
+            var catSel = document.getElementById('q-category');
+            if (catSel && match.category) {
+              var opt = Array.prototype.find.call(catSel.options, function (o) { return o.value === match.category; });
+              if (opt) catSel.value = match.category;
+            }
+            var fab = document.getElementById('q-fabric');
+            if (fab && match.fabric && !fab.value) fab.value = match.fabric;
+          })
+          .catch(function () {});
+      } catch (e) {}
+    })();
+
     var panels = Array.prototype.slice.call(document.querySelectorAll('.q-panel'));
     var indicators = Array.prototype.slice.call(document.querySelectorAll('.q-step-indicator'));
     var lines = Array.prototype.slice.call(document.querySelectorAll('.q-step-line'));
@@ -126,7 +168,7 @@
           name: d.name, company: d.company, email: d.email, whatsapp: d.whatsapp,
           category: d.category, qty: d.qty, color: d.color, colorHex: d.colorHex,
           fabric: d.fabric, customization: d.customization, delivery: d.delivery,
-          budget: d.budget, notes: d.notes
+          budget: d.budget, notes: d.notes, product: d.product
         };
         fetch('/api/quotes', {
           method: 'POST',
@@ -172,7 +214,8 @@
         customization: customization,
         delivery: (document.getElementById('q-delivery') || {}).value || '',
         budget: (document.getElementById('q-budget') || {}).value || '',
-        notes: (document.getElementById('q-notes') || {}).value || ''
+        notes: (document.getElementById('q-notes') || {}).value || '',
+        product: (document.getElementById('q-product') || {}).value || ''
       };
     }
 
@@ -196,6 +239,7 @@
       L.push('');
       L.push('*Product Requirements*');
       L.push('Category: ' + d.category);
+      if (d.product) L.push('Product / Style: ' + d.product);
       L.push('Estimated Quantity: ' + d.qty + ' pcs');
       var cl = colorLabel(d);
       if (cl) L.push('Color: ' + cl);
@@ -229,6 +273,7 @@
 
       html += '<h4>Product</h4><dl>';
       html += row('Category', d.category);
+      html += row('Product / Style', d.product);
       html += row('Quantity', d.qty ? d.qty + ' pcs' : '');
       html += row('Color', colorLabel(d));
       html += row('Fabric / Style', d.fabric);
