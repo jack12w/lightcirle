@@ -91,9 +91,9 @@
         <!-- Category Tags -->
         <div class="flex flex-wrap gap-3 mb-6" id="categoryFilters">
           <button class="category-tag active" data-category="all">All Articles</button>
-          <button class="category-tag" data-category="fabric-knowledge">Fabric Knowledge</button>
-          <button class="category-tag" data-category="business-tips">Business Tips</button>
-          <button class="category-tag" data-category="industry-news">Industry News</button>
+          <button class="category-tag" data-category="fabric-knowledge">fabric-knowledge</button>
+          <button class="category-tag" data-category="business-tips">business-tips</button>
+          <button class="category-tag" data-category="industry-news">industry-news</button>
         </div>
 
         <!-- Result Count -->
@@ -152,9 +152,9 @@
       <div>
         <h4>Categories</h4>
         <ul class="space-y-2">
-          <li><a href="blog.html?category=fabric-knowledge">Fabric Knowledge</a></li>
-          <li><a href="blog.html?category=business-tips">Business Tips</a></li>
-          <li><a href="blog.html?category=industry-news">Industry News</a></li>
+          <li><a href="blog.html?category=fabric-knowledge">fabric-knowledge</a></li>
+          <li><a href="blog.html?category=business-tips">business-tips</a></li>
+          <li><a href="blog.html?category=industry-news">industry-news</a></li>
         </ul>
       </div>
       <div>
@@ -232,7 +232,7 @@
           </a>
           <div class="p-6">
             <div class="flex items-center gap-3 mb-3">
-              <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${categoryNames[post.category] || post.category}</span>
+              <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${post.category}</span>
               <span class="text-xs text-gray-400">${formatDate(post.date)}</span>
             </div>
             <a href="${articleUrl(post)}" class="block group">
@@ -304,9 +304,9 @@
         let html = '<button class="category-tag active" data-category="all">All Articles</button>';
         cats.filter(c => (c.parent_id || '') === '').forEach(t => {
           const kids = childrenOf(t.id);
-          html += '<button class="category-tag" data-category="' + esc(t.id) + '"' + (kids.length ? ' data-children="' + esc(JSON.stringify(kids.map(k => k.id))) + '"' : '') + '>' + esc(t.name) + '</button>';
+          html += '<button class="category-tag" data-category="' + esc(t.id) + '"' + (kids.length ? ' data-children="' + esc(JSON.stringify(kids.map(k => k.id))) + '"' : '') + '>' + esc(t.id) + '</button>';
           kids.forEach(k => {
-            html += '<button class="category-tag" data-category="' + esc(k.id) + '" style="margin-left:1rem">' + esc('↳ ' + k.name) + '</button>';
+            html += '<button class="category-tag" data-category="' + esc(k.id) + '" style="margin-left:1rem">' + esc('↳ ' + k.id) + '</button>';
           });
         });
         document.getElementById('categoryFilters').innerHTML = html;

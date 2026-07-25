@@ -17,7 +17,10 @@ try { fs.mkdirSync(UPLOADS_DIR, { recursive: true }); } catch(e) {}
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOADS_DIR),
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
+    // multer 默认以 latin1 编码接收 multipart 文件名，需转回 UTF-8 才能正确保存/显示中文名
+    const originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    file.originalname = originalname;
+    const ext = path.extname(originalname);
     const name = Date.now() + '-' + Math.random().toString(36).substring(2, 8) + ext;
     cb(null, name);
   }

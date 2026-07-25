@@ -1,0 +1,54 @@
+/* ===== lightcirle 管理后台 公共侧边栏 / 移动端导航 =====
+   菜单数据集中在 admin/js/admin-sidebar.js，本文件只负责样式。
+   桌面侧边栏与移动端底部导航均由该 JS 注入，避免新增页面漏菜单。 */
+
+#adminSidebar {
+  position: fixed; left: 0; top: 0; height: 100vh; width: 240px;
+  background: #fff; border-right: 1px solid #E5E7EB;
+  display: flex; flex-direction: column; z-index: 40;
+}
+#adminSidebar .sb-brand { padding: 20px; border-bottom: 1px solid #F3F4F6; }
+#adminSidebar .sb-brand a {
+  font-size: 20px; font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700; color: #2D5A3D; text-decoration: none;
+}
+#adminSidebar .sb-brand p { margin: 2px 0 0; font-size: 12px; color: #9CA3AF; }
+#adminSidebar .sb-nav { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; overflow-y: auto; }
+#adminSidebar .sb-foot { padding: 12px 12px 16px; border-top: 1px solid #F3F4F6; }
+
+.sb-link {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  border-radius: 10px; font-size: 14px; color: #6B7280;
+  text-decoration: none; transition: all .2s;
+}
+.sb-link:hover, .sb-link.active { background: rgba(45,90,61,.08); color: #2D5A3D; }
+.sb-link.active { font-weight: 600; }
+.sb-link.logout { color: #F87171; margin-top: 2px; }
+.sb-link.logout:hover { color: #EF4444; background: #FEF2F2; }
+
+/* 主内容区左侧让位（桌面）；移动端归零由下方媒体查询处理 */
+#adminMain, .admin-content { margin-left: 240px; }
+#adminMain {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 移动端底部导航（默认隐藏，≤768px 显示） */
+#adminMobileNav { display: none; }
+@media (max-width: 768px) {
+  #adminSidebar { display: none; }
+  #adminMain, .admin-content { margin-left: 0; }
+  body { padding-bottom: 64px; }
+  #adminMobileNav {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid #E5E7EB; z-index: 50;
+    justify-content: space-around; padding: 6px 0; overflow-x: auto;
+  }
+  #adminMobileNav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 10px; color: #9CA3AF; text-decoration: none;
+    padding: 4px 6px; flex: 1 0 auto; min-width: 52px;
+  }
+  #adminMobileNav a.active { color: #2D5A3D; }
+  #adminMobileNav a i { font-size: 17px; }
+}

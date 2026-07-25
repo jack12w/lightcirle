@@ -5,21 +5,14 @@
   <title>报价线索 — lightcirle 管理后台</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
+  <script defer src="/admin/js/admin-sidebar.js"></script>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #FAFAF8; color: #1F2937; }
     a { text-decoration: none; }
     .layout { display: flex; min-height: 100vh; }
-    .sidebar { width: 240px; background: #fff; border-right: 1px solid #E5E7EB; position: fixed; left: 0; top: 0; height: 100vh; display: flex; flex-direction: column; z-index: 40; }
-    .sidebar .brand { padding: 20px; border-bottom: 1px solid #F3F4F6; }
-    .sidebar .brand a { font-size: 20px; font-family: 'Playfair Display', serif; font-weight: 700; color: #2D5A3D; }
-    .sidebar .brand p { margin: 2px 0 0; font-size: 12px; color: #9CA3AF; }
-    .sidebar nav { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; overflow-y: auto; }
-    .s-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 10px; font-size: 14px; color: #6B7280; transition: all .2s; }
-    .s-link:hover, .s-link.active { background: rgba(45,90,61,.08); color: #2D5A3D; }
-    .s-link.active { font-weight: 600; }
-    .sidebar .foot { padding: 12px 12px 16px; border-top: 1px solid #F3F4F6; }
-    .main { flex: 1; margin-left: 240px; padding: 32px; }
+    .main { padding: 32px; }
     h1 { font-family: 'Playfair Display', serif; font-size: 26px; margin: 0 0 4px; }
     .sub { color: #9CA3AF; font-size: 13px; margin-bottom: 20px; }
     .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
@@ -52,38 +45,20 @@
     .search-input:focus { border-color: #2D5A3D; }
     .export-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #2D5A3D; background: #2D5A3D; color: #fff; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
     .export-btn:hover { background: #1F3F2A; }
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; padding: 20px; }
-      .card { overflow-x: auto; }
-    }
   </style>
 </head>
 <body>
 <div class="layout">
-  <!-- Sidebar (self-contained; mirrors other admin pages, adds Quotes) -->
-  <aside class="sidebar">
-    <div class="brand">
-      <a href="dashboard.html">lightcirle</a>
-      <p>管理后台</p>
-    </div>
-    <nav>
-      <a href="dashboard.html" class="s-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
-      <a href="products.html" class="s-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
-      <a href="articles.html" class="s-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
-      <a href="categories.html" class="s-link"><i class="fas fa-tags w-5"></i>分类管理</a>
-      <a href="company.html" class="s-link"><i class="fas fa-building w-5"></i>公司信息</a>
-      <a href="visitors.html" class="s-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
-      <a href="quotes.html" class="s-link active"><i class="fas fa-file-invoice-dollar w-5"></i>报价线索</a>
-      <a href="settings.html" class="s-link"><i class="fas fa-cog w-5"></i>站点设置</a>
-      <a href="media.html" class="s-link"><i class="fas fa-images w-5"></i>媒体库</a>
-    </nav>
-    <div class="foot">
-      <a href="#" id="logoutBtn" class="s-link" style="color:#F87171"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+  <!-- Sidebar：菜单由 admin/js/admin-sidebar.js 注入，单一数据源 -->
+  <aside id="adminSidebar">
+    <div class="sb-brand"><a href="dashboard.html">lightcirle</a><p>管理后台</p></div>
+    <nav id="adminNav" class="sb-nav"></nav>
+    <div class="sb-foot">
+      <a href="#" id="logoutBtn" class="sb-link logout"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
     </div>
   </aside>
 
-  <main class="main">
+  <main id="adminMain" class="main flex-1">
     <h1>报价线索</h1>
     <p class="sub">来自官网「Get a Quote」向导的客户询价，可在后台跟进状态。</p>
 
@@ -115,6 +90,7 @@
       <div class="empty" id="emptyState" style="display:none">暂无线索</div>
     </div>
   </main>
+  <nav id="adminMobileNav"></nav>
 </div>
 
 <script>

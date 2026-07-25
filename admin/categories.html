@@ -7,30 +7,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/tailwind.css">
   <script src="/admin/js/media-picker.js"></script>
-  <style>body{font-family:'Inter',system-ui,sans-serif}.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}.sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}.sidebar-link.active{font-weight:600}</style>
+  <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
+  <script defer src="/admin/js/admin-sidebar.js"></script>
+  <style>body{font-family:'Inter',system-ui,sans-serif}</style>
 </head>
 <body class="bg-[#FAFAF8]">
 <div class="flex min-h-screen">
-  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
-    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
-      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
-      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
-    </div>
-    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
-      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
-      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
-      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
-      <a href="categories.html" class="sidebar-link active"><i class="fas fa-tags w-5"></i>分类管理</a>
-      <a href="company.html" class="sidebar-link"><i class="fas fa-building w-5"></i>公司信息</a>
-      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
-      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
-      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
-    </nav>
-    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
-      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
-    </div>
-  </aside>
-  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+    <!-- Sidebar：菜单由 admin/js/admin-sidebar.js 注入，单一数据源 -->
+    <aside id="adminSidebar">
+      <div class="sb-brand"><a href="dashboard.html">lightcirle</a><p>管理后台</p></div>
+      <nav id="adminNav" class="sb-nav"></nav>
+      <div class="sb-foot">
+        <a href="#" id="logoutBtn" class="sb-link logout"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+      </div>
+    </aside>
+  <main id="adminMain" class="flex-1 p-6 lg:p-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-serif font-bold">分类管理</h1>
       <button onclick="openEditor()" class="bg-[#2D5A3D] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-plus mr-1"></i> 新增分类</button>
@@ -46,32 +37,32 @@
     <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
       <table class="w-full text-sm">
         <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
-          <th class="p-4 font-medium">分类 ID</th><th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">封面</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">父级</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
+          <th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">中文名称</th><th class="p-4 font-medium">封面</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">父级</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
         </tr></thead>
         <tbody id="categoryTable"></tbody>
       </table>
     </div>
 
     <!-- Editor Modal -->
-    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)closeEditor()">
+    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)requestClose()">
       <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8" onclick="event.stopPropagation()">
-        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新增分类</h2><button onclick="closeEditor()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
+        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新增分类</h2><button onclick="requestClose()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
         <form id="categoryForm" class="grid gap-4">
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类 ID（英文小写，用于数据存储）</label><input id="edId" oninput="validateIdInput()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"><p id="edIdError" class="field-error hidden"></p></div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称（中文显示名）</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"><p id="edNameError" class="field-error hidden"></p></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称</label><input id="edId" oninput="validateIdInput()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"><p id="edIdError" class="field-error hidden"></p></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">中文名称</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"><p id="edNameError" class="field-error hidden"></p></div>
           <div><label class="block text-xs font-medium text-gray-500 mb-1">类型</label>
             <select id="edType" onchange="onTypeChange()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
               <option value="product">产品分类</option>
               <option value="article">文章分类</option>
             </select>
           </div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">父分类（留空 = 顶级分类）</label>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">一级分类</label>
             <select id="edParent" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
               <option value="">（顶级分类）</option>
             </select>
             <p id="edParentHint" class="text-[11px] text-gray-400 mt-1 hidden">该分类下已有子分类，不可再设为子分类。</p>
           </div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类封面图</label>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">封面图片</label>
             <div class="flex items-center gap-3">
               <img id="edImagePreview" class="w-12 h-12 rounded-lg border border-gray-100 hidden object-cover">
               <div id="edImagePlaceholder" class="w-12 h-12 rounded-lg border border-dashed border-gray-200 flex items-center justify-center text-gray-300"><i class="fas fa-image"></i></div>
@@ -79,12 +70,12 @@
               <button type="button" onclick="openCatMediaPicker()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
               <button type="button" onclick="clearEdImage()" class="text-xs text-red-400 hover:text-red-600">清除</button>
             </div>
-            <p class="text-[11px] text-gray-400 mt-2">提示：上传或选择封面后将自动保存，无需点击「保存」。新建分类需先填写 ID 与名称，封面会随分类一并自动创建。</p>
+            <p class="text-gray-400 mt-2" style="font-size:12px">提示：上传或选择封面后将自动保存，无需点击「保存」。</p>
             <input type="hidden" id="edImage" value="">
             <input type="file" id="edImageInput" accept="image/*" class="hidden" onchange="uploadEdImage(this)">
           </div>
           <div class="flex gap-3 justify-end pt-4 border-t border-gray-100">
-            <button type="button" onclick="closeEditor()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
+            <button type="button" onclick="requestClose()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
             <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存</button>
           </div>
         </form>
@@ -93,15 +84,7 @@
   </main>
 </div>
 
-<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
-  <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
-  <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
-  <a href="articles.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-newspaper text-lg mb-1"></i>文章</a>
-  <a href="categories.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-tags text-lg mb-1"></i>分类</a>
-  <a href="company.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-building text-lg mb-1"></i>公司</a>
-  <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
-  <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
-</nav>
+  <nav id="adminMobileNav"></nav>
 
 <script>
   const API = '/api'; let token = localStorage.getItem('token');
@@ -195,6 +178,7 @@
     }
     document.getElementById('edImage').value = cat ? (cat.image || '') : '';
     updateEdImagePreview(cat ? cat.image : '');
+    captureEditorSnapshot();
     document.getElementById('editorModal').classList.remove('hidden');
   }
 
@@ -343,10 +327,34 @@
     return false;
   }
 
+  let editorSnapshot = null;
+  function captureEditorSnapshot() {
+    editorSnapshot = {
+      id: document.getElementById('edId').value,
+      name: document.getElementById('edName').value,
+      type: document.getElementById('edType').value,
+      parent: document.getElementById('edParent').value,
+      image: document.getElementById('edImage').value,
+    };
+  }
+  function isEditorDirty() {
+    if (!editorSnapshot) return false;
+    return editorSnapshot.id !== document.getElementById('edId').value
+      || editorSnapshot.name !== document.getElementById('edName').value
+      || editorSnapshot.type !== document.getElementById('edType').value
+      || editorSnapshot.parent !== document.getElementById('edParent').value
+      || editorSnapshot.image !== document.getElementById('edImage').value;
+  }
+  function requestClose() {
+    if (isEditorDirty() && !confirm('您有未保存的修改，确定要放弃吗？')) return;
+    closeEditor();
+  }
+
   function closeEditor() {
     document.getElementById('editorModal').classList.add('hidden');
     editingId = null;
     document.getElementById('edId').disabled = false;
+    editorSnapshot = null;
   }
 
   document.getElementById('categoryForm').addEventListener('submit', async (e) => {
@@ -359,8 +367,8 @@
       image: document.getElementById('edImage').value,
       parent_id: document.getElementById('edParent').value || '',
     };
-    if (!data.id) { setFieldError('edId', 'edIdError', '请填写分类 ID'); return; }
-    if (!data.name) { setFieldError('edName', 'edNameError', '请填写分类名称'); return; }
+    if (!data.id) { setFieldError('edId', 'edIdError', '请填写分类名称'); return; }
+    if (!data.name) { setFieldError('edName', 'edNameError', '请填写中文名称'); return; }
     // New category: enforce ID format. Existing categories (may contain legacy chars like '/') are kept as-is.
     if (!editingId) {
       const idErr = validateCategoryId(data.id);

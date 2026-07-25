@@ -126,12 +126,12 @@
       <div>
         <h4>Products</h4>
         <ul class="space-y-2">
-          <li><a href="/search.html?tab=yoga-pants">Yoga Pants</a></li>
-          <li><a href="/search.html?tab=sports-bras">Sports Bras</a></li>
-          <li><a href="/search.html?tab=yoga-outerwear">Yoga Outerwear</a></li>
-          <li><a href="/search.html?tab=hoodies">Hoodies</a></li>
-          <li><a href="/search.html?tab=sets">Matching Sets</a></li>
-          <li><a href="/search.html?tab=seamless">Seamless Collection</a></li>
+          <li><a href="/search.html?tab=yoga-pants">yoga-pants</a></li>
+          <li><a href="/search.html?tab=sports-bras">sports-bras</a></li>
+          <li><a href="/search.html?tab=yoga-outerwear">yoga-outerwear</a></li>
+          <li><a href="/search.html?tab=hoodies">hoodies</a></li>
+          <li><a href="/search.html?tab=sets">sets</a></li>
+          <li><a href="/search.html?tab=seamless">seamless</a></li>
         </ul>
       </div>
       <div>
@@ -206,9 +206,9 @@
           cats.forEach(function(c) { categoryNames[c.id] = c.name; byId[c.id] = c; });
           function pathOf(id) {
             var c = byId[id];
-            if (!c) return categoryNames[id] || id;
-            if (c.parent_id && c.parent_id !== '' && byId[c.parent_id]) return byId[c.parent_id].name + ' / ' + c.name;
-            return c.name;
+            if (!c) return id;
+            if (c.parent_id && c.parent_id !== '' && byId[c.parent_id]) return c.parent_id + ' / ' + c.id;
+            return c.id;
           }
           var p = window.__currentProduct;
           if (!p) return;
@@ -297,7 +297,7 @@
     }
     html += '</div></div>';
     html += '<div>';
-    html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (categoryNames[product.category] || product.category) + '</span>';
+    html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (product.category) + '</span>';
     html += '<h1 class="text-3xl lg:text-4xl font-serif font-bold mb-4">' + product.name + '</h1>';
     html += '<p class="text-gray-600 dark:text-gray-400 text-lg mb-6">' + product.description + '</p>';
     // Specs
@@ -455,7 +455,7 @@
       for (var ra = 0; ra < Math.min(window.__relatedArticles.length, 3); ra++) {
         var art = window.__relatedArticles[ra];
         factoryHtml += '<a href="' + articleUrlSafe(art) + '" class="block bg-gray-50 dark:bg-gray-800/40 rounded-xl p-4 hover:bg-primary/5 dark:hover:bg-primary-light/5 transition-colors group">';
-        factoryHtml += '<span class="text-xs font-semibold text-accent uppercase tracking-wider">' + (window.__articleCatNames && window.__articleCatNames[art.category] ? window.__articleCatNames[art.category] : art.category) + '</span>';
+        factoryHtml += '<span class="text-xs font-semibold text-accent uppercase tracking-wider">' + (art.category) + '</span>';
         factoryHtml += '<h4 class="font-bold text-sm mt-1 group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2">' + art.title + '</h4>';
         factoryHtml += '<p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">' + (art.excerpt || '') + '</p>';
         factoryHtml += '<span class="text-xs text-primary dark:text-primary-light mt-2 inline-block group-hover:underline">Read More →</span>';

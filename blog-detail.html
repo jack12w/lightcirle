@@ -129,16 +129,16 @@
         <h4>Categories</h4>
         <ul class="space-y-2">
           <li><a href="/search.html?tab=blog">All Articles</a></li>
-          <li><a href="/search.html?tab=blog&q=fabric">Fabric Knowledge</a></li>
-          <li><a href="/search.html?tab=blog&q=business">Business Tips</a></li>
+          <li><a href="/search.html?tab=blog&q=fabric">fabric-knowledge</a></li>
+          <li><a href="/search.html?tab=blog&q=business">business-tips</a></li>
         </ul>
       </div>
       <div>
         <h4>Products</h4>
         <ul class="space-y-2">
-          <li><a href="/search.html?tab=yoga-pants">Yoga Pants</a></li>
-          <li><a href="/search.html?tab=sports-bras">Sports Bras</a></li>
-          <li><a href="/search.html?tab=sets">Matching Sets</a></li>
+          <li><a href="/search.html?tab=yoga-pants">yoga-pants</a></li>
+          <li><a href="/search.html?tab=sports-bras">sports-bras</a></li>
+          <li><a href="/search.html?tab=sets">sets</a></li>
         </ul>
       </div>
       <div>
@@ -215,14 +215,14 @@
           cats.forEach(function(c) { categoryNames[c.id] = c.name; byId[c.id] = c; });
           function pathOf(id) {
             var c = byId[id];
-            if (!c) return categoryNames[id] || id;
-            if (c.parent_id && c.parent_id !== '' && byId[c.parent_id]) return byId[c.parent_id].name + ' / ' + c.name;
-            return c.name;
+            if (!c) return id;
+            if (c.parent_id && c.parent_id !== '' && byId[c.parent_id]) return c.parent_id + ' / ' + c.id;
+            return c.id;
           }
           var el = document.getElementById('articleCategoryLabel');
           if (el && window.__currentArticle) el.textContent = pathOf(window.__currentArticle.category);
           document.querySelectorAll('[data-cat]').forEach(function(node) {
-            node.textContent = categoryNames[node.dataset.cat] || node.dataset.cat;
+            node.textContent = node.dataset.cat;
           });
         })
         .catch(function() {});
@@ -321,7 +321,7 @@
     if (canon) canon.setAttribute('href', 'https://lightcirle.com' + articleUrl(article));
 
     var formattedDate = formatDate(article.date);
-    var catName = categoryNames[article.category] || article.category;
+    var catName = article.category;
 
     var html = '';
     html += '<header class="mb-10">';
@@ -400,7 +400,7 @@
       var a = related[r];
       var aUrl = articleUrl(a);
       html += '<article class="blog-card"><a href="' + aUrl + '" class="block"><div class="blog-image-wrap"><img src="' + a.image + '" alt="' + a.title + '" loading="lazy"></div></a>';
-      html += '<div class="p-5"><span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider" data-cat="' + a.category + '">' + (categoryNames[a.category] || a.category) + '</span>';
+      html += '<div class="p-5"><span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider" data-cat="' + a.category + '">' + (a.category) + '</span>';
       html += '<a href="' + aUrl + '" class="block group mt-2"><h3 class="font-serif font-bold text-lg leading-snug group-hover:text-primary dark:group-hover:text-primary-light transition-colors">' + a.title + '</h3></a>';
       html += '<p class="text-sm text-gray-500 dark:text-gray-400 mt-2 line-clamp-2">' + a.excerpt + '</p></div></article>';
     }

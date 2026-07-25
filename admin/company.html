@@ -4,13 +4,12 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>公司信息 — lightcirle 管理后台</title>
   <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
+  <script defer src="/admin/js/admin-sidebar.js"></script>
   <script src="/admin/js/media-picker.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     body{font-family:'Inter',system-ui,sans-serif}
-    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;transition:all .2s;font-size:.9rem;color:#6B7280;text-decoration:none}
-    .sidebar-link:hover,.sidebar-link.active{background:rgba(45,90,61,.08);color:#2D5A3D}
-    .sidebar-link.active{font-weight:600}
     .stat-card{background:white;border-radius:16px;border:1px solid #E5E7EB;padding:20px}
     .toast{position:fixed;top:24px;right:24px;z-index:9999;background:#2D5A3D;color:white;padding:14px 24px;border-radius:12px;font-size:.9rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.15);opacity:0;transform:translateY(-10px);transition:all .3s ease}
     .toast.show{opacity:1;transform:translateY(0)}
@@ -24,29 +23,17 @@
 </head>
 <body class="bg-[#FAFAF8]">
 <div class="flex min-h-screen">
-  <!-- Sidebar -->
-  <aside class="hidden md:flex md:flex-col w-60 bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-40">
-    <div class="px-5 pt-5 pb-4 border-b border-gray-100">
-      <a href="dashboard.html" class="text-xl font-serif font-bold text-[#2D5A3D]">lightcirle</a>
-      <p class="text-xs text-gray-400 mt-0.5">管理后台</p>
-    </div>
-    <nav class="flex-1 flex flex-col gap-0.5 px-3 py-4 overflow-y-auto">
-      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-pie w-5"></i>仪表盘</a>
-      <a href="products.html" class="sidebar-link"><i class="fas fa-tshirt w-5"></i>产品管理</a>
-      <a href="articles.html" class="sidebar-link"><i class="fas fa-newspaper w-5"></i>文章管理</a>
-      <a href="categories.html" class="sidebar-link"><i class="fas fa-tags w-5"></i>分类管理</a>
-      <a href="company.html" class="sidebar-link active"><i class="fas fa-building w-5"></i>公司信息</a>
-      <a href="visitors.html" class="sidebar-link"><i class="fas fa-chart-line w-5"></i>访客统计</a>
-      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog w-5"></i>站点设置</a>
-      <a href="media.html" class="sidebar-link"><i class="fas fa-images w-5"></i>媒体库</a>
-    </nav>
-    <div class="px-3 pb-4 pt-3 border-t border-gray-100">
-      <a href="#" id="logoutBtn" class="sidebar-link w-full text-red-400 hover:text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+  <!-- Sidebar：菜单由 admin/js/admin-sidebar.js 注入，单一数据源 -->
+  <aside id="adminSidebar">
+    <div class="sb-brand"><a href="dashboard.html">lightcirle</a><p>管理后台</p></div>
+    <nav id="adminNav" class="sb-nav"></nav>
+    <div class="sb-foot">
+      <a href="#" id="logoutBtn" class="sb-link logout"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
     </div>
   </aside>
 
   <!-- Main -->
-  <main class="flex-1 p-6 lg:p-8 ml-0 md:ml-60">
+  <main id="adminMain" class="flex-1 p-6 lg:p-8">
     <!-- Toast -->
     <div id="toast" class="toast"><i class="fas fa-check-circle mr-2"></i><span id="toastMsg">已保存</span></div>
 
@@ -153,40 +140,8 @@
       </div>
     </div>
 
-    <!-- Data Usage Note -->
-    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
-      <h2 class="font-semibold text-base mb-4"><i class="fas fa-globe mr-2 text-[#2D5A3D]"></i>数据引用页面</h2>
-      <p class="text-xs text-gray-400 mb-2">以下页面会读取此模块的数据，修改后刷新对应页面即可看到效果：</p>
-      <div class="grid sm:grid-cols-2 gap-2 text-sm">
-        <div class="flex items-center gap-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-          <i class="fas fa-home text-blue-500"></i>
-          <span><strong>首页</strong> (<code>index.html</code>)</span>
-        </div>
-        <div class="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
-          <i class="fas fa-box text-green-500"></i>
-          <span><strong>产品详情页</strong> (<code>product-detail.html</code>)</span>
-        </div>
-      </div>
-      <p class="text-xs text-gray-400 mt-2">引用的数据字段：公司介绍、工厂数据(4个统计)、定制能力标签、工厂图片。</p>
-    </div>
-
-    <!-- Preview -->
-    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
-      <h2 class="font-semibold text-base mb-4"><i class="fas fa-eye mr-2 text-[#C4926E]"></i>前端预览</h2>
-      <p class="text-xs text-gray-400 mb-3">以下显示当前信息在前端产品详情页的展示效果</p>
-      <div id="previewArea" class="bg-gray-50 dark:bg-gray-800/30 rounded-xl p-6 text-sm text-gray-500">
-        保存后点击产品详情页查看效果。
-      </div>
-    </div>
-
     <!-- Mobile Bottom Nav -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around py-3 px-2 z-50">
-      <a href="dashboard.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-pie text-lg mb-1"></i>仪表盘</a>
-      <a href="products.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-tshirt text-lg mb-1"></i>产品</a>
-      <a href="company.html" class="flex flex-col items-center text-xs text-[#2D5A3D]"><i class="fas fa-building text-lg mb-1"></i>公司</a>
-      <a href="visitors.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-chart-line text-lg mb-1"></i>访客</a>
-      <a href="settings.html" class="flex flex-col items-center text-xs text-gray-400"><i class="fas fa-cog text-lg mb-1"></i>设置</a>
-    </nav>
+    <nav id="adminMobileNav"></nav>
   </main>
 </div>
 
@@ -410,24 +365,9 @@
       renderGallery();
       renderEqImages();
       renderWhyChooseUs();
-      renderPreview(data);
     } catch(e) {
       document.getElementById('galleryLoading').textContent = '加载失败: ' + e.message;
     }
-  }
-
-  function renderPreview(data) {
-    const el = document.getElementById('previewArea');
-    const caps = (data.capabilities || ['OEM & ODM Service', 'Custom Fabric Blends']).slice(0, 4).map(c => `<span class="inline-block text-xs px-2 py-0.5 rounded-full bg-gray-100 mr-1 mb-1">${c}</span>`).join('');
-    const cards = (data.whyChooseUs || []).slice(0, 3).map(c => `<div class="text-center p-2 bg-white dark:bg-gray-800/40 rounded-lg"><i class="fas ${c.icon} text-primary mb-1"></i><div class="text-xs font-bold">${c.title}</div></div>`).join('');
-    el.innerHTML = `<div class="flex items-center gap-4">
-      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.facilitySize || '3,000'}</div><div class="text-xs text-gray-500">m² Facility</div></div>
-      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.workers || '120+'}</div><div class="text-xs text-gray-500">Workers</div></div>
-      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.monthlyCapacity || '300K'}</div><div class="text-xs text-gray-500">Monthly Pcs</div></div>
-      <div class="text-center p-3 bg-white dark:bg-gray-800/40 rounded-lg flex-1"><div class="font-bold text-primary text-lg">${data.stats?.countriesShipped || '30+'}</div><div class="text-xs text-gray-500">Countries</div></div>
-    </div>
-    <div class="mt-3 flex flex-wrap gap-1">${caps}</div>
-    <div class="mt-3 grid grid-cols-3 gap-2">${cards}</div>`;
   }
 
   async function saveCompany() {
@@ -452,7 +392,6 @@
     };
     try {
       await api('/company', { method: 'PUT', body: JSON.stringify(data) });
-      renderPreview(data);
       showToast('公司信息已保存！');
     } catch(e) {
       showToast('保存失败: ' + e.message);

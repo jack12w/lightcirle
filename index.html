@@ -481,20 +481,20 @@
       <div>
         <h4>Products</h4>
         <ul class="space-y-2">
-          <li><a href="search.html?tab=yoga-pants">Yoga Pants</a></li>
-          <li><a href="search.html?tab=sports-bras">Sports Bras</a></li>
-          <li><a href="search.html?tab=yoga-outerwear">Yoga Outerwear</a></li>
-          <li><a href="search.html?tab=hoodies">Hoodies</a></li>
-          <li><a href="search.html?tab=sets">Matching Sets</a></li>
-          <li><a href="search.html?tab=seamless">Seamless Collection</a></li>
+          <li><a href="search.html?tab=yoga-pants">yoga-pants</a></li>
+          <li><a href="search.html?tab=sports-bras">sports-bras</a></li>
+          <li><a href="search.html?tab=yoga-outerwear">yoga-outerwear</a></li>
+          <li><a href="search.html?tab=hoodies">hoodies</a></li>
+          <li><a href="search.html?tab=sets">sets</a></li>
+          <li><a href="search.html?tab=seamless">seamless</a></li>
         </ul>
       </div>
       <div>
         <h4>Resources</h4>
         <ul class="space-y-2">
           <li><a href="search.html?tab=blog">Blog</a></li>
-          <li><a href="search.html?tab=blog">Fabric Guide</a></li>
-          <li><a href="search.html?tab=blog">Business Tips</a></li>
+          <li><a href="search.html?tab=blog">fabric-knowledge</a></li>
+          <li><a href="search.html?tab=blog">business-tips</a></li>
           <li><a href="search.html?q=shipping">Shipping Info</a></li>
         </ul>
       </div>
@@ -687,12 +687,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       // Only use category image from backend — no Unsplash fallback
       var imgSrc = cat.image || '';
       var imgHtml = imgSrc
-        ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.name) + '" loading="lazy">'
+        ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.id) + '" loading="lazy">'
         : '<div class="flex items-center justify-center h-full text-gray-300 dark:text-gray-600"><i class="fas fa-image text-4xl"></i></div>';
       return '<a href="search.html?tab=' + cat.id + '" class="product-card home-cat-card animate-on-scroll block">' +
         '<div class="product-image-wrap">' + imgHtml + '</div>' +
         '<div class="p-3">' +
-          '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.name) + '</h3>' +
+          '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
           '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p>' +
         '</div>' +
       '</a>';
@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           '<div class="flex items-center justify-center h-full text-gray-300 dark:text-gray-600"><i class="fas fa-image text-4xl"></i></div>' +
         '</div>' +
         '<div class="p-3">' +
-          '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.name) + '</h3>' +
+          '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
           '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p>' +
         '</div>' +
       '</a>';
