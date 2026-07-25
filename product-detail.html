@@ -307,6 +307,18 @@
     html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Fabric</p><p class="font-bold text-sm">' + product.fabric + '</p></div>';
     html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Weight</p><p class="font-bold text-lg">' + product.weight + '</p></div>';
     html += '</div>';
+    // Certifications strip (trust signal, front-loaded)
+    if (product.certifications && product.certifications.length) {
+      html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Certifications</p><div class="flex flex-wrap gap-2">';
+      for (var ci = 0; ci < product.certifications.length; ci++) {
+        html += '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-xs font-medium border border-primary/20 dark:border-primary-light/20"><i class="fas fa-certificate"></i>' + product.certifications[ci] + '</span>';
+      }
+      html += '</div></div>';
+    }
+    // Customization summary (front-loaded hook into the section below)
+    if (product.customization && product.customization.length) {
+      html += '<a href="#customizationSection" class="inline-flex items-center gap-2 text-sm font-medium text-primary dark:text-primary-light mb-6 hover:underline"><i class="fas fa-sliders-h"></i> Fully customizable — ' + product.customization.slice(0, 3).join(', ') + ' &amp; more</a>';
+    }
     // Sizes
     html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Available Sizes</p><div class="flex flex-wrap gap-2">';
     for (var s = 0; s < product.sizes.length; s++) {
@@ -332,7 +344,7 @@
     html += '</div></div></div>';
 
     // Customization
-    html += '<div class="mt-16 p-8 lg:p-12 rounded-2xl bg-white dark:bg-darksurface border border-gray-100 dark:border-gray-800">';
+    html += '<div id="customizationSection" class="mt-16 p-8 lg:p-12 rounded-2xl bg-white dark:bg-darksurface border border-gray-100 dark:border-gray-800">';
     html += '<h2 class="text-2xl font-serif font-bold mb-6">Customization Options</h2><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">';
     for (var cust = 0; cust < product.customization.length; cust++) {
       html += '<div class="flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50"><div class="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-check text-primary dark:text-primary-light"></i></div><span class="text-sm font-medium">' + product.customization[cust] + '</span></div>';
@@ -362,6 +374,7 @@
     window.__renderedProduct = product;
     window.__currentProduct = product;
     if (window.refreshProductCategoryName) window.refreshProductCategoryName();
+    if (window.setStickyProduct) window.setStickyProduct(product.name);
     // Update canonical URL with slug
     var canonLink = document.querySelector('link[rel="canonical"]');
     if (canonLink) canonLink.setAttribute('href', 'https://lightcirle.com' + productUrl(product));

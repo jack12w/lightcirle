@@ -240,10 +240,10 @@
       <div>
         <h4>Categories</h4>
         <ul class="space-y-2">
-          <li><a href="search.html?tab=yoga-pants">Yoga Pants</a></li>
-          <li><a href="search.html?tab=sports-bras">Sports Bras</a></li>
-          <li><a href="search.html?tab=sets">Matching Sets</a></li>
-          <li><a href="search.html?tab=seamless">Seamless Collection</a></li>
+          <li><a href="search.html?tab=yoga-pants">yoga-pants</a></li>
+          <li><a href="search.html?tab=sports-bras">sports-bras</a></li>
+          <li><a href="search.html?tab=sets">sets</a></li>
+          <li><a href="search.html?tab=seamless">seamless</a></li>
         </ul>
       </div>
       <div>
@@ -302,24 +302,25 @@
 
   // --- Card Renderers ---
   function renderProductCard(p) {
+    const cfg = window.SITE_CONFIG || { whatsappNumber: '8612345678900', emailAddress: 'inquiry@lightcirle.com' };
+    const hasCerts = p.certifications && p.certifications.length;
+    const waHref = 'https://wa.me/' + cfg.whatsappNumber + '?text=' + encodeURIComponent("Hi! I'm interested in " + p.name);
+    const mailHref = 'mailto:' + cfg.emailAddress + '?subject=' + encodeURIComponent('Inquiry - ' + p.name);
     return `
       <a href="${productUrl(p)}" class="product-card block group">
         <div class="product-image-wrap">
           <img src="${p.images[0]}" alt="${p.name}" loading="lazy">
         </div>
         <div class="p-4 lg:p-5">
-          <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${categoryNames[p.category] || p.category}</span>
+          <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${p.category}</span>
           <h3 class="font-serif font-bold text-base lg:text-lg mt-1 mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors leading-snug">${p.name}</h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">${p.fabric}</p>
+          ${hasCerts ? `<div class="flex flex-wrap gap-1.5 mb-3">${p.certifications.slice(0, 3).map(c => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-[11px] font-medium"><i class="fas fa-certificate text-[10px]"></i>${c}</span>`).join('')}</div>` : ''}
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light px-2.5 py-1 rounded-full">MOQ ${p.moq}pcs</span>
             <div class="flex gap-1.5">
-              <span class="w-7 h-7 rounded-full bg-whatsapp/10 text-whatsapp flex items-center justify-center hover:bg-whatsapp hover:text-white transition-colors" onclick="event.stopPropagation();event.preventDefault();" title="WhatsApp">
-                <i class="fab fa-whatsapp text-xs"></i>
-              </span>
-              <span class="w-7 h-7 rounded-full bg-accent/10 text-accent flex items-center justify-center hover:bg-accent hover:text-white transition-colors" onclick="event.stopPropagation();event.preventDefault();" title="Email">
-                <i class="fas fa-envelope text-xs"></i>
-              </span>
+              <span class="w-7 h-7 rounded-full bg-whatsapp/10 text-whatsapp flex items-center justify-center hover:bg-whatsapp hover:text-white transition-colors cursor-pointer" title="WhatsApp" onclick="event.stopPropagation(); window.open('${waHref}','_blank')"><i class="fab fa-whatsapp text-xs"></i></span>
+              <span class="w-7 h-7 rounded-full bg-accent/10 text-accent flex items-center justify-center hover:bg-accent hover:text-white transition-colors cursor-pointer" title="Email" onclick="event.stopPropagation(); window.location.href='${mailHref}'"><i class="fas fa-envelope text-xs"></i></span>
             </div>
           </div>
         </div>
@@ -339,7 +340,7 @@
         </a>
         <div class="p-5">
           <div class="flex items-center gap-3 mb-2">
-            <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${blogCategoryNames[a.category] || a.category}</span>
+            <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${a.category}</span>
             <span class="text-xs text-gray-400">${dt}</span>
           </div>
           <a href="${aUrl}" class="block group">
@@ -549,7 +550,7 @@
           var btn = document.createElement('button');
           btn.className = 'tab-btn';
           btn.dataset.tab = c.id;
-          btn.textContent = c.name;
+          btn.textContent = c.id;
           btn.addEventListener('click', function() { switchTab(c.id); });
           anchor.before(btn);
         });
@@ -572,7 +573,7 @@
           var btn = document.createElement('button');
           btn.className = 'tab-btn';
           btn.dataset.tab = id;
-          btn.textContent = categoryNames[id];
+          btn.textContent = id;
           btn.addEventListener('click', function() { switchTab(id); });
           anchor.before(btn);
         });

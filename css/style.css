@@ -815,6 +815,84 @@ h1, h2, h3, h4 {
   h2 { font-size: 1.5rem !important; }
 }
 
+/* --- Sticky Contact Bar (contact-first CTA, site-wide) --- */
+.sticky-contact-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 1100;
+  background: rgba(26, 29, 28, 0.96);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.28);
+  transform: translateY(110%);
+  transition: transform 0.45s var(--transition-spring);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.sticky-contact-bar.visible { transform: translateY(0); }
+.dark .sticky-contact-bar { background: rgba(37, 41, 40, 0.97); }
+
+.sticky-contact-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.sticky-contact-trust {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #E8E6E3;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+.sticky-contact-trust i { color: var(--color-whatsapp); font-size: 1.05rem; }
+.sticky-contact-trust b { color: #fff; font-weight: 700; }
+
+.sticky-contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sticky-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.sticky-btn i { font-size: 0.95rem; }
+.sticky-btn-email {
+  background: transparent;
+  color: #E8E6E3;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+}
+.sticky-btn-email:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.sticky-btn-quote { background: var(--color-accent); color: #fff; }
+.sticky-btn-quote:hover { background: var(--color-accent-light); }
+.sticky-btn-wa { background: var(--color-whatsapp); color: #fff; }
+.sticky-btn-wa:hover { background: #1DA851; }
+
+.has-sticky-bar { padding-bottom: 64px; }
+
+@media (max-width: 640px) {
+  .sticky-contact-trust span { display: none; }
+  .sticky-btn span { display: none; }
+  .sticky-btn { padding: 10px 13px; }
+  .sticky-contact-inner { padding: 8px 12px; gap: 6px; }
+  .has-sticky-bar { padding-bottom: 58px; }
+}
+
 /* --- Print Styles --- */
 @media print {
   .floating-contact,

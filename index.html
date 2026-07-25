@@ -156,6 +156,29 @@
         <p class="trust-label">Brands Served</p>
       </div>
     </div>
+    <!-- Certifications / compliance trust strip -->
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400 animate-on-scroll">
+      <span class="font-semibold text-gray-700 dark:text-gray-300">Certified &amp; Compliant:</span>
+      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>OEKO-TEX</span>
+      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>BSCI</span>
+      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>GRS</span>
+      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>REACH</span>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products (contact-first: give buyers something concrete + an easy Inquire) -->
+<section class="py-20 lg:py-28" id="featuredSection">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-on-scroll">
+      <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">Best Sellers</span>
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Popular Custom Styles</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">Our most-requested pieces — every style customizable from just 50 pieces.</p>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6" id="featuredProducts"></div>
+    <div class="text-center mt-12 animate-on-scroll">
+      <a href="search.html" class="btn-primary"><i class="fas fa-th-large"></i> View All Products</a>
+    </div>
   </div>
 </section>
 
@@ -720,6 +743,42 @@ document.addEventListener('DOMContentLoaded', async function() {
       '</a>';
     }).join('');
   }
+});
+</script>
+<script>
+// --- Render Featured Products row on homepage ---
+document.addEventListener('DOMContentLoaded', function() {
+  var grid = document.getElementById('featuredProducts');
+  if (!grid) return;
+  var cfg = window.SITE_CONFIG || { whatsappNumber: '8612345678900', emailAddress: 'inquiry@lightcirle.com' };
+  function slugify(text) {
+    var s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return s.length > 60 ? s.slice(0, 60) : s;
+  }
+  fetch('/data/products.json').then(function(r){ return r.json(); }).then(function(products){
+    var featured = (products || []).slice(0, 4);
+    grid.innerHTML = featured.map(function(p){
+      var url = '/product-detail/' + slugify(p.name) + '_' + p.id + '.html';
+      var waHref = 'https://wa.me/' + cfg.whatsappNumber + '?text=' + encodeURIComponent("Hi! I'm interested in " + p.name);
+      var certs = (p.certifications && p.certifications.length)
+        ? '<div class="flex flex-wrap gap-1.5 mt-2">' + p.certifications.slice(0,3).map(function(c){
+            return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-[11px] font-medium"><i class="fas fa-certificate text-[10px]"></i>' + c + '</span>';
+          }).join('') + '</div>'
+        : '';
+      return '<a href="' + url + '" class="product-card block group">' +
+        '<div class="product-image-wrap"><img src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy"></div>' +
+        '<div class="p-4">' +
+          '<span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">' + p.category + '</span>' +
+          '<h3 class="font-serif font-bold text-base mt-1 mb-1 group-hover:text-primary dark:group-hover:text-primary-light transition-colors leading-snug">' + p.name + '</h3>' +
+          '<span class="text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light px-2.5 py-1 rounded-full">MOQ ' + p.moq + 'pcs</span>' +
+          certs +
+          '<div class="flex gap-2 mt-3">' +
+            '<span class="flex-1 text-center text-xs font-semibold bg-whatsapp text-white py-2 rounded-full hover:opacity-90 transition-opacity cursor-pointer" onclick="event.stopPropagation(); window.open(\'' + waHref + '\',\'_blank\')"><i class="fab fa-whatsapp"></i> Inquire</span>' +
+          '</div>' +
+        '</div>' +
+      '</a>';
+    }).join('');
+  }).catch(function(){});
 });
 </script>
 </body>

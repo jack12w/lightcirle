@@ -267,12 +267,55 @@ window.handleNavSearch = function(e) {
   }
 };
 
+// --- Sticky Contact Bar (site-wide contact-first CTA) ---
+function initStickyContact() {
+  if (!window.SITE_CONFIG) return;
+  const bar = document.createElement('div');
+  bar.id = 'stickyContactBar';
+  bar.className = 'sticky-contact-bar';
+  const wa = 'https://wa.me/' + SITE_CONFIG.whatsappNumber + '?text=' + defaultWhatsAppMsg;
+  const email = 'mailto:' + SITE_CONFIG.emailAddress + '?subject=' + defaultEmailSubject;
+  bar.innerHTML =
+    '<div class="sticky-contact-inner">' +
+      '<div class="sticky-contact-trust"><i class="fab fa-whatsapp"></i><span>Typically replies within <b>2 hours</b></span></div>' +
+      '<div class="sticky-contact-actions">' +
+        '<a class="sticky-btn sticky-btn-email" href="' + email + '"><i class="fas fa-envelope"></i><span>Email</span></a>' +
+        '<a class="sticky-btn sticky-btn-quote" href="quote.html"><i class="fas fa-file-invoice"></i><span>Quote</span></a>' +
+        '<a class="sticky-btn sticky-btn-wa" href="' + wa + '" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(bar);
+
+  // Let product pages deepen the CTA with the product name
+  window.setStickyProduct = function(name) {
+    if (!name) return;
+    const waLink = bar.querySelector('.sticky-btn-wa');
+    const quoteLink = bar.querySelector('.sticky-btn-quote');
+    const msg = encodeURIComponent("Hi! I'm interested in " + name);
+    if (waLink) waLink.setAttribute('href', 'https://wa.me/' + SITE_CONFIG.whatsappNumber + '?text=' + msg);
+    if (quoteLink) quoteLink.setAttribute('href', 'quote.html?product=' + encodeURIComponent(name));
+  };
+
+  // Reveal with a gentle slide-in
+  setTimeout(function() {
+    bar.classList.add('visible');
+    document.body.classList.add('has-sticky-bar');
+  }, 600);
+
+  // The sticky bar replaces the floating circles (same CTAs, less clutter)
+  const fc = document.getElementById('floatingContact');
+  if (fc) fc.style.display = 'none';
+  const st = document.getElementById('scrollTopBtn');
+  if (st) st.style.bottom = '76px';
+}
+
 // --- Initialize Everything ---
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initNavScroll();
   initMobileMenu();
   initFloatingContact();
+  initStickyContact();
   initScrollTop();
   initScrollAnimations();
   initCounters();
