@@ -2,6 +2,16 @@
    菜单数据集中在 admin/js/admin-sidebar.js，本文件只负责样式。
    桌面侧边栏与移动端底部导航均由该 JS 注入，避免新增页面漏菜单。 */
 
+/* Stat card (shared across all admin pages that use .stat-card: dashboard, visitors, etc.)
+   Moved from dashboard.html <style> so visitors/articles/products etc. get a real white card
+   background instead of inheriting the body's bg-[#FAFAF8] through transparent. */
+.stat-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 24px;
+}
+
 #adminSidebar {
   position: fixed; left: 0; top: 0; height: 100vh; width: 240px;
   background: #fff; border-right: 1px solid #E5E7EB;
