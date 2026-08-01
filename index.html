@@ -672,6 +672,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Brand logo wall — title (with <b> highlight support) + partnerLogos if present, else decorative monograms
       renderBrandWallTitle(data.brandWallTitle);
       renderLogoWall(data.partnerLogos);
+      // Factory video — if admin set one, render a real <video> player; else keep the static poster + WhatsApp fallback
+      renderFactoryVideo(data.factoryVideo);
 
       // Testimonials — if present, else sample defaults
       renderTestimonials(data.testimonials);
@@ -703,10 +705,22 @@ function renderLogoWall(partners) {
       if (logo) return '<div class="logo-chip"><img src="' + logo + '" alt="' + escapeHtml(name) + '" loading="lazy"></div>';
       return '<div class="logo-chip logo-chip--text">' + escapeHtml(mono) + '</div>';
     }).join('');
-  } else {
-    var monos = ['YB','FX','AV','NM','KO','ST','LU','VE'];
-    wall.innerHTML = monos.map(function(m) { return '<div class="logo-chip logo-chip--mono">' + m + '</div>'; }).join('');
+    } else {
+      var monos = ['YB','FX','AV','NM','KO','ST','LU','VE'];
+      wall.innerHTML = monos.map(function(m) { return '<div class="logo-chip logo-chip--mono">' + m + '</div>'; }).join('');
+    }
   }
+
+function renderFactoryVideo(url) {
+  var wrap = document.getElementById('factoryVideo');
+  if (!wrap) return;
+  if (!url || !url.trim()) return; // 未配置视频：保留默认静态海报 + WhatsApp 引导
+  var isVideo = /\.(mp4|mov|webm|avi|mkv|ogv)$/i.test(url) || url.indexOf('/uploads/') >= 0 || /video/.test(url);
+  if (!isVideo) return; // 非视频 URL：保留默认
+  var wa = (window.SITE_CONFIG && window.SITE_CONFIG.whatsappNumber) ? window.SITE_CONFIG.whatsappNumber : '8612345678900';
+  wrap.innerHTML =
+    '<video class="factory-video-player" src="' + escapeHtml(url) + '" controls playsinline preload="metadata" poster="/assets/images/factory/1.jpg"></video>' +
+    '<p class="factory-video-note">Want a tailored factory tour video for your brand? <a href="https://wa.me/' + wa + '?text=Hi!%20I%27d%20like%20a%20custom%20factory%20tour%20video." target="_blank" rel="noopener">Message us on WhatsApp</a></p>';
 }
 
 var SAMPLE_TESTIMONIALS = [

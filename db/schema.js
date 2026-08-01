@@ -228,6 +228,8 @@ function initSchema() {
     // Homepage brand wall (Trusted by ... + 8 partner logos)
     "ALTER TABLE company_info ADD COLUMN brand_wall_title TEXT NOT NULL DEFAULT 'Trusted by 200+ yoga & fitness brands across 30+ countries'",
     "ALTER TABLE company_info ADD COLUMN partner_logos TEXT NOT NULL DEFAULT '[]'",
+    // Homepage factory video (selected from media library / uploaded in admin)
+    "ALTER TABLE company_info ADD COLUMN factory_video TEXT NOT NULL DEFAULT ''",
     // Categories
     "ALTER TABLE categories ADD COLUMN image TEXT NOT NULL DEFAULT ''",
     // Categories: parent_id for two-level hierarchy (empty string = top-level)

@@ -985,6 +985,23 @@ h1, h2, h3, h4 {
   font-weight: 600;
   text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
+/* Real video player (when admin sets a factory video) */
+.factory-video-player {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/7;
+  object-fit: cover;
+  border-radius: 18px;
+  background: #000;
+}
+.factory-video-note {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted-light);
+}
+.factory-video-note a { color: var(--color-primary); font-weight: 600; }
+.dark .factory-video-note { color: var(--color-text-muted-dark); }
 
 /* --- Lead capture (sample + newsletter) --- */
 .lead-capture {

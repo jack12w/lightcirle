@@ -172,6 +172,23 @@
       </div>
     </div>
 
+    <!-- Factory Video -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-video mr-2 text-[#2D5A3D]"></i>工厂视频（首页播放）</h2>
+      </div>
+      <p class="text-xs text-gray-400 mb-3">从媒体库选择视频或本地上传（mp4/mov/webm，≤150MB）。配置后首页工厂区会直接播放该视频；留空则仍显示海报+WhatsApp 引导。</p>
+      <div class="flex flex-wrap gap-3 mb-4">
+        <input type="file" id="factoryVideoInput" accept="video/*" class="hidden" onchange="uploadFactoryVideo(this)">
+        <button onclick="document.getElementById('factoryVideoInput').click()" class="border-2 border-dashed border-gray-300 hover:border-[#2D5A3D] text-gray-400 hover:text-[#2D5A3D] px-5 py-3 rounded-xl text-sm transition-colors"><i class="fas fa-cloud-upload-alt mr-2"></i>本地上传视频</button>
+        <button onclick="openFactoryVideoPicker()" class="border border-gray-200 px-5 py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-2"></i>从媒体库选择</button>
+        <button onclick="clearFactoryVideo()" class="border border-gray-200 px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 transition-colors" id="factoryVideoClearBtn" style="display:none"><i class="fas fa-trash mr-1"></i>移除</button>
+      </div>
+      <div id="factoryVideoPreview" class="hidden">
+        <video id="factoryVideoEl" src="" class="w-full max-h-72 rounded-xl border border-gray-100 bg-black" controls preload="metadata"></video>
+      </div>
+    </div>
+
     <!-- Equipment Images -->
     <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
       <div class="flex items-center justify-between mb-4">
@@ -237,6 +254,7 @@
   let certifications = [];
   let howItWorks = [];
   let partnerLogos = [];
+  let factoryVideo = '';
 
   if (!token) window.location.href = '/admin/login.html';
   document.getElementById('logoutBtn')?.addEventListener('click', e => {
@@ -466,6 +484,60 @@
     openSharedMediaPicker();
   }
 
+  // --- Factory Video (homepage) ---
+  function renderFactoryVideo() {
+    const preview = document.getElementById('factoryVideoPreview');
+    const el = document.getElementById('factoryVideoEl');
+    const clearBtn = document.getElementById('factoryVideoClearBtn');
+    if (factoryVideo) {
+      el.src = factoryVideo;
+      preview.classList.remove('hidden');
+      if (clearBtn) clearBtn.style.display = '';
+    } else {
+      el.removeAttribute('src');
+      if (el.load) el.load();
+      preview.classList.add('hidden');
+      if (clearBtn) clearBtn.style.display = 'none';
+    }
+  }
+
+  function openFactoryVideoPicker() {
+    window.__mediaPickCallback = function(url) {
+      factoryVideo = url;
+      renderFactoryVideo();
+      saveCompany();
+    };
+    openSharedMediaPicker();
+  }
+
+  async function uploadFactoryVideo(input) {
+    const file = input.files && input.files[0];
+    if (!file) { input.value = ''; return; }
+    if (file.size > 150 * 1024 * 1024) {
+      alert('视频大小 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB 超过 150MB 上限，请压缩后再上传');
+      input.value = '';
+      return;
+    }
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('folder', 'company');
+      const res = await fetch(API + '/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+      const data = await res.json();
+      if (data.url) { factoryVideo = data.url; renderFactoryVideo(); await saveCompany(); }
+      else { alert('上传失败: ' + (data.detail || '未知错误')); }
+    } catch(e) {
+      alert('上传失败: ' + e.message);
+    }
+    input.value = '';
+  }
+
+  function clearFactoryVideo() {
+    factoryVideo = '';
+    renderFactoryVideo();
+    saveCompany();
+  }
+
   // --- Gallery Upload ---
   async function uploadGalleryImages(input) {
     const files = input.files;
@@ -514,6 +586,7 @@
       certifications = data.certifications || [];
       howItWorks = data.howItWorks || [];
       partnerLogos = data.partnerLogos || [];
+      factoryVideo = data.factoryVideo || '';
       document.getElementById('brandWallTitle').value = data.brandWallTitle || '';
       document.getElementById('certificationsInput').value = (data.certifications || []).join('\n');
       document.getElementById('eqTitle').value = data.equipmentTitle || '';
@@ -526,6 +599,7 @@
       renderTrustStats();
       renderHowItWorks();
       renderPartnerLogos();
+      renderFactoryVideo();
     } catch(e) {
       document.getElementById('galleryLoading').textContent = '加载失败: ' + e.message;
     } finally {
@@ -564,6 +638,7 @@
       howItWorks: howItWorks,
       brandWallTitle: document.getElementById('brandWallTitle').value,
       partnerLogos: partnerLogos.filter(p => p && (p.name || p.mono || p.logo)),
+      factoryVideo: factoryVideo,
       equipmentTitle: document.getElementById('eqTitle').value,
       equipmentDesc: document.getElementById('eqDesc').value,
       equipmentList: eqItems,

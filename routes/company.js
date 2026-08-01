@@ -55,6 +55,7 @@ router.get('/', (req, res) => {
       howItWorks: JSON.parse(info.how_it_works || '[]'),
       brandWallTitle: info.brand_wall_title || '',
       partnerLogos: JSON.parse(info.partner_logos || '[]'),
+      factoryVideo: info.factory_video || '',
     });
   } catch(e) {
     res.status(500).json({ error: e.message });
@@ -83,7 +84,7 @@ router.put('/', (req, res) => {
         why_choose_us=?, equipment_title=?, equipment_desc=?, equipment_list=?, equipment_images=?,
         hero_badge=?, hero_title_main=?, hero_title_highlight=?, hero_title_post=?, hero_subtitle=?,
         trust_stats=?, certifications=?, how_it_works=?,
-        brand_wall_title=?, partner_logos=?,
+        brand_wall_title=?, partner_logos=?, factory_video=?,
         updated_at=datetime('now')
       WHERE id=1
     `).run(
@@ -94,7 +95,7 @@ router.put('/', (req, res) => {
       whyChooseUs, data.equipmentTitle || '', data.equipmentDesc || '', equipmentList, equipmentImages,
       hero.badge || '', hero.titleMain || '', hero.titleHighlight || '', hero.titlePost || '', hero.subtitle || '',
       trustStats, certifications, howItWorks,
-      data.brandWallTitle || '', JSON.stringify(data.partnerLogos || [])
+      data.brandWallTitle || '', JSON.stringify(data.partnerLogos || []), data.factoryVideo || ''
     );
     res.json({ success: true });
   } catch(e) {
