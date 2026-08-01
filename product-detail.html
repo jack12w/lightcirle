@@ -202,28 +202,32 @@
     // Images / Video (Alibaba-style: video replaces first main image when present)
     var hasVideo = !!(product.video && product.video.trim());
     var mainImgSrc = (product.images && product.images.length) ? product.images[0] : '';
-    // Alibaba-style layout: thumbnails left / main square right (desktop); main square top / thumbnails bottom (mobile)
-    html += '<div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4">';
-    // Main media (square, first in DOM = top on mobile)
-    html += '<div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800" id="mainMedia">';
+    // New layout: main square (420x420) on top, carousel thumbnails row with L/R arrows below.
+    html += '<div class="flex flex-col items-center lg:items-start">';
+    // Main media (square 420x420, responsive)
+    html += '<div class="w-full max-w-[420px] aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 select-none" id="mainMedia">';
     if (hasVideo) {
       html += renderVideoBlock(product.video);
     } else if (mainImgSrc) {
       html += '<img src="' + mainImgSrc + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
     }
     html += '</div>';
-    // Thumbnails column (second in DOM = below on mobile, auto width on desktop)
-    html += '<div class="flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">';
+    // Carousel thumbnails with left/right arrows (holds more than visible; scroll on click)
+    html += '<div class="flex items-center gap-2 mt-4 w-full max-w-[420px]">';
+    html += '<button type="button" onclick="scrollThumbs(-1)" class="thumb-arrow flex-shrink-0" aria-label="Previous thumbnails"><i class="fas fa-chevron-left"></i></button>';
+    html += '<div id="thumbStrip" class="flex gap-3 overflow-x-auto scrollbar-hide flex-1 snap-x snap-mandatory">';
     // Thumbnail 0: video (if any)
     if (hasVideo) {
-      html += '<button onclick="renderMainMedia(\'video\')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-primary hover:border-primary/50 transition-colors relative bg-black flex items-center justify-center">' +
+      html += '<button data-idx="-1" onclick="renderMainMedia(\'video\')" class="thumb-item w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-primary hover:border-primary/50 transition-colors relative bg-black flex items-center justify-center snap-start">' +
         '<i class="fas fa-play text-white/80 text-lg"></i>' +
         '<span class="absolute bottom-0.5 left-0.5 w-4 h-4 rounded-full bg-white/80 text-[#2D5A3D] text-[8px] flex items-center justify-center"><i class="fas fa-film"></i></span></button>';
     }
     for (var i = 0; i < product.images.length; i++) {
       var border = (!hasVideo && i === 0) ? 'border-primary' : 'border-transparent';
-      html += '<button onclick="renderMainMedia(' + i + ')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 ' + border + ' hover:border-primary/50 transition-colors"><img src="' + product.images[i] + '" alt="' + product.name + ' view ' + (i+1) + '" class="w-full h-full object-cover"></button>';
+      html += '<button data-idx="' + i + '" onclick="renderMainMedia(' + i + ')" class="thumb-item w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 ' + border + ' hover:border-primary/50 transition-colors snap-start"><img src="' + product.images[i] + '" alt="' + product.name + ' view ' + (i+1) + '" class="w-full h-full object-cover"></button>';
     }
+    html += '</div>';
+    html += '<button type="button" onclick="scrollThumbs(1)" class="thumb-arrow flex-shrink-0" aria-label="Next thumbnails"><i class="fas fa-chevron-right"></i></button>';
     html += '</div></div>';
     html += '<div>';
     html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (product.category) + '</span>';
@@ -276,7 +280,7 @@
     // Features
     html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Key Features</p><div class="flex flex-wrap gap-2">';
     for (var f = 0; f < product.features.length; f++) {
-      html += '<span class="px-3 py-1 rounded-full bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light text-xs font-medium"><i class="fas fa-check mr-1"></i>' + product.features[f] + '</span>';
+      html += '<span class="px-3 py-1 rounded-[6px] bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light text-xs font-medium"><i class="fas fa-check mr-1"></i>' + product.features[f] + '</span>';
     }
     html += '</div></div>';
     // CTA
@@ -341,6 +345,21 @@
       var img = (p.images && p.images[index]) ? p.images[index] : '';
       mainMedia.innerHTML = '<img src="' + img + '" alt="' + p.name + '" class="w-full h-full object-cover">';
     }
+    // highlight the active thumbnail
+    var thumbs = document.querySelectorAll('#thumbStrip [data-idx]');
+    thumbs.forEach(function(t) {
+      var active = (String(t.getAttribute('data-idx')) === String(index));
+      t.classList.toggle('border-primary', active);
+      t.classList.toggle('border-transparent', !active);
+    });
+  };
+
+  // ===== Scroll the thumbnail carousel strip (left/right arrows) =====
+  window.scrollThumbs = function(dir) {
+    var strip = document.getElementById('thumbStrip');
+    if (!strip) return;
+    var amount = strip.clientWidth > 0 ? Math.round(strip.clientWidth * 0.8) : 100;
+    strip.scrollBy({ left: dir * amount, behavior: 'smooth' });
   };
 
   // ===== Mobile-only: expand / collapse long description =====
