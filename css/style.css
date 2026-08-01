@@ -459,6 +459,178 @@ h1, h2, h3, h4 {
   margin-right: 10px;
 }
 
+/* ===== Factory supplier card (Alibaba-style) — sits under the left image carousel =====
+   Compact, light-blue tinted card with logo, name, verified badge, location meta,
+   4-column metrics row, and customization tags. Renders only when admin fills
+   /api/company.factoryCard. */
+.factory-card {
+  width: 100%;
+  max-width: 370px;
+  margin-top: 1rem;
+  padding: 14px 16px 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #F0F5FF 0%, #E8F0FE 100%);
+  border: 1px solid #D8E2F5;
+  color: #1F2A40;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.dark .factory-card {
+  background: linear-gradient(180deg, rgba(45,90,61,.12) 0%, rgba(45,90,61,.06) 100%);
+  border-color: rgba(62,123,84,.25);
+  color: #E5E7EB;
+}
+/* Header: logo (left) + name/verified/meta (right) */
+.fc-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.fc-logo-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.fc-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.fc-logo-fallback {
+  font-size: 18px;
+  color: #2D5A3D;
+}
+.fc-id {
+  flex: 1;
+  min-width: 0;
+}
+.fc-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fc-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #0F1A2E;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  max-width: 100%;
+}
+.dark .fc-name {
+  color: #F3F4F6;
+}
+.fc-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #0F1A2E;
+  background: #C9E5FF;
+  border: 1px solid #8FBDEC;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.fc-verified i {
+  color: #1976D2;
+  font-size: 9px;
+}
+.fc-meta-line {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #4B5563;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.dark .fc-meta-line { color: #9CA3AF; }
+.fc-meta { font-weight: 400; }
+.fc-meta-sep { color: #9CA3AF; }
+.fc-flag { font-size: 12px; }
+.fc-best {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #1976D2;
+  font-weight: 500;
+  background: rgba(25, 118, 210, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.fc-best i { color: #F59E0B; font-size: 10px; }
+/* 4-column metrics */
+.fc-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 10px 4px;
+  border-top: 1px solid #DCE5F5;
+  border-bottom: 1px solid #DCE5F5;
+  margin-bottom: 10px;
+}
+.dark .fc-metrics {
+  border-color: rgba(255,255,255,0.08);
+}
+.fc-metric {
+  text-align: center;
+  min-width: 0;
+}
+.fc-metric-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0F1A2E;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dark .fc-metric-val { color: #F3F4F6; }
+.fc-meta { font-weight: 400; }
+.fc-metric-label {
+  font-size: 10px;
+  color: #6B7280;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dark .fc-metric-label { color: #9CA3AF; }
+/* Customizations row (gem icon + label, repeated) */
+.fc-customize {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 11px;
+  color: #4B5563;
+}
+.dark .fc-customize { color: #9CA3AF; }
+.fc-customize-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.fc-customize-item i {
+  color: #1976D2;
+  font-size: 10px;
+}
+
 /* --- Trust Badges --- */
 .trust-badge {
   text-align: center;

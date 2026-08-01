@@ -230,6 +230,8 @@ function initSchema() {
     "ALTER TABLE company_info ADD COLUMN partner_logos TEXT NOT NULL DEFAULT '[]'",
     // Homepage factory video (selected from media library / uploaded in admin)
     "ALTER TABLE company_info ADD COLUMN factory_video TEXT NOT NULL DEFAULT ''",
+    // Factory card displayed on the product detail page (below the left image carousel)
+    "ALTER TABLE company_info ADD COLUMN factory_card TEXT NOT NULL DEFAULT '{}'",
     // Categories
     "ALTER TABLE categories ADD COLUMN image TEXT NOT NULL DEFAULT ''",
     // Categories: parent_id for two-level hierarchy (empty string = top-level)

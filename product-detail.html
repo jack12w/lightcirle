@@ -192,6 +192,61 @@
     return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';
   }
 
+  // ===== Factory supplier card (Alibaba-style) — rendered under the left image carousel =====
+  // Driven by /api/company.factoryCard. Returns '' if no meaningful data.
+  function renderFactoryCard() {
+    var fc = (window.__companyData && window.__companyData.factoryCard) || {};
+    // Require at minimum a name OR a store rating — otherwise we don't render
+    if (!fc.name && !fc.storeRating) return '';
+    var verified = fc.verified !== false; // default to true
+    var ratingCount = fc.ratingCount ? '<span class="fc-meta ml-1 text-gray-500 dark:text-gray-400">(' + escHtml(fc.ratingCount) + ')</span>' : '';
+    var metaBits = [];
+    if (fc.countryFlag) metaBits.push('<span class="fc-flag">' + escHtml(fc.countryFlag) + '</span>');
+    if (fc.location) metaBits.push('<span>' + escHtml(fc.location) + '</span>');
+    if (fc.years) metaBits.push('<span>' + escHtml(fc.years) + '</span>');
+    if (fc.type) metaBits.push('<span>' + escHtml(fc.type) + '</span>');
+    var metaLine = metaBits.length ? metaBits.join(' <span class="fc-meta-sep">·</span> ') : '';
+    var customizations = Array.isArray(fc.customizations) ? fc.customizations : [];
+    var customHtml = customizations.length ? (
+      '<div class="fc-customize">' +
+        customizations.map(function(c) {
+          return '<span class="fc-customize-item"><i class="fas fa-gem"></i>' + escHtml(c) + '</span>';
+        }).join('') +
+      '</div>'
+    ) : '';
+    return (
+      '<div class="factory-card mt-4">' +
+        '<div class="fc-header">' +
+          '<div class="fc-logo-wrap">' +
+            (fc.logo
+              ? '<img class="fc-logo" src="' + escAttr(fc.logo) + '" alt="factory logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+                '<span class="fc-logo-fallback" style="display:none"><i class="fas fa-industry"></i></span>'
+              : '<span class="fc-logo-fallback"><i class="fas fa-industry"></i></span>'
+            ) +
+          '</div>' +
+          '<div class="fc-id">' +
+            '<div class="fc-name-row">' +
+              '<span class="fc-name">' + escHtml(fc.name || '') + '</span>' +
+              (verified ? '<span class="fc-verified"><i class="fas fa-check"></i> Verified PRO</span>' : '') +
+            '</div>' +
+            (metaLine ? '<div class="fc-meta-line">' + metaLine + '</div>' : '') +
+            (fc.bestSeller ? '<div class="fc-best"><i class="fas fa-award"></i>' + escHtml(fc.bestSeller) + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="fc-metrics">' +
+          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.storeRating || '') + ratingCount + '</div><div class="fc-metric-label">Store rating</div></div>' +
+          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.responseTime || '') + '</div><div class="fc-metric-label">Response Time</div></div>' +
+          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.onTimeDispatchRate || '') + '</div><div class="fc-metric-label">On-time dispatch rate</div></div>' +
+          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.reorderRate || '') + '</div><div class="fc-metric-label">Reorder rate</div></div>' +
+        '</div>' +
+        customHtml +
+      '</div>'
+    );
+  }
+  // Minimal HTML escapers used by renderFactoryCard
+  function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escAttr(s) { return escHtml(s).replace(/"/g,'&quot;'); }
+
   function renderProduct(product) {
     document.title = product.name + ' — Custom Yoga Wear | MOQ ' + product.moq + 'pcs | lightcirle';
     document.getElementById('pageTitle').textContent = document.title;
@@ -230,7 +285,10 @@
     html += '</div>';
     html += '<button type="button" onclick="scrollThumbs(-1)" class="thumb-arrow thumb-arrow-overlay thumb-arrow-left" aria-label="Previous thumbnails"><i class="fas fa-chevron-left"></i></button>';
     html += '<button type="button" onclick="scrollThumbs(1)" class="thumb-arrow thumb-arrow-overlay thumb-arrow-right" aria-label="Next thumbnails"><i class="fas fa-chevron-right"></i></button>';
-    html += '</div></div>';
+    html += '</div>';
+    // Factory card (Alibaba-style supplier card) under the image carousel — only if data present
+    html += renderFactoryCard();
+    html += '</div>';
     html += '<div>';
     // Title: clamp to 2 lines (no Read more button)
     html += '<h1 id="productTitle" class="pd-title font-serif font-bold mb-4">' + product.name + '</h1>';
@@ -500,10 +558,29 @@
   companyXhr.onload = function() {
     try {
       window.__companyData = JSON.parse(companyXhr.responseText);
-      // If product already rendered, re-render the factory section
+      // If product already rendered, re-render the factory section + the factory card
       var existingSection = document.getElementById('factoryKnowledgeSection');
       if (existingSection && window.__renderedProduct) {
         existingSection.innerHTML = renderFactoryKnowledgeSection(window.__renderedProduct);
+      }
+      // Re-render the factory card by re-running renderProduct (it will read __companyData)
+      if (window.__renderedProduct) {
+        var imgCol = document.querySelector('.pd-detail-grid > .flex.flex-col');
+        if (imgCol) {
+          // Find the existing factory card (the one immediately before the right column opens)
+          // and refresh it. renderProduct() rebuilds the whole left column, but we only need
+          // to swap the .factory-card node.
+          var tmp = document.createElement('div');
+          tmp.innerHTML = renderFactoryCard();
+          var oldCard = imgCol.querySelector('.factory-card');
+          if (oldCard) {
+            if (tmp.firstChild) imgCol.replaceChild(tmp.firstChild, oldCard);
+            else oldCard.parentNode.removeChild(oldCard);
+          } else if (tmp.firstChild) {
+            // Card wasn't there originally (company data wasn't ready) — append it
+            imgCol.appendChild(tmp.firstChild);
+          }
+        }
       }
     } catch(e) { /* silently skip */ }
   };
