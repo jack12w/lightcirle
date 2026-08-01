@@ -233,15 +233,14 @@
     html += '</div></div>';
     html += '<div>';
     html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (product.category) + '</span>';
-    html += '<h1 class="text-3xl lg:text-4xl font-serif font-bold mb-4">' + product.name + '</h1>';
-    // Long description: clamp to 3 lines on mobile only, with a Read more toggle (PC shows full)
+    html += '<h1 class="pd-title font-serif font-bold mb-4">' + product.name + '</h1>';
+    // Long description: always clamp to 3 lines (14px) with a Read more toggle to expand
     var descText = product.description || '';
-    var descLong = descText.length > 160;
-    var clampNow = descLong && window.innerWidth < 768;
+    var descLong = descText.length > 120;
     html += '<div class="mb-6">';
-    html += '<p id="productDesc" class="text-gray-600 dark:text-gray-400 text-lg' + (clampNow ? ' desc-clamped' : '') + '">' + descText + '</p>';
+    html += '<p id="productDesc" class="pd-desc text-gray-600 dark:text-gray-400">' + descText + '</p>';
     if (descLong) {
-      html += '<button id="descToggle" class="text-primary dark:text-primary-light text-sm font-medium md:hidden mt-2" type="button" onclick="toggleDesc()">Read more <i class="fas fa-chevron-down"></i></button>';
+      html += '<button id="descToggle" class="text-primary dark:text-primary-light text-sm font-medium mt-2" type="button" onclick="toggleDesc()">Read more <i class="fas fa-chevron-down"></i></button>';
     }
     html += '</div>';
     // Price range (text only — no tiered pricing exposed; guides inquiry)
@@ -250,16 +249,16 @@
     }
     // Specs
     html += '<div class="grid grid-cols-2 gap-4 mb-8">';
-    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">MOQ</p><p class="font-bold text-lg">' + product.moq + ' pcs</p></div>';
-    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Lead Time</p><p class="font-bold text-lg">' + product.leadTime + '</p></div>';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">MOQ</p><p class="font-bold text-sm">' + product.moq + ' pcs</p></div>';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Lead Time</p><p class="font-bold text-sm">' + product.leadTime + '</p></div>';
     html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Fabric</p><p class="font-bold text-sm">' + product.fabric + '</p></div>';
-    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Weight</p><p class="font-bold text-lg">' + product.weight + '</p></div>';
+    html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Weight</p><p class="font-bold text-sm">' + product.weight + '</p></div>';
     html += '</div>';
     // Certifications strip (trust signal, front-loaded)
     if (product.certifications && product.certifications.length) {
       html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Certifications</p><div class="flex flex-wrap gap-2">';
       for (var ci = 0; ci < product.certifications.length; ci++) {
-        html += '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-xs font-medium border border-primary/20 dark:border-primary-light/20"><i class="fas fa-certificate"></i>' + product.certifications[ci] + '</span>';
+        html += '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-sm font-medium border border-primary/20 dark:border-primary-light/20"><i class="fas fa-certificate"></i>' + product.certifications[ci] + '</span>';
       }
       html += '</div></div>';
     }
@@ -282,7 +281,7 @@
     // Features
     html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Key Features</p><div class="flex flex-wrap gap-2">';
     for (var f = 0; f < product.features.length; f++) {
-      html += '<span class="px-3 py-1 rounded-[6px] bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light text-xs font-medium"><i class="fas fa-check mr-1"></i>' + product.features[f] + '</span>';
+      html += '<span class="px-3 py-1 rounded-[6px] bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light text-sm font-medium"><i class="fas fa-check mr-1"></i>' + product.features[f] + '</span>';
     }
     html += '</div></div>';
     // CTA
@@ -392,17 +391,17 @@
     renderMainMedia((cur + 1) % n);
   };
 
-  // ===== Mobile-only: expand / collapse long description =====
+  // ===== Expand / collapse long description (works on all viewports) =====
   window.toggleDesc = function() {
     var p = document.getElementById('productDesc');
     var btn = document.getElementById('descToggle');
     if (!p || !btn) return;
-    if (p.classList.contains('desc-clamped')) {
-      p.classList.remove('desc-clamped');
-      btn.innerHTML = 'Read less <i class="fas fa-chevron-up"></i>';
-    } else {
-      p.classList.add('desc-clamped');
+    if (p.classList.contains('expanded')) {
+      p.classList.remove('expanded');
       btn.innerHTML = 'Read more <i class="fas fa-chevron-down"></i>';
+    } else {
+      p.classList.add('expanded');
+      btn.innerHTML = 'Read less <i class="fas fa-chevron-up"></i>';
     }
   };
 
