@@ -202,15 +202,17 @@
     // Images / Video (Alibaba-style: video replaces first main image when present)
     var hasVideo = !!(product.video && product.video.trim());
     var mainImgSrc = (product.images && product.images.length) ? product.images[0] : '';
-    // New layout: main square (420x420) on top, carousel thumbnails row with L/R arrows below.
+    // New layout: main square (420x420) on top with L/R arrows overlaid, carousel thumbnails row with L/R arrows below.
     html += '<div class="flex flex-col items-center lg:items-start">';
-    // Main media (square 420x420, responsive)
-    html += '<div class="w-full max-w-[420px] aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 select-none" id="mainMedia">';
+    // Main media (square 420x420, responsive) with prev/next arrows overlaid
+    html += '<div class="relative w-full max-w-[420px] aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 select-none group" id="mainMedia">';
     if (hasVideo) {
       html += renderVideoBlock(product.video);
     } else if (mainImgSrc) {
       html += '<img src="' + mainImgSrc + '" alt="' + product.name + '" id="mainImage" class="w-full h-full object-cover">';
     }
+    html += '<button type="button" onclick="prevImage()" class="main-image-arrow main-image-arrow-left" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>';
+    html += '<button type="button" onclick="nextImage()" class="main-image-arrow main-image-arrow-right" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>';
     html += '</div>';
     // Carousel thumbnails with left/right arrows (holds more than visible; scroll on click)
     html += '<div class="flex items-center gap-2 mt-4 w-full max-w-[420px]">';
@@ -333,17 +335,26 @@
     ]);
   }
 
+  // Track the currently-shown media index so prev/next can wrap correctly.
+  // -1 means the video block (only relevant when product.video exists).
+  window.__currentImageIndex = 0;
+
   // ===== Switch main media (video / image) on thumbnail click =====
   window.renderMainMedia = function(index) {
     var p = window.__currentProduct;
     if (!p) return;
+    window.__currentImageIndex = (index === 'video') ? -1 : Number(index);
     var mainMedia = document.getElementById('mainMedia');
     if (!mainMedia) return;
     if (index === 'video') {
-      mainMedia.innerHTML = renderVideoBlock(p.video);
+      mainMedia.innerHTML = renderVideoBlock(p.video) +
+        '<button type="button" onclick="prevImage()" class="main-image-arrow main-image-arrow-left" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>' +
+        '<button type="button" onclick="nextImage()" class="main-image-arrow main-image-arrow-right" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>';
     } else {
       var img = (p.images && p.images[index]) ? p.images[index] : '';
-      mainMedia.innerHTML = '<img src="' + img + '" alt="' + p.name + '" class="w-full h-full object-cover">';
+      mainMedia.innerHTML = '<img src="' + img + '" alt="' + p.name + '" class="w-full h-full object-cover">' +
+        '<button type="button" onclick="prevImage()" class="main-image-arrow main-image-arrow-left" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>' +
+        '<button type="button" onclick="nextImage()" class="main-image-arrow main-image-arrow-right" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>';
     }
     // highlight the active thumbnail
     var thumbs = document.querySelectorAll('#thumbStrip [data-idx]');
@@ -360,6 +371,25 @@
     if (!strip) return;
     var amount = strip.clientWidth > 0 ? Math.round(strip.clientWidth * 0.8) : 100;
     strip.scrollBy({ left: dir * amount, behavior: 'smooth' });
+  };
+
+  // ===== Cycle through images with the L/R arrows overlaid on the main image =====
+  // Only cycles through images (skipping video). If currently on video, prev/next jump to last/first image.
+  window.prevImage = function() {
+    var p = window.__currentProduct;
+    if (!p || !p.images || !p.images.length) return;
+    var n = p.images.length;
+    var cur = window.__currentImageIndex;
+    if (cur === -1) { renderMainMedia(n - 1); return; }
+    renderMainMedia((cur - 1 + n) % n);
+  };
+  window.nextImage = function() {
+    var p = window.__currentProduct;
+    if (!p || !p.images || !p.images.length) return;
+    var n = p.images.length;
+    var cur = window.__currentImageIndex;
+    if (cur === -1) { renderMainMedia(0); return; }
+    renderMainMedia((cur + 1) % n);
   };
 
   // ===== Mobile-only: expand / collapse long description =====

@@ -664,6 +664,43 @@ h1, h2, h3, h4 {
 }
 
 /* --- Product detail: carousel thumbnails with L/R arrows --- */
+/* Arrows overlaid on the main image (centered vertically on L/R edges) */
+.main-image-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-primary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s, color 0.2s, opacity 0.2s;
+  opacity: 0;
+}
+#mainMedia:hover .main-image-arrow,
+.main-image-arrow:focus-visible {
+  opacity: 1;
+}
+.main-image-arrow:hover {
+  background: #fff;
+  color: var(--color-primary);
+}
+.main-image-arrow-left { left: 12px; }
+.main-image-arrow-right { right: 12px; }
+.dark .main-image-arrow {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+}
+.dark .main-image-arrow:hover {
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--color-accent);
+}
 .thumb-arrow {
   width: 34px;
   height: 34px;
