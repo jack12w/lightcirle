@@ -205,7 +205,7 @@
     // New layout: main square (420x420) on top with L/R arrows overlaid, carousel thumbnails row with L/R arrows below.
     html += '<div class="flex flex-col items-center lg:items-start">';
     // Main media (square 420x420, responsive) with prev/next arrows overlaid
-    html += '<div class="relative w-full max-w-[380px] aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 select-none group" id="mainMedia">';
+    html += '<div class="pd-main-media relative w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 select-none group" id="mainMedia">';
     if (hasVideo) {
       html += renderVideoBlock(product.video);
     } else if (mainImgSrc) {
@@ -215,7 +215,7 @@
     html += '<button type="button" onclick="nextImage()" class="main-image-arrow main-image-arrow-right" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>';
     html += '</div>';
     // Carousel thumbnails — arrows are absolutely positioned on top of the strip (L/R edges, vertically centered)
-    html += '<div class="relative mt-4 w-full max-w-[380px]">';
+    html += '<div class="relative mt-4 w-full max-w-xs">';
     html += '<div id="thumbStrip" class="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-12">';
     // Thumbnail 0: video (if any)
     if (hasVideo) {
@@ -233,27 +233,20 @@
     html += '</div></div>';
     html += '<div>';
     html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (product.category) + '</span>';
-    // Title: clamp to 2 lines, with an inline (same-line) Read more toggle when long
+    // Title: clamp to 2 lines, with an inline Read more toggle (button inside, sits at the `...` on line 2, lines 1 unaffected)
     var titleLong = (product.name || '').length > 30;
-    html += '<div class="pd-clamp-row" id="titleRow">';
-    html += '<h1 id="productTitle" class="pd-title font-serif font-bold mb-4">' + product.name + '</h1>';
-    if (titleLong) {
-      html += '<button id="titleToggle" class="pd-readmore" type="button" onclick="toggleTitle()">Read more</button>';
-    }
-    html += '</div>';
-    // Long description: always clamp to 3 lines (14px) with an inline (same-line) Read more toggle
+    var titleReadmore = titleLong ? ' <button id="titleToggle" class="pd-readmore-inline" type="button" onclick="toggleTitle()">Read more</button>' : '';
+    html += '<h1 id="productTitle" class="pd-title font-serif font-bold mb-4">' + product.name + titleReadmore + '</h1>';
+    // Long description: always clamp to 3 lines (14px) with an inline Read more toggle (button inside, on line 3 at the `...`)
     var descText = product.description || '';
     var descLong = descText.length > 120;
+    var descReadmore = descLong ? ' <button id="descToggle" class="pd-readmore-inline" type="button" onclick="toggleDesc()">Read more</button>' : '';
     html += '<div class="mb-6">';
-    html += '<div class="pd-clamp-row" id="descRow">';
-    html += '<p id="productDesc" class="pd-desc text-gray-600 dark:text-gray-400">' + descText + '</p>';
-    if (descLong) {
-      html += '<button id="descToggle" class="pd-readmore" type="button" onclick="toggleDesc()">Read more</button>';
-    }
-    html += '</div></div>';
+    html += '<p id="productDesc" class="pd-desc text-gray-600 dark:text-gray-400">' + descText + descReadmore + '</p>';
+    html += '</div>';
     // Price range (text only — no tiered pricing exposed; guides inquiry)
     if (product.priceRange && product.priceRange.trim()) {
-      html += '<p class="text-sm text-gray-500 dark:text-gray-400 mb-6"><i class="fas fa-tags mr-1.5 text-primary dark:text-primary-light"></i>' + product.priceRange + '</p>';
+      html += '<p class="text-sm text-gray-500 dark:text-gray-400 mb-6"><i class="fas fa-tags pd-price-icon text-primary dark:text-primary-light"></i>' + product.priceRange + '</p>';
     }
     // Specs
     html += '<div class="grid grid-cols-2 gap-4 mb-8">';
@@ -399,30 +392,30 @@
     renderMainMedia((cur + 1) % n);
   };
 
-  // ===== Expand / collapse long title (inline Read more, all viewports) =====
+  // ===== Expand / collapse long title (button is inside the clamped text, all viewports) =====
   window.toggleTitle = function() {
-    var row = document.getElementById('titleRow');
+    var el = document.getElementById('productTitle');
     var btn = document.getElementById('titleToggle');
-    if (!row || !btn) return;
-    if (row.classList.contains('expanded')) {
-      row.classList.remove('expanded');
-      btn.innerHTML = 'Read more';
+    if (!el || !btn) return;
+    if (el.classList.contains('expanded')) {
+      el.classList.remove('expanded');
+      btn.textContent = 'Read more';
     } else {
-      row.classList.add('expanded');
-      btn.innerHTML = 'Read less';
+      el.classList.add('expanded');
+      btn.textContent = 'Read less';
     }
   };
-  // ===== Expand / collapse long description (inline Read more, all viewports) =====
+  // ===== Expand / collapse long description (button is inside the clamped text, all viewports) =====
   window.toggleDesc = function() {
-    var row = document.getElementById('descRow');
+    var el = document.getElementById('productDesc');
     var btn = document.getElementById('descToggle');
-    if (!row || !btn) return;
-    if (row.classList.contains('expanded')) {
-      row.classList.remove('expanded');
-      btn.innerHTML = 'Read more';
+    if (!el || !btn) return;
+    if (el.classList.contains('expanded')) {
+      el.classList.remove('expanded');
+      btn.textContent = 'Read more';
     } else {
-      row.classList.add('expanded');
-      btn.innerHTML = 'Read less';
+      el.classList.add('expanded');
+      btn.textContent = 'Read less';
     }
   };
 
