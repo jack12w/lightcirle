@@ -18,6 +18,15 @@ const defaultEquipmentList = [
   'Semi-Automatic Sewing', 'Computerized Cutting', 'Digital Pattern Making'
 ];
 
+// Default FAQs (product detail page, below Related Knowledge)
+const defaultFaqs = [
+  { q: "What's your Moq?", a: "Flexible moq is acceptable" },
+  { q: "Can I do customized design?", a: "Yes, we offer customized design/logo/size/color/package,etc" },
+  { q: "Custom Sample Fee?", a: "Sample fee is depend on your design and fabric. If you place a bulk order, we will refund the sample fee (which can be deducted from the bulk order)." },
+  { q: "Strict quality control?", a: "Each production line has QC to control the product quality and the formal inspection report will be forwarded in the end of production." },
+  { q: "If there is any defective items of bulk order, how to process?", a: "We are responsible for our product quality. Please send your feedback to us, we will response in 24 hours and provide solution in 3 working days." }
+];
+
 // GET /api/company — retrieve company info
 router.get('/', (req, res) => {
   try {
@@ -57,6 +66,12 @@ router.get('/', (req, res) => {
       partnerLogos: JSON.parse(info.partner_logos || '[]'),
       factoryVideo: info.factory_video || '',
       factoryCard: (() => { try { return JSON.parse(info.factory_card || '{}'); } catch(e) { return {}; } })(),
+      faqs: (() => {
+        let stored = [];
+        try { stored = JSON.parse(info.faqs || '[]'); } catch(e) { stored = []; }
+        // Fall back to the JS-side defaults when the column is empty (e.g. fresh DB).
+        return Array.isArray(stored) && stored.length > 0 ? stored : defaultFaqs;
+      })(),
     });
   } catch(e) {
     res.status(500).json({ error: e.message });
@@ -76,6 +91,7 @@ router.put('/', (req, res) => {
     const trustStats = JSON.stringify(data.trustStats || []);
     const certifications = JSON.stringify(data.certifications || []);
     const howItWorks = JSON.stringify(data.howItWorks || []);
+    const faqs = JSON.stringify(Array.isArray(data.faqs) && data.faqs.length > 0 ? data.faqs : defaultFaqs);
     const hero = data.hero || {};
     d.prepare(`
       UPDATE company_info SET
@@ -86,6 +102,7 @@ router.put('/', (req, res) => {
         hero_badge=?, hero_title_main=?, hero_title_highlight=?, hero_title_post=?, hero_subtitle=?,
         trust_stats=?, certifications=?, how_it_works=?,
         brand_wall_title=?, partner_logos=?, factory_video=?, factory_card=?,
+        faqs=?,
         updated_at=datetime('now')
       WHERE id=1
     `).run(
@@ -97,7 +114,8 @@ router.put('/', (req, res) => {
       hero.badge || '', hero.titleMain || '', hero.titleHighlight || '', hero.titlePost || '', hero.subtitle || '',
       trustStats, certifications, howItWorks,
       data.brandWallTitle || '', JSON.stringify(data.partnerLogos || []), data.factoryVideo || '',
-      JSON.stringify(data.factoryCard || {})
+      JSON.stringify(data.factoryCard || {}),
+      faqs
     );
     res.json({ success: true });
   } catch(e) {

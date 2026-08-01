@@ -254,6 +254,16 @@
       <textarea id="fcCapabilities" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-24 resize-none" placeholder="OEM Service&#10;ODM Service&#10;Pantone Color Match&#10;Custom Logo & Embroidery&#10;Custom Packaging&#10;Private Label"></textarea>
     </div>
 
+    <!-- FAQs (product detail page, below Related Knowledge) -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-base"><i class="fas fa-question-circle mr-2 text-[#2D5A3D]"></i>FAQ 问答（详情页底部，Related Knowledge 之下）</h2>
+        <button type="button" onclick="addFaq()" class="text-sm text-[#2D5A3D] hover:bg-[#2D5A3D]/5 px-3 py-1.5 rounded-lg transition-colors"><i class="fas fa-plus mr-1"></i>新增 FAQ</button>
+      </div>
+      <p class="text-xs text-gray-400 mb-4">常见问答列表，逐条编辑问题（粗体显示）与回答（段落）。全部清空 = 不显示该模块；模块默认带 5 条示例 QA，新装 DB 自动填。</p>
+      <div id="faqsList"></div>
+    </div>
+
     <!-- Equipment Images -->
     <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
       <div class="flex items-center justify-between mb-4">
@@ -321,6 +331,7 @@
   let partnerLogos = [];
   let factoryVideo = '';
   let factoryCard = {};
+  let faqs = [];
 
   if (!token) window.location.href = '/admin/login.html';
   document.getElementById('logoutBtn')?.addEventListener('click', e => {
@@ -462,6 +473,33 @@
     if (howItWorks.length >= 6) return showToast('最多6个步骤');
     howItWorks.push({ num: String(howItWorks.length + 1), icon: 'fa-check', title: '新步骤', desc: '描述' });
     renderHowItWorks();
+  }
+
+  // --- FAQs (product detail page, below Related Knowledge) ---
+  function renderFaqs() {
+    const el = document.getElementById('faqsList');
+    if (!el) return;
+    if (!faqs.length) {
+      el.innerHTML = '<p class="text-xs text-gray-400">暂无 FAQ，点右上角「新增 FAQ」添加。</p>';
+      return;
+    }
+    el.innerHTML = faqs.map((item, i) =>
+      `<div class="border border-gray-100 rounded-xl p-3 mb-2 bg-gray-50/60">
+        <div class="flex items-start gap-2">
+          <span class="text-xs text-gray-400 font-semibold mt-2 w-6 flex-shrink-0">${i + 1}.</span>
+          <div class="flex-1 grid gap-2">
+            <input value="${escapeHtml(item.q)}" onchange="faqs[${i}].q=this.value" class="px-3 py-2 border border-gray-200 rounded-lg text-sm font-semibold" placeholder="问题（如 What's your Moq?）">
+            <textarea onchange="faqs[${i}].a=this.value" class="px-3 py-2 border border-gray-200 rounded-lg text-xs h-16 resize-none" placeholder="回答">${escapeHtml(item.a)}</textarea>
+          </div>
+          <button onclick="faqs.splice(${i},1);renderFaqs()" class="text-red-400 hover:text-red-600 mt-2 px-2 flex-shrink-0" title="删除"><i class="fas fa-times"></i></button>
+        </div>
+      </div>`
+    ).join('');
+  }
+  function addFaq() {
+    if (faqs.length >= 20) return showToast('最多20个 FAQ');
+    faqs.push({ q: '', a: '' });
+    renderFaqs();
   }
 
   // --- Gallery ---
@@ -690,6 +728,7 @@
       partnerLogos = data.partnerLogos || [];
       factoryVideo = data.factoryVideo || '';
       factoryCard = data.factoryCard || {};
+      faqs = (Array.isArray(data.faqs) && data.faqs.length > 0) ? data.faqs : [];
       document.getElementById('brandWallTitle').value = data.brandWallTitle || '';
       document.getElementById('certificationsInput').value = (data.certifications || []).join('\n');
       document.getElementById('eqTitle').value = data.equipmentTitle || '';
@@ -704,6 +743,7 @@
       renderPartnerLogos();
       renderFactoryVideo();
       populateFactoryCard();
+      renderFaqs();
     } catch(e) {
       document.getElementById('galleryLoading').textContent = '加载失败: ' + e.message;
     } finally {
@@ -757,6 +797,7 @@
         brandsServed: document.getElementById('fcBrandsServed').value.trim(),
         capabilities: document.getElementById('fcCapabilities').value.split('\n').map(s => s.trim()).filter(Boolean),
       },
+      faqs: faqs.filter(f => (f.q || '').trim() || (f.a || '').trim()),
       equipmentTitle: document.getElementById('eqTitle').value,
       equipmentDesc: document.getElementById('eqDesc').value,
       equipmentList: eqItems,

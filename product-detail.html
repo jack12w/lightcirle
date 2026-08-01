@@ -533,6 +533,22 @@
       factoryHtml += '</div></div>';
     }
 
+    // --- FAQs (driven by /api/company.faqs) ---
+    var faqs = Array.isArray(data.faqs) ? data.faqs.filter(function(f) { return (f && ((f.q || '').trim() || (f.a || '').trim())); }) : [];
+    if (faqs.length) {
+      factoryHtml += '<div id="faqsSection" class="mt-12">';
+      factoryHtml += '<h2 class="text-2xl font-serif font-bold mb-6">FAQs</h2>';
+      factoryHtml += '<div class="bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-gray-100 dark:border-gray-800 px-6 py-2">';
+      for (var fi = 0; fi < faqs.length; fi++) {
+        var item = faqs[fi];
+        factoryHtml += '<div class="py-4' + (fi < faqs.length - 1 ? ' border-b border-gray-200 dark:border-gray-700' : '') + '">';
+        factoryHtml += '<h3 class="font-bold text-sm sm:text-base mb-2 text-gray-900 dark:text-gray-100">' + escHtml(item.q || '') + '</h3>';
+        factoryHtml += '<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">' + escHtml(item.a || '') + '</p>';
+        factoryHtml += '</div>';
+      }
+      factoryHtml += '</div></div>';
+    }
+
     return factoryHtml;
   }
 
