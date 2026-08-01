@@ -614,6 +614,14 @@ h1, h2, h3, h4 {
 #searchResults .blog-result-card .p-5 > div:last-child span {
   font-size: 10px;
 }
+/* 证书标签(cert-tag): 12px，简称显示（"OEKO-TEX Standard 100"→"OEKO-TEX"） */
+#searchResults .product-card .cert-tag {
+  font-size: 12px;
+  line-height: 1.2;
+}
+#searchResults .product-card .cert-tag i {
+  font-size: 10px;
+}
 
 .search-input {
   width: 100%;

@@ -197,6 +197,35 @@
   function articleUrl(a) { return '/blog-detail/' + slugify(a.title) + '_' + a.id + '.html'; }
 
   // --- Card Renderers ---
+  // 简化证书全称为简称（"OEKO-TEX Standard 100" → "OEKO-TEX"，"GRS Certified" → "GRS"）
+  function shortCertName(name) {
+    if (!name) return '';
+    const known = {
+      'OEKO-TEX Standard 100': 'OEKO-TEX',
+      'OEKO-TEX': 'OEKO-TEX',
+      'GRS Certified': 'GRS',
+      'GRS': 'GRS',
+      'BSCI': 'BSCI',
+      'REACH': 'REACH',
+      'CPSIA': 'CPSIA',
+      'WRAP': 'WRAP',
+      'GOTS': 'GOTS',
+      'RCS': 'RCS'
+    };
+    if (known[name]) return known[name];
+    // 通用规则：去掉常见后缀
+    let short = String(name)
+      .replace(/\s*Standard\s+\d+\s*$/i, '')
+      .replace(/\s+Certified\s*$/i, '')
+      .replace(/\s+Compliant\s*$/i, '')
+      .replace(/\s+Tested\s*$/i, '')
+      .replace(/\s+Approved\s*$/i, '')
+      .trim();
+    // 仍超长则按首段截断（避免大段文字塞在小标签里）
+    if (short.length > 12) short = short.split(/[\s\-]/)[0];
+    return short;
+  }
+
   function renderProductCard(p) {
     const cfg = window.SITE_CONFIG || { whatsappNumber: '8612345678900', emailAddress: 'inquiry@lightcirle.com' };
     const hasCerts = p.certifications && p.certifications.length;
@@ -212,7 +241,7 @@
           <span class="text-xs font-semibold text-primary dark:text-primary-light uppercase tracking-wider">${p.category}</span>
           <h3 class="font-serif font-bold text-base lg:text-lg mt-1 mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors leading-snug">${p.name}</h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">${p.fabric}</p>
-          ${hasCerts ? `<div class="flex flex-wrap gap-1.5 mb-3">${p.certifications.slice(0, 3).map(c => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-[11px] font-medium"><i class="fas fa-certificate text-[10px]"></i>${c}</span>`).join('')}</div>` : ''}
+          ${hasCerts ? `<div class="flex flex-wrap gap-1.5 mb-3">${p.certifications.slice(0, 3).map(c => `<span class="cert-tag inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light font-medium" title="${c.replace(/"/g, '&quot;')}"><i class="fas fa-certificate"></i>${shortCertName(c)}</span>`).join('')}</div>` : ''}
           ${p.priceRange ? `<p class="text-xs text-gray-500 dark:text-gray-400 mb-3"><i class="fas fa-tags mr-1"></i>${p.priceRange}</p>` : ''}
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light px-2.5 py-1 rounded-full">MOQ ${p.moq}pcs</span>
