@@ -9,25 +9,28 @@ const defaultWhatsAppMsg = encodeURIComponent("Hi! I'm interested in your yoga w
 const defaultEmailSubject = encodeURIComponent('Yoga Wear Customization Inquiry');
 
 // --- Theme Toggle ---
+// Bound to ALL .theme-toggle buttons (desktop + mobile) so both stay in sync.
 function initTheme() {
-  const themeToggle = document.getElementById('themeToggle');
-  if (!themeToggle) return;
+  const toggles = document.querySelectorAll('.theme-toggle');
+  if (!toggles.length) return;
 
   const savedTheme = localStorage.getItem('yoga-theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
-  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    document.documentElement.classList.add('dark');
-    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-  } else {
-    document.documentElement.classList.remove('dark');
-    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-  }
+  document.documentElement.classList.toggle('dark', isDark);
+  toggles.forEach(function (t) {
+    t.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  });
 
-  themeToggle.addEventListener('click', () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('yoga-theme', isDark ? 'dark' : 'light');
-    themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  toggles.forEach(function (t) {
+    t.addEventListener('click', function () {
+      const nowDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('yoga-theme', nowDark ? 'dark' : 'light');
+      toggles.forEach(function (x) {
+        x.innerHTML = nowDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
+    });
   });
 }
 
