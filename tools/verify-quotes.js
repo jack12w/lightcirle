@@ -26,7 +26,7 @@ const { chromium } = require('playwright');
     const stats = document.getElementById('stats');
     const filterBar = document.getElementById('filterBar');
     const tbody = document.getElementById('quoteTable');
-    const statCards = stats ? [...stats.querySelectorAll('.stat-card')] : [];
+    const statCards = stats ? [...stats.children] : [];
     const filterBtns = filterBar ? [...filterBar.querySelectorAll('button')] : [];
     let activeFilter = null;
     filterBtns.forEach(b => { if (getComputedStyle(b).backgroundColor === 'rgb(45, 90, 61)') activeFilter = b.textContent.trim(); });

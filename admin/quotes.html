@@ -23,7 +23,7 @@
     <h1 class="text-2xl font-serif font-bold">报价线索</h1>
     <p class="text-sm text-gray-400 mb-8">来自官网「Get a Quote」向导的客户询价，可在后台跟进状态。</p>
 
-    <div class="stats-grid mb-8" id="stats"></div>
+    <div class="flex flex-wrap gap-3 mb-5" id="stats"></div>
 
     <div class="flex flex-wrap gap-3 items-center mb-6">
       <input type="text" id="searchInput" class="flex-1 min-w-[240px] px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-700 outline-none focus:border-[#2D5A3D] transition" placeholder="搜索 公司 / 联系人 / 邮箱 / 电话 / 备注…">
@@ -82,7 +82,7 @@
     STATUS_ORDER.forEach(s => counts[s] = quotes.filter(q => q.status === s).length);
     const el = document.getElementById('stats');
     el.innerHTML = STATUS_ORDER.map(s =>
-      `<div class="stat-card"><p class="text-sm text-gray-500">${STATUS_LABELS[s]}</p><p class="text-3xl font-bold mt-2">${counts[s]}</p></div>`
+      `<div class="bg-white border border-gray-200 rounded-2xl px-5 py-4 min-w-[120px]"><div class="text-[22px] font-bold text-[#2D5A3D] leading-none">${counts[s]}</div><div class="text-xs text-gray-400 mt-1">${STATUS_LABELS[s]}</div></div>`
     ).join('');
   }
 
