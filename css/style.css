@@ -408,10 +408,20 @@ h1, h2, h3, h4 {
 }
 
 /* ===== Product detail: title / description typography ===== */
-/* Main product title: 18px, max 2 lines. The Read more button sits inside as an
-   inline element, so it appears at the end of line 2 after the `...` and does
-   NOT affect line 1's wrap. */
+/* Title / description live in a flex row with the Read more button as a SIBLING
+   (not inside the clamped box — otherwise line-clamp clips & hides the button).
+   The button is bottom-aligned and on the same line; it never affects how the
+   text above wraps. */
+.pd-clamp-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+/* Main product title: 18px, max 2 lines */
 .pd-title {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 18px;
   line-height: 1.35;
   display: -webkit-box;
@@ -419,13 +429,10 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.pd-title.expanded {
-  -webkit-line-clamp: unset;
-  display: block;
-  overflow: visible;
-}
 /* Long description: 14px, max 3 lines, fold extra (toggle expands) */
 .pd-desc {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 14px;
   line-height: 1.6;
   display: -webkit-box;
@@ -433,36 +440,45 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.pd-desc.expanded {
-  -webkit-line-clamp: unset;
-  display: block;
-  overflow: visible;
-}
-/* Inline Read more: lives INSIDE the clamped text. The browser places it on the
-   last visible line right after the `...`; lines 1..(n-1) wrap purely from the
-   preceding text and are not affected by the button. */
-.pd-readmore-inline {
-  display: inline;
+/* Read more toggle: inline sibling, always visible */
+.pd-readmore {
+  flex: 0 0 auto;
+  display: inline-block;
+  white-space: nowrap;
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  white-space: nowrap;
   background: none;
   border: none;
   padding: 0;
-  margin: 0;
 }
-.dark .pd-readmore-inline {
+.dark .pd-readmore {
   color: var(--color-primary-light);
 }
+/* Expanded state: release the line-clamp on the inner title/description.
+   Let the row wrap so the toggle drops below the full text. */
+.pd-clamp-row.expanded {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.pd-clamp-row.expanded .pd-title,
+.pd-clamp-row.expanded .pd-desc {
+  -webkit-line-clamp: unset;
+  display: block;
+  overflow: visible;
+}
 
-/* Main media: 320px wide, 3:4 portrait (custom class to bypass Tailwind purge
-   for the arbitrary max-width / aspect-ratio). */
+/* Main media: exactly 340 x 453px (portrait). Custom class bypasses Tailwind
+   purge for the arbitrary max-width / aspect-ratio. */
 .pd-main-media {
   width: 100%;
-  max-width: 320px;
-  aspect-ratio: 3 / 4;
+  max-width: 340px;
+  aspect-ratio: 340 / 453;
+}
+/* Thumbnail strip wrapper: align to the 340px main image width */
+.pd-thumb-wrap {
+  max-width: 340px;
 }
 
 /* Price-range icon spacing (icon → text gap, custom to bypass purge) */

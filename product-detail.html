@@ -215,7 +215,7 @@
     html += '<button type="button" onclick="nextImage()" class="main-image-arrow main-image-arrow-right" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>';
     html += '</div>';
     // Carousel thumbnails — arrows are absolutely positioned on top of the strip (L/R edges, vertically centered)
-    html += '<div class="relative mt-4 w-full max-w-xs">';
+    html += '<div class="relative mt-4 w-full pd-thumb-wrap">';
     html += '<div id="thumbStrip" class="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-12">';
     // Thumbnail 0: video (if any)
     if (hasVideo) {
@@ -233,17 +233,25 @@
     html += '</div></div>';
     html += '<div>';
     html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (product.category) + '</span>';
-    // Title: clamp to 2 lines, with an inline Read more toggle (button inside, sits at the `...` on line 2, lines 1 unaffected)
+    // Title: clamp to 2 lines; Read more is a SIBLING (not inside the clamped box,
+    // otherwise line-clamp clips/hides it). Flex row keeps it on the same line, bottom-aligned.
     var titleLong = (product.name || '').length > 30;
-    var titleReadmore = titleLong ? ' <button id="titleToggle" class="pd-readmore-inline" type="button" onclick="toggleTitle()">Read more</button>' : '';
-    html += '<h1 id="productTitle" class="pd-title font-serif font-bold mb-4">' + product.name + titleReadmore + '</h1>';
-    // Long description: always clamp to 3 lines (14px) with an inline Read more toggle (button inside, on line 3 at the `...`)
+    html += '<div class="pd-clamp-row mb-4" id="titleRow">';
+    html += '<h1 id="productTitle" class="pd-title font-serif font-bold">' + product.name + '</h1>';
+    if (titleLong) {
+      html += '<button id="titleToggle" class="pd-readmore" type="button" onclick="toggleTitle()">Read more</button>';
+    }
+    html += '</div>';
+    // Long description: clamp to 3 lines; Read more sibling (same-line, bottom-aligned)
     var descText = product.description || '';
     var descLong = descText.length > 120;
-    var descReadmore = descLong ? ' <button id="descToggle" class="pd-readmore-inline" type="button" onclick="toggleDesc()">Read more</button>' : '';
     html += '<div class="mb-6">';
-    html += '<p id="productDesc" class="pd-desc text-gray-600 dark:text-gray-400">' + descText + descReadmore + '</p>';
-    html += '</div>';
+    html += '<div class="pd-clamp-row" id="descRow">';
+    html += '<p id="productDesc" class="pd-desc text-gray-600 dark:text-gray-400">' + descText + '</p>';
+    if (descLong) {
+      html += '<button id="descToggle" class="pd-readmore" type="button" onclick="toggleDesc()">Read more</button>';
+    }
+    html += '</div></div>';
     // Price range (text only — no tiered pricing exposed; guides inquiry)
     if (product.priceRange && product.priceRange.trim()) {
       html += '<p class="text-sm text-gray-500 dark:text-gray-400 mb-6"><i class="fas fa-tags pd-price-icon text-primary dark:text-primary-light"></i>' + product.priceRange + '</p>';
@@ -392,29 +400,29 @@
     renderMainMedia((cur + 1) % n);
   };
 
-  // ===== Expand / collapse long title (button is inside the clamped text, all viewports) =====
+  // ===== Expand / collapse long title (Read more is a sibling, all viewports) =====
   window.toggleTitle = function() {
-    var el = document.getElementById('productTitle');
+    var row = document.getElementById('titleRow');
     var btn = document.getElementById('titleToggle');
-    if (!el || !btn) return;
-    if (el.classList.contains('expanded')) {
-      el.classList.remove('expanded');
+    if (!row || !btn) return;
+    if (row.classList.contains('expanded')) {
+      row.classList.remove('expanded');
       btn.textContent = 'Read more';
     } else {
-      el.classList.add('expanded');
+      row.classList.add('expanded');
       btn.textContent = 'Read less';
     }
   };
-  // ===== Expand / collapse long description (button is inside the clamped text, all viewports) =====
+  // ===== Expand / collapse long description (Read more is a sibling, all viewports) =====
   window.toggleDesc = function() {
-    var el = document.getElementById('productDesc');
+    var row = document.getElementById('descRow');
     var btn = document.getElementById('descToggle');
-    if (!el || !btn) return;
-    if (el.classList.contains('expanded')) {
-      el.classList.remove('expanded');
+    if (!row || !btn) return;
+    if (row.classList.contains('expanded')) {
+      row.classList.remove('expanded');
       btn.textContent = 'Read more';
     } else {
-      el.classList.add('expanded');
+      row.classList.add('expanded');
       btn.textContent = 'Read less';
     }
   };
