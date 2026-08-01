@@ -426,9 +426,38 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.pd-desc.expanded {
+/* Inline Read more toggle: sits at the end of the clamped line, NOT on a new line.
+   Row is flex (button inline at line end); when expanded it becomes block so the
+   toggle drops below the full text. */
+.pd-clamp-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+.pd-clamp-row.expanded {
   display: block;
+}
+.pd-readmore {
+  flex: 0 0 auto;
+  display: inline-block;
+  white-space: nowrap;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.dark .pd-readmore {
+  color: var(--color-primary-light);
+}
+.pd-clamp-row.expanded .pd-readmore {
+  margin-top: 4px;
+}
+/* Expanded state: release the line-clamp on the inner title/description */
+.pd-clamp-row.expanded .pd-title,
+.pd-clamp-row.expanded .pd-desc {
   -webkit-line-clamp: unset;
+  display: block;
   overflow: visible;
 }
 
