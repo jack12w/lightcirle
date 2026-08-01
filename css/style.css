@@ -728,6 +728,16 @@ h1, h2, h3, h4 {
   background: var(--color-accent);
   color: #1a1a1a;
 }
+/* Carousel arrow overlay variant — absolutely positioned on top of the thumb strip edges */
+.thumb-arrow-overlay {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.thumb-arrow-left { left: 2px; }
+.thumb-arrow-right { right: 2px; }
 .thumb-item {
   transition: border-color 0.2s, transform 0.2s;
 }
