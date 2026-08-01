@@ -320,6 +320,205 @@ function initStickyContact() {
   if (st) st.style.bottom = '76px';
 }
 
+// --- Lightbox (image zoom modal) ---
+// Global image gallery viewer. Call openLightbox(images, startIndex) from any element.
+// - images: array of {src, alt} or string URLs
+// - startIndex: which image to show first
+// Closes on: × button, click on backdrop, Esc key. Body scroll locked while open.
+function ensureLightboxDom() {
+  if (document.getElementById('globalLightbox')) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'globalLightbox';
+  wrap.className = 'lightbox';
+  wrap.setAttribute('aria-hidden', 'true');
+  wrap.innerHTML =
+    '<button type="button" class="lightbox-close" aria-label="Close"><i class="fas fa-xmark"></i></button>' +
+    '<button type="button" class="lightbox-arrow lightbox-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>' +
+    '<button type="button" class="lightbox-arrow lightbox-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>' +
+    '<div class="lightbox-stage"><img class="lightbox-img" alt=""></div>' +
+    '<div class="lightbox-counter"></div>';
+  document.body.appendChild(wrap);
+  // close on backdrop click (anywhere not on the image/arrows)
+  wrap.addEventListener('click', function(e) {
+    if (e.target.closest('.lightbox-img') || e.target.closest('.lightbox-arrow') || e.target.closest('.lightbox-close')) return;
+    closeLightbox();
+  });
+  wrap.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+  wrap.querySelector('.lightbox-prev').addEventListener('click', function(e) { e.stopPropagation(); lightboxPrev(); });
+  wrap.querySelector('.lightbox-next').addEventListener('click', function(e) { e.stopPropagation(); lightboxNext(); });
+  // keyboard
+  document.addEventListener('keydown', function(e) {
+    var lb = document.getElementById('globalLightbox');
+    if (!lb || !lb.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') lightboxPrev();
+    else if (e.key === 'ArrowRight') lightboxNext();
+  });
+}
+function _lbNormalize(arr) {
+  return (arr || []).map(function(x) {
+    return typeof x === 'string' ? { src: x, alt: '' } : { src: x.src, alt: x.alt || '' };
+  }).filter(function(x) { return x.src; });
+}
+window.openLightbox = function(images, startIndex) {
+  ensureLightboxDom();
+  window.__lightboxImages = _lbNormalize(images);
+  if (!window.__lightboxImages.length) return;
+  window.__lightboxIndex = Math.max(0, Math.min(startIndex || 0, window.__lightboxImages.length - 1));
+  var lb = document.getElementById('globalLightbox');
+  lb.classList.add('is-open');
+  lb.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('lightbox-open');
+  _lbRender();
+};
+window.closeLightbox = function() {
+  var lb = document.getElementById('globalLightbox');
+  if (!lb) return;
+  lb.classList.remove('is-open');
+  lb.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('lightbox-open');
+};
+window.lightboxPrev = function() {
+  if (!window.__lightboxImages || !window.__lightboxImages.length) return;
+  window.__lightboxIndex = (window.__lightboxIndex - 1 + window.__lightboxImages.length) % window.__lightboxImages.length;
+  _lbRender();
+};
+window.lightboxNext = function() {
+  if (!window.__lightboxImages || !window.__lightboxImages.length) return;
+  window.__lightboxIndex = (window.__lightboxIndex + 1) % window.__lightboxImages.length;
+  _lbRender();
+};
+function _lbRender() {
+  var lb = document.getElementById('globalLightbox');
+  if (!lb) return;
+  var item = window.__lightboxImages[window.__lightboxIndex];
+  var img = lb.querySelector('.lightbox-img');
+  img.src = item.src;
+  img.alt = item.alt;
+  // hide arrows if single image
+  var single = window.__lightboxImages.length <= 1;
+  lb.querySelector('.lightbox-prev').style.display = single ? 'none' : '';
+  lb.querySelector('.lightbox-next').style.display = single ? 'none' : '';
+  // counter
+  lb.querySelector('.lightbox-counter').textContent =
+    window.__lightboxImages.length > 1
+      ? (window.__lightboxIndex + 1) + ' / ' + window.__lightboxImages.length
+      : '';
+}
+
+// --- Generic arrow-driven carousel initializer ---
+// Wires up a carousel with: prev/next buttons, clickable dots, touch swipe.
+// Requires the root element to contain:
+//   .fc-track        — flex track of slides
+//   .fc-arrow-prev   — left arrow button
+//   .fc-arrow-next   — right arrow button
+//   .fc-dots         — container of dot buttons (any children are activated)
+//   .fc-slide        — individual slides
+// Data attribute on root: data-slides-per-view="4" (default 4) controls visible count.
+// Each .fc-slide can have data-zoom-src="..." to make clicking it open the lightbox
+// with all sibling .fc-slide images.
+function initCarousel(root) {
+  if (!root || root.dataset.carouselReady === '1') return;
+  root.dataset.carouselReady = '1';
+  var track = root.querySelector('.fc-track');
+  var prevBtn = root.querySelector('.fc-arrow-prev');
+  var nextBtn = root.querySelector('.fc-arrow-next');
+  var dotsWrap = root.querySelector('.fc-dots');
+  var slides = root.querySelectorAll('.fc-slide');
+  if (!track || !slides.length) return;
+  var total = slides.length;
+  var spv = parseInt(root.dataset.slidesPerView || '4', 10);
+  var loop = root.dataset.loop === '1';
+  var maxIndex = Math.max(0, total - spv);
+  var current = 0;
+  // Build dots if not present
+  if (dotsWrap && !dotsWrap.children.length) {
+    for (var d = 0; d <= maxIndex; d++) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'fc-dot' + (d === 0 ? ' is-active' : '');
+      dot.setAttribute('aria-label', 'Go to slide ' + (d + 1));
+      dot.addEventListener('click', (function(idx) { return function() { goTo(idx); }; })(d));
+      dotsWrap.appendChild(dot);
+    }
+  }
+  function getSlidePct() { return 100 / spv; }
+  function update() {
+    track.style.transform = 'translateX(-' + (current * getSlidePct()) + '%)';
+    if (dotsWrap) {
+      var ds = dotsWrap.querySelectorAll('.fc-dot');
+      for (var i = 0; i < ds.length; i++) ds[i].classList.toggle('is-active', i === current);
+    }
+    // disable arrows at edges unless loop
+    if (prevBtn) prevBtn.disabled = !loop && current <= 0;
+    if (nextBtn) nextBtn.disabled = !loop && current >= maxIndex;
+    root.dataset.currentIndex = current;
+  }
+  function goTo(i) {
+    if (loop) {
+      current = ((i % (maxIndex + 1)) + (maxIndex + 1)) % (maxIndex + 1);
+    } else {
+      current = Math.max(0, Math.min(i, maxIndex));
+    }
+    update();
+  }
+  if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
+  // Touch swipe
+  var startX = 0, startY = 0, dragging = false, startTime = 0;
+  track.addEventListener('touchstart', function(e) {
+    if (!e.touches[0]) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dragging = true;
+    startTime = Date.now();
+    track.style.transition = 'none';
+  }, { passive: true });
+  track.addEventListener('touchmove', function(e) {
+    if (!dragging || !e.touches[0]) return;
+    var dx = e.touches[0].clientX - startX;
+    var dy = e.touches[0].clientY - startY;
+    if (Math.abs(dx) > Math.abs(dy)) e.preventDefault();
+  }, { passive: false });
+  track.addEventListener('touchend', function(e) {
+    if (!dragging) return;
+    dragging = false;
+    track.style.transition = '';
+    var t = (e.changedTouches && e.changedTouches[0]) || null;
+    if (!t) return;
+    var dx = t.clientX - startX;
+    var dt = Date.now() - startTime;
+    // swipe threshold: 40px or fast flick
+    if (Math.abs(dx) > 40 || (Math.abs(dx) > 20 && dt < 250)) {
+      if (dx < 0) goTo(current + 1);
+      else goTo(current - 1);
+    } else {
+      update(); // snap back
+    }
+  });
+  // Click on slide → lightbox (if slide has data-zoom-src OR has an <img>)
+  track.addEventListener('click', function(e) {
+    var slide = e.target.closest('.fc-slide');
+    if (!slide) return;
+    // Skip if click is on an internal control
+    if (e.target.closest('a, button')) return;
+    var images = [];
+    var startIndex = 0;
+    for (var i = 0; i < slides.length; i++) {
+      var s = slides[i];
+      var src = s.dataset.zoomSrc || (s.querySelector('img') && s.querySelector('img').src) || '';
+      var alt = (s.querySelector('img') && s.querySelector('img').alt) || '';
+      if (!src) continue;
+      images.push({ src: src, alt: alt });
+      if (s === slide) startIndex = images.length - 1;
+    }
+    if (images.length) window.openLightbox(images, startIndex);
+  });
+  update();
+}
+// Expose for inline / dynamic init from page scripts
+window.initCarousel = initCarousel;
+
 // --- Initialize Everything ---
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();

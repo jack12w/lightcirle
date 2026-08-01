@@ -385,6 +385,20 @@
     document.getElementById('breadcrumbName').textContent = product.name;
     if (loadingEl) loadingEl.style.display = 'none';
     contentEl.classList.remove('hidden');
+    // Initialize the factory gallery carousel (L/R arrows + dots + lightbox)
+    var factoryCarousel = document.getElementById('factoryGalleryCarousel');
+    if (factoryCarousel && window.initCarousel) window.initCarousel(factoryCarousel);
+    // Wire product main image click → lightbox (browse all product images)
+    var mainImg = document.getElementById('mainImage');
+    if (mainImg && window.openLightbox) {
+      mainImg.style.cursor = 'zoom-in';
+      mainImg.onclick = function() {
+        if (!product.images || !product.images.length) return;
+        var imgs = product.images.map(function(src) { return { src: src, alt: product.name }; });
+        var cur = (window.__currentImageIndex == null || window.__currentImageIndex < 0) ? 0 : window.__currentImageIndex;
+        window.openLightbox(imgs, cur);
+      };
+    }
     window.__renderedProduct = product;
     window.__currentProduct = product;
     if (window.setStickyProduct) window.setStickyProduct(product.name, (product.images && product.images[0]) ? product.images[0] : '');
@@ -486,19 +500,23 @@
     factoryHtml += '<div class="bg-cream dark:bg-gray-800/40 rounded-xl p-3 text-center"><div class="text-xl font-serif font-bold text-primary dark:text-primary-light">' + (stats.countriesShipped || '30+') + '</div><p class="text-xs text-gray-500">Countries</p></div>';
     factoryHtml += '</div>';
 
-    // Factory image gallery — horizontal scrollable row (from API or fallback)
+    // Factory image gallery — arrow-driven carousel (replaces old horizontal scroll-snap).
+    // Click any image to open the global lightbox and browse all factory photos.
     var galleryFiles = gallery.length > 0 ? gallery : ['assets/images/factory/1.jpg','assets/images/factory/2.jpg','assets/images/factory/3.jpg','assets/images/factory/4.jpg','assets/images/factory/5.jpg','assets/images/factory/6.jpg','assets/images/factory/7.jpg','assets/images/factory/8.jpg'];
-    factoryHtml += '<div class="mb-6">';
-    factoryHtml += '<div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide" style="scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x mandatory">';
-    for (var fi2 = 0; fi2 < galleryFiles.length; fi2++) {
-      factoryHtml += '<div class="flex-shrink-0 w-[200px] snap-start rounded-xl overflow-hidden aspect-[4/3] bg-gray-100 dark:bg-gray-800"><img src="' + galleryFiles[fi2] + '" alt="Factory photo" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy"></div>';
+    if (galleryFiles.length) {
+      factoryHtml += '<div class="mb-6">';
+      factoryHtml += '<div class="fc-carousel" id="factoryGalleryCarousel" data-slides-per-view="4" data-loop="0">';
+      factoryHtml += '<button type="button" class="fc-arrow fc-arrow-prev" aria-label="Previous photos"><i class="fas fa-chevron-left"></i></button>';
+      factoryHtml += '<div class="fc-track">';
+      for (var fi2 = 0; fi2 < galleryFiles.length; fi2++) {
+        var alt = 'Factory photo ' + (fi2 + 1);
+        factoryHtml += '<div class="fc-slide"><img src="' + galleryFiles[fi2] + '" alt="' + alt + '" loading="lazy"></div>';
+      }
+      factoryHtml += '</div>';
+      factoryHtml += '<button type="button" class="fc-arrow fc-arrow-next" aria-label="Next photos"><i class="fas fa-chevron-right"></i></button>';
+      factoryHtml += '<div class="fc-dots"></div>';
+      factoryHtml += '</div></div>';
     }
-    factoryHtml += '</div>';
-    factoryHtml += '<div class="flex justify-center gap-1.5 mt-2">';
-    for (var fi3 = 0; fi3 < galleryFiles.length; fi3++) {
-      factoryHtml += '<span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 scroll-dot"></span>';
-    }
-    factoryHtml += '</div></div><style>.scrollbar-hide::-webkit-scrollbar{display:none}</style>';
 
     // Capability tags
     factoryHtml += '<div class="flex flex-wrap gap-2">';
@@ -595,6 +613,12 @@
       var existingSection = document.getElementById('factoryKnowledgeSection');
       if (existingSection && window.__renderedProduct) {
         existingSection.innerHTML = renderFactoryKnowledgeSection(window.__renderedProduct);
+        // Re-init the factory gallery carousel after re-render
+        var factoryCarousel2 = document.getElementById('factoryGalleryCarousel');
+        if (factoryCarousel2 && window.initCarousel) {
+          factoryCarousel2.dataset.carouselReady = ''; // reset so init runs again
+          window.initCarousel(factoryCarousel2);
+        }
       }
       // Re-render the factory card by re-running renderProduct (it will read __companyData)
       if (window.__renderedProduct) {
@@ -640,6 +664,12 @@
         var existingSection = document.getElementById('factoryKnowledgeSection');
         if (existingSection && window.__renderedProduct) {
           existingSection.innerHTML = renderFactoryKnowledgeSection(window.__renderedProduct);
+          // Re-init the factory gallery carousel after re-render
+          var fc3 = document.getElementById('factoryGalleryCarousel');
+          if (fc3 && window.initCarousel) {
+            fc3.dataset.carouselReady = '';
+            window.initCarousel(fc3);
+          }
         }
       }
     } catch(e) { /* silently skip if blog data fails */ }
