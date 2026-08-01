@@ -461,14 +461,15 @@ h1, h2, h3, h4 {
 
 /* ===== Factory supplier card (Alibaba-style) — sits under the left image carousel =====
    Compact, light-blue tinted card with logo, name, verified badge, location meta,
-   4-column metrics row, and customization tags. Renders only when admin fills
-   /api/company.factoryCard. */
+   Independent-site "factory capability" card. Renders under the product image
+   carousel on /product-detail.html. Replaces the previous Alibaba-style supplier
+   card (no platform trading metrics). Driven by /api/company.factoryCard. */
 .factory-card {
   width: 100%;
-  max-width: 370px;
+  max-width: 380px;
   margin-top: 1rem;
-  padding: 14px 16px 12px;
-  border-radius: 14px;
+  padding: 16px 16px 14px;
+  border-radius: 16px;
   background: linear-gradient(180deg, #F0F5FF 0%, #E8F0FE 100%);
   border: 1px solid #D8E2F5;
   color: #1F2A40;
@@ -480,12 +481,12 @@ h1, h2, h3, h4 {
   border-color: rgba(62,123,84,.25);
   color: #E5E7EB;
 }
-/* Header: logo (left) + name/verified/meta (right) */
+/* Header: logo (left) + name/tagline/certified badge (right) */
 .fc-header {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .fc-logo-wrap {
   width: 44px;
@@ -529,54 +530,64 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   max-width: 100%;
 }
-.dark .fc-name {
-  color: #F3F4F6;
-}
-.fc-verified {
+.dark .fc-name { color: #F3F4F6; }
+/* Certification badge (replaces old "Verified PRO" pill) */
+.fc-certified {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   font-size: 10px;
   font-weight: 600;
-  color: #0F1A2E;
-  background: #C9E5FF;
-  border: 1px solid #8FBDEC;
+  color: #2D5A3D;
+  background: rgba(45, 90, 61, 0.08);
+  border: 1px solid rgba(45, 90, 61, 0.2);
   padding: 1px 6px;
   border-radius: 9999px;
   flex-shrink: 0;
   white-space: nowrap;
 }
-.fc-verified i {
-  color: #1976D2;
-  font-size: 9px;
+.fc-certified i { color: #2D5A3D; font-size: 9px; }
+/* Tagline (one-line brand positioning) */
+.fc-tagline {
+  margin-top: 2px;
+  font-size: 11px;
+  color: #4B5563;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+.dark .fc-tagline { color: #9CA3AF; }
+/* Meta line: location + years (with icons) */
 .fc-meta-line {
-  margin-top: 3px;
+  margin-bottom: 8px;
   font-size: 11px;
   color: #4B5563;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .dark .fc-meta-line { color: #9CA3AF; }
-.fc-meta { font-weight: 400; }
+.fc-meta-icon { color: #6B7280; font-size: 10px; margin-right: 3px; }
+.dark .fc-meta-icon { color: #9CA3AF; }
 .fc-meta-sep { color: #9CA3AF; }
-.fc-flag { font-size: 12px; }
-.fc-best {
-  margin-top: 6px;
+/* Highlight bar (core promise, e.g. "MOQ 50pcs · 15-Day Sampling") */
+.fc-highlight {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: 11px;
-  color: #1976D2;
-  font-weight: 500;
-  background: rgba(25, 118, 210, 0.08);
-  padding: 3px 8px;
-  border-radius: 6px;
+  font-weight: 600;
+  color: #2D5A3D;
+  background: rgba(45, 90, 61, 0.08);
+  border: 1px solid rgba(45, 90, 61, 0.15);
+  padding: 5px 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
-.fc-best i { color: #F59E0B; font-size: 10px; }
-/* 4-column metrics */
+.fc-highlight i { color: #F59E0B; font-size: 10px; }
+/* 4-column metrics (response / lead time / MOQ / monthly capacity) */
 .fc-metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -586,13 +597,8 @@ h1, h2, h3, h4 {
   border-bottom: 1px solid #DCE5F5;
   margin-bottom: 10px;
 }
-.dark .fc-metrics {
-  border-color: rgba(255,255,255,0.08);
-}
-.fc-metric {
-  text-align: center;
-  min-width: 0;
-}
+.dark .fc-metrics { border-color: rgba(255,255,255,0.08); }
+.fc-metric { text-align: center; min-width: 0; }
 .fc-metric-val {
   font-size: 13px;
   font-weight: 700;
@@ -602,7 +608,6 @@ h1, h2, h3, h4 {
   text-overflow: ellipsis;
 }
 .dark .fc-metric-val { color: #F3F4F6; }
-.fc-meta { font-weight: 400; }
 .fc-metric-label {
   font-size: 10px;
   color: #6B7280;
@@ -612,24 +617,63 @@ h1, h2, h3, h4 {
   text-overflow: ellipsis;
 }
 .dark .fc-metric-label { color: #9CA3AF; }
-/* Customizations row (gem icon + label, repeated) */
-.fc-customize {
+/* Capabilities chip list (replaces old "fc-customize" gem-tag list) */
+.fc-capabilities {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 14px;
-  font-size: 11px;
-  color: #4B5563;
+  gap: 5px;
+  margin-bottom: 10px;
 }
-.dark .fc-customize { color: #9CA3AF; }
-.fc-customize-item {
+.fc-cap-chip {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-size: 10.5px;
+  color: #1F2A40;
+  background: #fff;
+  border: 1px solid #DCE5F5;
+  padding: 3px 7px;
+  border-radius: 9999px;
+  white-space: nowrap;
 }
-.fc-customize-item i {
-  color: #1976D2;
-  font-size: 10px;
+.dark .fc-cap-chip {
+  background: rgba(255,255,255,0.04);
+  color: #E5E7EB;
+  border-color: rgba(255,255,255,0.08);
 }
+.fc-cap-chip i { color: #2D5A3D; font-size: 9px; }
+.dark .fc-cap-chip i { color: #3E7B54; }
+.fc-cap-more {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  color: #6B7280;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.04);
+}
+.dark .fc-cap-more {
+  color: #9CA3AF;
+  background: rgba(255,255,255,0.06);
+}
+/* Bottom CTA (Talk to our factory / Learn more) */
+.fc-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: #2D5A3D;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.fc-cta:hover { background: #1F4029; transform: translateY(-1px); }
+.fc-cta i { font-size: 11px; transition: transform 0.2s ease; }
+.fc-cta:hover i { transform: translateX(2px); }
 
 /* --- Trust Badges --- */
 .trust-badge {

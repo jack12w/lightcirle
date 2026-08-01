@@ -192,56 +192,82 @@
     return '/product-detail/' + slugify(product.name) + '_' + product.id + '.html';
   }
 
-  // ===== Factory supplier card (Alibaba-style) — rendered under the left image carousel =====
-  // Driven by /api/company.factoryCard. Returns '' if no meaningful data.
+  // ===== Factory capability card (independent-site layout) — under the left image carousel =====
+  // Driven by /api/company.factoryCard. Independent-site context: instead of marketplace
+  // trading metrics (store rating, on-time dispatch rate, reorder rate) we surface the
+  // factory's real manufacturing promises: response time, sampling/lead time, MOQ, monthly
+  // capacity, plus a chip list of customization capabilities and a single CTA to contact.
+  // Mobile: drop the 4-column metrics, keep header + 2-3 capability chips for a compact card.
   function renderFactoryCard() {
     var fc = (window.__companyData && window.__companyData.factoryCard) || {};
-    // Require at minimum a name OR a store rating — otherwise we don't render
-    if (!fc.name && !fc.storeRating) return '';
-    var verified = fc.verified !== false; // default to true
-    var ratingCount = fc.ratingCount ? '<span class="fc-meta ml-1 text-gray-500 dark:text-gray-400">(' + escHtml(fc.ratingCount) + ')</span>' : '';
+    // Require at minimum a name or a tagline — otherwise don't render
+    if (!fc.name && !fc.tagline && !fc.highlight) return '';
+    var wa = (window.SITE_CONFIG && window.SITE_CONFIG.whatsappNumber) || '8612345678900';
+    var isMobile = window.innerWidth < 768;
+
+    // Header: logo + name + tagline + certification badge
+    var logoHtml = fc.logo
+      ? '<img class="fc-logo" src="' + escAttr(fc.logo) + '" alt="' + escHtml(fc.name || 'factory logo') + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="fc-logo-fallback" style="display:none"><i class="fas fa-industry"></i></span>'
+      : '<span class="fc-logo-fallback"><i class="fas fa-industry"></i></span>';
+    var headerHtml =
+      '<div class="fc-header">' +
+        '<div class="fc-logo-wrap">' + logoHtml + '</div>' +
+        '<div class="fc-id">' +
+          '<div class="fc-name-row">' +
+            '<span class="fc-name">' + escHtml(fc.name || 'lightcirle') + '</span>' +
+            (fc.certified ? '<span class="fc-certified"><i class="fas fa-certificate"></i>' + escHtml(fc.certified) + '</span>' : '') +
+          '</div>' +
+          (fc.tagline ? '<p class="fc-tagline">' + escHtml(fc.tagline) + '</p>' : '') +
+        '</div>' +
+      '</div>';
+
+    // Meta line: location + years
     var metaBits = [];
-    if (fc.countryFlag) metaBits.push('<span class="fc-flag">' + escHtml(fc.countryFlag) + '</span>');
-    if (fc.location) metaBits.push('<span>' + escHtml(fc.location) + '</span>');
-    if (fc.years) metaBits.push('<span>' + escHtml(fc.years) + '</span>');
-    if (fc.type) metaBits.push('<span>' + escHtml(fc.type) + '</span>');
-    var metaLine = metaBits.length ? metaBits.join(' <span class="fc-meta-sep">·</span> ') : '';
-    var customizations = Array.isArray(fc.customizations) ? fc.customizations : [];
-    var customHtml = customizations.length ? (
-      '<div class="fc-customize">' +
-        customizations.map(function(c) {
-          return '<span class="fc-customize-item"><i class="fas fa-gem"></i>' + escHtml(c) + '</span>';
+    if (fc.location) metaBits.push('<span><i class="fas fa-map-marker-alt fc-meta-icon"></i>' + escHtml(fc.location) + '</span>');
+    if (fc.years) metaBits.push('<span><i class="fas fa-calendar fc-meta-icon"></i>' + escHtml(fc.years) + '</span>');
+    var metaHtml = metaBits.length ? '<div class="fc-meta-line">' + metaBits.join('<span class="fc-meta-sep">·</span>') + '</div>' : '';
+
+    // Highlight bar (core promise, e.g. "MOQ 50pcs · 15-Day Sampling")
+    var highlightHtml = fc.highlight ? '<div class="fc-highlight"><i class="fas fa-bolt"></i>' + escHtml(fc.highlight) + '</div>' : '';
+
+    // 4-column metrics — only render on desktop to keep the card compact on mobile
+    var metrics = [
+      { v: fc.responseTime, l: 'Response' },
+      { v: fc.leadTime, l: 'Lead Time' },
+      { v: fc.moq, l: 'MOQ' },
+      { v: fc.monthlyCapacity, l: 'Capacity/mo' }
+    ];
+    var metricsHtml = '';
+    if (!isMobile) {
+      metricsHtml = '<div class="fc-metrics">' +
+        metrics.map(function(m) {
+          return m.v ? '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(m.v) + '</div><div class="fc-metric-label">' + escHtml(m.l) + '</div></div>' : '';
         }).join('') +
+      '</div>';
+    }
+
+    // Capabilities chip list (truncate on mobile to keep card compact)
+    var caps = Array.isArray(fc.capabilities) ? fc.capabilities : [];
+    var capIcons = ['fa-pen-nib', 'fa-drafting-compass', 'fa-fill-drip', 'fa-tag', 'fa-box', 'fa-tshirt', 'fa-print', 'fa-palette'];
+    var visibleCaps = isMobile ? caps.slice(0, 3) : caps.slice(0, 6);
+    var capHtml = visibleCaps.length ? (
+      '<div class="fc-capabilities">' +
+        visibleCaps.map(function(c, i) {
+          return '<span class="fc-cap-chip"><i class="fas ' + (capIcons[i] || 'fa-check') + '"></i>' + escHtml(c) + '</span>';
+        }).join('') +
+        (caps.length > visibleCaps.length ? '<span class="fc-cap-more">+' + (caps.length - visibleCaps.length) + '</span>' : '') +
       '</div>'
     ) : '';
-    return (
-      '<div class="factory-card mt-4">' +
-        '<div class="fc-header">' +
-          '<div class="fc-logo-wrap">' +
-            (fc.logo
-              ? '<img class="fc-logo" src="' + escAttr(fc.logo) + '" alt="factory logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-                '<span class="fc-logo-fallback" style="display:none"><i class="fas fa-industry"></i></span>'
-              : '<span class="fc-logo-fallback"><i class="fas fa-industry"></i></span>'
-            ) +
-          '</div>' +
-          '<div class="fc-id">' +
-            '<div class="fc-name-row">' +
-              '<span class="fc-name">' + escHtml(fc.name || '') + '</span>' +
-              (verified ? '<span class="fc-verified"><i class="fas fa-check"></i> Verified PRO</span>' : '') +
-            '</div>' +
-            (metaLine ? '<div class="fc-meta-line">' + metaLine + '</div>' : '') +
-            (fc.bestSeller ? '<div class="fc-best"><i class="fas fa-award"></i>' + escHtml(fc.bestSeller) + '</div>' : '') +
-          '</div>' +
-        '</div>' +
-        '<div class="fc-metrics">' +
-          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.storeRating || '') + ratingCount + '</div><div class="fc-metric-label">Store rating</div></div>' +
-          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.responseTime || '') + '</div><div class="fc-metric-label">Response Time</div></div>' +
-          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.onTimeDispatchRate || '') + '</div><div class="fc-metric-label">On-time dispatch rate</div></div>' +
-          '<div class="fc-metric"><div class="fc-metric-val">' + escHtml(fc.reorderRate || '') + '</div><div class="fc-metric-label">Reorder rate</div></div>' +
-        '</div>' +
-        customHtml +
-      '</div>'
-    );
+
+    // CTA: if admin set a custom link, use it as a "Learn more" link; otherwise fall back to WhatsApp
+    var ctaLink = fc.ctaLink && fc.ctaLink.trim() ? fc.ctaLink.trim() :
+      ('https://wa.me/' + wa + '?text=' + encodeURIComponent("Hi! I'd like to talk to your factory about my project."));
+    var ctaText = (fc.ctaLink && fc.ctaLink.indexOf('wa.me') < 0 && fc.ctaLink.indexOf('mailto:') < 0)
+      ? 'Learn more'
+      : 'Talk to our factory';
+    var ctaHtml = '<a class="fc-cta" href="' + escAttr(ctaLink) + '" target="_blank" rel="noopener"><span>' + escHtml(ctaText) + '</span><i class="fas fa-arrow-right"></i></a>';
+
+    return '<div class="factory-card mt-4">' + headerHtml + metaHtml + highlightHtml + metricsHtml + capHtml + ctaHtml + '</div>';
   }
   // Minimal HTML escapers used by renderFactoryCard
   function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

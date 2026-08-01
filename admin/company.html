@@ -194,14 +194,14 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-semibold text-base"><i class="fas fa-id-card mr-2 text-[#2D5A3D]"></i>工厂卡片（详情页左侧，图片轮播下方）</h2>
       </div>
-      <p class="text-xs text-gray-400 mb-4">模仿阿里巴巴供应商卡：展示公司名、位置、年限、类型、最佳销量、店铺评分、响应时间、准点发货率、复购率与定制能力。留空 = 不显示该卡片。</p>
+      <p class="text-xs text-gray-400 mb-4">独立站语境下的"工厂核心能力快览"：展示工厂 logo、名称、一句话定位、认证徽章、所在地/经验年限、核心承诺（MOQ/打样）、4 个关键数字（响应/交期/起订量/月产能）、定制能力 chip。留空 = 不显示该卡片。</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
-          <label class="block text-xs font-medium text-gray-500 mb-1">公司名称</label>
-          <input id="fcName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Guangdong Easemotion Lifestyle Apparel Tech...">
+          <label class="block text-xs font-medium text-gray-500 mb-1">工厂 / 品牌名称</label>
+          <input id="fcName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="lightcirle">
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">公司 logo URL</label>
+          <label class="block text-xs font-medium text-gray-500 mb-1">工厂 logo URL</label>
           <div class="flex gap-2">
             <input id="fcLogo" class="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="https://... 或 /uploads/...png">
             <button type="button" onclick="openFcLogoPicker()" class="px-3 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50"><i class="fas fa-folder-open"></i></button>
@@ -209,60 +209,57 @@
           <div id="fcLogoPreview" class="mt-2 hidden"><img id="fcLogoImg" src="" alt="logo 预览" class="h-12 w-12 object-contain rounded-lg border border-gray-100 bg-white p-1"></div>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">显示 Verified Pro 徽章</label>
-          <select id="fcVerified" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
-            <option value="1">显示</option>
-            <option value="0">不显示</option>
-          </select>
+          <label class="block text-xs font-medium text-gray-500 mb-1">一句话定位（tagline）</label>
+          <input id="fcTagline" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Custom Yoga Wear Manufacturer">
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">国家旗帜（emoji，如 🇨🇳）</label>
-          <input id="fcFlag" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="🇨🇳" maxlength="4">
+          <label class="block text-xs font-medium text-gray-500 mb-1">认证徽章（如 OEKO-TEX · BSCI Certified）</label>
+          <input id="fcCertified" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="OEKO-TEX · BSCI Certified">
         </div>
         <div>
           <label class="block text-xs font-medium text-gray-500 mb-1">所在城市 + 国家</label>
-          <input id="fcLocation" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Dongguan, CN">
+          <input id="fcLocation" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Dongguan, China">
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">成立年限</label>
-          <input id="fcYears" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="11 yrs">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">公司类型</label>
-          <input id="fcType" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Custom Manufacturer">
+          <label class="block text-xs font-medium text-gray-500 mb-1">经验年限</label>
+          <input id="fcYears" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="10+ yrs">
         </div>
         <div class="sm:col-span-2">
-          <label class="block text-xs font-medium text-gray-500 mb-1">最佳销量横幅（如 #1 best seller in Sports Bras）</label>
-          <input id="fcBestSeller" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="#1 best seller in Sports Bras">
+          <label class="block text-xs font-medium text-gray-500 mb-1">核心承诺（highlight 横条，如 MOQ 50pcs · 15-Day Sampling）</label>
+          <input id="fcHighlight" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="MOQ 50pcs · 15-Day Sampling">
         </div>
       </div>
 
-      <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">数据指标（4 列）</h3>
+      <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">关键数字（4 列 — 替换旧阿里风 store rating/响应率/复购率）</h3>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">店铺评分（如 4.8/5）</label>
-          <input id="fcStoreRating" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="4.8/5">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">评分人数（仅数字）</label>
-          <input id="fcRatingCount" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="3153">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">响应时间</label>
+          <label class="block text-xs font-medium text-gray-500 mb-1">响应时长</label>
           <input id="fcResponseTime" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="≤2h">
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">准点发货率</label>
-          <input id="fcOnTimeRate" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="≥97%">
+          <label class="block text-xs font-medium text-gray-500 mb-1">生产 / 交期</label>
+          <input id="fcLeadTime" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="15-25 days">
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">复购率</label>
-          <input id="fcReorderRate" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="40%">
+          <label class="block text-xs font-medium text-gray-500 mb-1">起订量</label>
+          <input id="fcMoq" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="50 pcs">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">月产能</label>
+          <input id="fcMonthlyCapacity" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="300,000 pcs">
+        </div>
+        <div class="sm:col-span-4">
+          <label class="block text-xs font-medium text-gray-500 mb-1">合作客户数（用于 CTA 旁的注脚，可选）</label>
+          <input id="fcBrandsServed" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="200+">
         </div>
       </div>
 
-      <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">定制能力（每行一个，如 "Minor customization"）</h3>
-      <textarea id="fcCustomizations" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-20 resize-none" placeholder="Minor customization&#10;Drawing-based customization"></textarea>
+      <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">定制能力 chip（每行一个，桌面端最多显示 6 个；移动端最多 3 个 +N）</h3>
+      <textarea id="fcCapabilities" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-24 resize-none" placeholder="OEM Service&#10;ODM Service&#10;Pantone Color Match&#10;Custom Logo & Embroidery&#10;Custom Packaging&#10;Private Label"></textarea>
+
+      <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">底部 CTA 链接（可选）</h3>
+      <p class="text-xs text-gray-400 mb-2">留空 = 默认 WhatsApp 联系我们。填写 https:// 链接 = 跳独立页面（如首页工厂模块 /contact）。填写 mailto: = 邮件。</p>
+      <input id="fcCtaLink" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="留空 = WhatsApp；或填 https://... 或 mailto:...">
     </div>
 
     <!-- Equipment Images -->
@@ -621,18 +618,18 @@
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v == null ? '' : v; };
     set('fcName', fc.name);
     set('fcLogo', fc.logo);
-    set('fcVerified', fc.verified === false ? '0' : '1');
-    set('fcFlag', fc.countryFlag || '');
+    set('fcTagline', fc.tagline);
+    set('fcCertified', fc.certified);
     set('fcLocation', fc.location);
     set('fcYears', fc.years);
-    set('fcType', fc.type);
-    set('fcBestSeller', fc.bestSeller);
-    set('fcStoreRating', fc.storeRating);
-    set('fcRatingCount', fc.ratingCount);
+    set('fcHighlight', fc.highlight);
     set('fcResponseTime', fc.responseTime);
-    set('fcOnTimeRate', fc.onTimeDispatchRate);
-    set('fcReorderRate', fc.reorderRate);
-    set('fcCustomizations', (fc.customizations || []).join('\n'));
+    set('fcLeadTime', fc.leadTime);
+    set('fcMoq', fc.moq);
+    set('fcMonthlyCapacity', fc.monthlyCapacity);
+    set('fcBrandsServed', fc.brandsServed);
+    set('fcCapabilities', (fc.capabilities || []).join('\n'));
+    set('fcCtaLink', fc.ctaLink);
     renderFcLogoPreview();
   }
   function renderFcLogoPreview() {
@@ -759,18 +756,18 @@
       factoryCard: {
         name: document.getElementById('fcName').value.trim(),
         logo: document.getElementById('fcLogo').value.trim(),
-        verified: document.getElementById('fcVerified').value === '1',
-        countryFlag: document.getElementById('fcFlag').value.trim(),
+        tagline: document.getElementById('fcTagline').value.trim(),
+        certified: document.getElementById('fcCertified').value.trim(),
         location: document.getElementById('fcLocation').value.trim(),
         years: document.getElementById('fcYears').value.trim(),
-        type: document.getElementById('fcType').value.trim(),
-        bestSeller: document.getElementById('fcBestSeller').value.trim(),
-        storeRating: document.getElementById('fcStoreRating').value.trim(),
-        ratingCount: document.getElementById('fcRatingCount').value.trim(),
+        highlight: document.getElementById('fcHighlight').value.trim(),
         responseTime: document.getElementById('fcResponseTime').value.trim(),
-        onTimeDispatchRate: document.getElementById('fcOnTimeRate').value.trim(),
-        reorderRate: document.getElementById('fcReorderRate').value.trim(),
-        customizations: document.getElementById('fcCustomizations').value.split('\n').map(s => s.trim()).filter(Boolean),
+        leadTime: document.getElementById('fcLeadTime').value.trim(),
+        moq: document.getElementById('fcMoq').value.trim(),
+        monthlyCapacity: document.getElementById('fcMonthlyCapacity').value.trim(),
+        brandsServed: document.getElementById('fcBrandsServed').value.trim(),
+        capabilities: document.getElementById('fcCapabilities').value.split('\n').map(s => s.trim()).filter(Boolean),
+        ctaLink: document.getElementById('fcCtaLink').value.trim(),
       },
       equipmentTitle: document.getElementById('eqTitle').value,
       equipmentDesc: document.getElementById('eqDesc').value,
