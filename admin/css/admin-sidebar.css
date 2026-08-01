@@ -9,7 +9,7 @@
 }
 #adminSidebar .sb-brand { padding: 20px; border-bottom: 1px solid #F3F4F6; }
 #adminSidebar .sb-brand a {
-  font-size: 20px; font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px; font-family: Georgia, 'Times New Roman', serif;
   font-weight: 700; color: #2D5A3D; text-decoration: none;
 }
 #adminSidebar .sb-brand p { margin: 2px 0 0; font-size: 12px; color: #9CA3AF; }

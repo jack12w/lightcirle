@@ -194,6 +194,11 @@ app.get('/blog-detail/:path', (req, res) => {
   sendWithCanonical(res, 'blog-detail.html', req.path);
 });
 
+// --- Legacy dedicated list pages (products.html / blog.html) ---
+// These were consolidated into the unified /search.html page. 301-redirect any
+// old bookmarks / inbound SEO links so they don't 404 after the files are removed.
+app.get(['/products.html', '/blog.html'], (req, res) => res.redirect(301, '/search.html'));
+
 app.use(express.static(__dirname));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>文章管理 — lightcirle 管理后台</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
   <link rel="stylesheet" href="/css/tailwind.css">
@@ -12,88 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
   <script defer src="/admin/js/admin-sidebar.js"></script>
-  <style>body{font-family:'Inter',system-ui,sans-serif}</style>
-</head>
-<body class="bg-[#FAFAF8]">
-<div class="flex min-h-screen">
-  <!-- Sidebar：菜单由 admin/js/admin-sidebar.js 注入，单一数据源 -->
-  <aside id="adminSidebar">
-    <div class="sb-brand"><a href="dashboard.html">lightcirle</a><p>管理后台</p></div>
-    <nav id="adminNav" class="sb-nav"></nav>
-    <div class="sb-foot">
-      <a href="#" id="logoutBtn" class="sb-link logout"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
-    </div>
-  </aside>
-  <main id="adminMain" class="flex-1 p-6 lg:p-8">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-serif font-bold">文章管理</h1>
-      <button onclick="openEditor()" class="bg-[#2D5A3D] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-plus mr-1"></i> 新建文章</button>
-    </div>
-    <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
-          <th class="p-4 font-medium">文章标题</th><th class="p-4 font-medium">分类</th><th class="p-4 font-medium">日期</th><th class="p-4 font-medium">操作</th>
-        </tr></thead>
-        <tbody id="articleTable"></tbody>
-      </table>
-    </div>
-
-    <!-- Editor Modal -->
-    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)requestClose()">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-8" onclick="event.stopPropagation()">
-        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新建文章</h2><button onclick="requestClose()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
-        <form id="articleForm" class="grid grid-cols-2 gap-4">
-          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">文章标题</label><input id="edTitle" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" required></div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类</label>
-            <select id="edCat" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
-              <option value="fabric-knowledge">面料知识</option><option value="business-tips">商业建议</option><option value="industry-news">行业动态</option>
-            </select>
-          </div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">日期</label><input id="edDate" type="date" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm"></div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">作者</label><input id="edAuthor" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" value="lightcirle Team"></div>
-          <div><label class="block text-xs font-medium text-gray-500 mb-1">标签（逗号分隔）</label><input id="edTags" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm"></div>
-          <div class="col-span-2">
-            <label class="block text-xs font-medium text-gray-500 mb-1">封面图片</label>
-            <div class="flex items-center gap-3">
-              <button type="button" onclick="document.getElementById('articleImageInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传封面</button>
-              <button type="button" onclick="openArticleMediaPicker()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:bg-gray-50"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
-              <div class="flex-1 flex gap-2">
-                <input type="text" id="edImage" class="flex-1 px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴图片URL">
-                <button type="button" onclick="setCoverImage()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">设置</button>
-              </div>
-            </div>
-            <img id="coverPreview" class="mt-2 max-h-24 rounded-lg hidden object-cover border border-gray-100">
-            <input type="file" id="articleImageInput" accept="image/*" class="hidden" onchange="uploadArticleImage(this)">
-          </div>
-          <div class="col-span-2">
-            <label class="block text-xs font-medium text-gray-500 mb-1">文章视频（正文顶部展示，支持本地视频或 YouTube/Bilibili 链接，上传上限 150MB）</label>
-            <div class="mb-2" id="articleVideoPreviewWrap"></div>
-            <div class="flex gap-2 flex-wrap">
-              <button type="button" onclick="document.getElementById('articleVideoUploadInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:border-[#2D5A3D]"><i class="fas fa-upload mr-1"></i> 上传视频</button>
-              <button type="button" onclick="openArticleVideoPicker()" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs text-gray-600 hover:bg-gray-50"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
-              <input type="text" id="edArticleVideoUrl" class="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-200 rounded-xl text-xs" placeholder="或粘贴视频 URL（本地直链 / YouTube / Bilibili）">
-              <button type="button" onclick="setArticleVideo()" class="px-3 py-1.5 bg-gray-100 rounded-xl text-xs hover:bg-gray-200">设置</button>
-              <button type="button" onclick="clearArticleVideo()" class="px-3 py-1.5 border border-red-200 text-red-500 rounded-xl text-xs hover:bg-red-50"><i class="fas fa-trash mr-1"></i> 移除</button>
-            </div>
-            <input type="file" id="articleVideoUploadInput" accept="video/*" class="hidden" onchange="uploadArticleVideo(this)">
-            <input type="hidden" id="edArticleVideo" value="">
-          </div>
-          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">摘要</label><textarea id="edExcerpt" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-16 resize-none"></textarea></div>
-          <div class="col-span-2"><label class="block text-xs font-medium text-gray-500 mb-1">正文（Markdown）</label><textarea id="edContent" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-64 resize-none"></textarea></div>
-          <div class="col-span-2 flex gap-3 justify-end pt-4 border-t border-gray-100">
-            <button type="button" onclick="requestClose()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
-            <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存文章</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </main>
-</div>
-
-<nav id="adminMobileNav"></nav>
-
-<script>
-  const API = '/api'; let token = localStorage.getItem('token');
+  <style>body{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; let token = localStorage.getItem('token');
   if (!token) window.location.href = '/admin/login.html';
   window.__API_BASE = API; window.__AUTH_TOKEN = token;
   document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });

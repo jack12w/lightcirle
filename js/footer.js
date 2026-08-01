@@ -12,10 +12,38 @@
 
     var cfg = window.SITE_CONFIG || {};
     var brand = cfg.brandName || 'lightcirle';
-    var email = cfg.emailAddress || 'inquiry@lightcirle.com';
-    var waNum = (cfg.whatsappNumber || '8612345678900').replace(/\D/g, '');
-    var waHref = 'https://wa.me/' + waNum;
-    var waMsg = encodeURIComponent("Hi! I'm interested in your yoga wear.");
+
+    // Social media "Follow us" links — managed in admin settings (socialLinks).
+    // Only platforms with a non-empty URL are shown in the footer.
+    var SOCIAL_PLATFORMS = {
+      linkedin:  { icon: 'fab fa-linkedin-in', hover: '#0077B5', label: 'LinkedIn' },
+      instagram: { icon: 'fab fa-instagram',   hover: '#E4405F', label: 'Instagram' },
+      facebook:  { icon: 'fab fa-facebook-f',  hover: '#1877F2', label: 'Facebook' },
+      twitter:   { icon: 'fab fa-x-twitter',   hover: '#000000', label: 'X' },
+      youtube:   { icon: 'fab fa-youtube',      hover: '#FF0000', label: 'YouTube' },
+      pinterest: { icon: 'fab fa-pinterest-p', hover: '#E60023', label: 'Pinterest' },
+      tiktok:    { icon: 'fab fa-tiktok',      hover: '#000000', label: 'TikTok' },
+    };
+    var SOCIAL_ORDER = ['linkedin', 'instagram', 'facebook', 'twitter', 'youtube', 'pinterest', 'tiktok'];
+    var socialLinks = (cfg.socialLinks && typeof cfg.socialLinks === 'object') ? cfg.socialLinks : {};
+
+    function buildSocialIcons() {
+      var parts = [];
+      for (var i = 0; i < SOCIAL_ORDER.length; i++) {
+        var key = SOCIAL_ORDER[i];
+        var url = socialLinks[key];
+        if (!url) continue;
+        var p = SOCIAL_PLATFORMS[key];
+        if (!p) continue;
+        parts.push(
+          '<a href="' + url + '" target="_blank" rel="noopener" ' +
+          'class="footer-social w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-colors" ' +
+          'style="--soc-hover:' + p.hover + '" aria-label="' + p.label + '">' +
+          '<i class="' + p.icon + '"></i></a>'
+        );
+      }
+      return parts.join('');
+    }
 
     var html =
       '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
@@ -23,10 +51,7 @@
           '<div>' +
             '<h4>' + brand + '</h4>' +
             '<p class="text-sm leading-relaxed">Premium custom yoga wear manufacturer. MOQ 50pcs, factory direct, global shipping.</p>' +
-            '<div class="flex gap-3 mt-4">' +
-              '<a href="' + waHref + '?text=' + waMsg + '" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-whatsapp transition-colors" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>' +
-              '<a href="mailto:' + email + '" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="Email"><i class="fas fa-envelope"></i></a>' +
-            '</div>' +
+            '<div class="flex gap-3 mt-4">' + buildSocialIcons() + '</div>' +
           '</div>' +
           '<div>' +
             '<h4>Products</h4>' +

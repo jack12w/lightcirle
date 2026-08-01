@@ -52,9 +52,21 @@ router.get('/', (req, res) => {
     },
     faviconPath: s.favicon_path || '',
     businessHours: s.business_hours || 'Mon-Sat, 9AM-6PM (GMT+8)',
+    socialLinks: parseSocialLinks(s.social_links),
     dbSize: dbSize,
   });
 });
+
+// Parse the social_links TEXT column into an object. Falls back to {} on bad data.
+function parseSocialLinks(raw) {
+  if (!raw) return {};
+  try {
+    const obj = JSON.parse(raw);
+    return (obj && typeof obj === 'object') ? obj : {};
+  } catch (e) {
+    return {};
+  }
+}
 
 // PUT /api/settings (auth required)
 // Merges with the existing row so a PARTIAL update never wipes other fields.
@@ -93,6 +105,7 @@ router.put('/', authenticate, (req, res) => {
     },
     faviconPath: data.faviconPath ?? cur.favicon_path ?? '',
     businessHours: data.businessHours ?? cur.business_hours ?? 'Mon-Sat, 9AM-6PM (GMT+8)',
+    socialLinks: data.socialLinks ?? parseSocialLinks(cur.social_links),
   };
 
   db.prepare(`
@@ -102,7 +115,7 @@ router.put('/', authenticate, (req, res) => {
       colors_primary=?, colors_primary_light=?, colors_primary_dark=?,
       colors_accent=?, colors_accent_light=?,       colors_whatsapp=?,
       oss_enabled=?, oss_region=?, oss_bucket=?, oss_access_key_id=?, oss_access_key_secret=?, oss_cdn_domain=?,
-      favicon_path=?, business_hours=?,
+      favicon_path=?, business_hours=?, social_links=?,
       updated_at=datetime('now')
     WHERE id=1
   `).run(
@@ -112,7 +125,8 @@ router.put('/', authenticate, (req, res) => {
     merged.colors.accent, merged.colors.accentLight, merged.colors.whatsapp,
     merged.oss.enabled ? 1 : 0, merged.oss.region, merged.oss.bucket,
     merged.oss.accessKeyId, merged.oss.accessKeySecret, merged.oss.cdnDomain,
-    merged.faviconPath, merged.businessHours
+    merged.faviconPath, merged.businessHours,
+    JSON.stringify(merged.socialLinks || {})
   );
 
   // Also write to config.js for the static site
@@ -194,6 +208,7 @@ function buildConfigFileContent() {
     countriesShipped: s.countries_shipped || 30,
     faviconPath: s.favicon_path || '',
     businessHours: s.business_hours || 'Mon-Sat, 9AM-6PM (GMT+8)',
+    socialLinks: parseSocialLinks(s.social_links),
   };
 
   // Preserve the builtin file's tail (favicon/CSS-var sync + JSON-LD schema injectors):

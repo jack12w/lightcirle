@@ -407,12 +407,11 @@ function _lbRender() {
 }
 
 // --- Generic arrow-driven carousel initializer ---
-// Wires up a carousel with: prev/next buttons, clickable dots, touch swipe.
+// Wires up a carousel with: prev/next buttons, touch swipe.
 // Requires the root element to contain:
 //   .fc-track        — flex track of slides
 //   .fc-arrow-prev   — left arrow button
 //   .fc-arrow-next   — right arrow button
-//   .fc-dots         — container of dot buttons (any children are activated)
 //   .fc-slide        — individual slides
 // Data attribute on root: data-slides-per-view="4" (default 4) controls visible count.
 // Each .fc-slide can have data-zoom-src="..." to make clicking it open the lightbox
@@ -423,32 +422,34 @@ function initCarousel(root) {
   var track = root.querySelector('.fc-track');
   var prevBtn = root.querySelector('.fc-arrow-prev');
   var nextBtn = root.querySelector('.fc-arrow-next');
-  var dotsWrap = root.querySelector('.fc-dots');
-  var slides = root.querySelectorAll('.fc-slide');
+  var slides = Array.prototype.slice.call(root.querySelectorAll('.fc-slide'));
   if (!track || !slides.length) return;
   var total = slides.length;
-  var spv = parseInt(root.dataset.slidesPerView || '4', 10);
   var loop = root.dataset.loop === '1';
-  var maxIndex = Math.max(0, total - spv);
   var current = 0;
-  // Build dots if not present
-  if (dotsWrap && !dotsWrap.children.length) {
-    for (var d = 0; d <= maxIndex; d++) {
-      var dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'fc-dot' + (d === 0 ? ' is-active' : '');
-      dot.setAttribute('aria-label', 'Go to slide ' + (d + 1));
-      dot.addEventListener('click', (function(idx) { return function() { goTo(idx); }; })(d));
-      dotsWrap.appendChild(dot);
-    }
+  var maxIndex = 0;
+  // Width-aware stepping: the CSS changes slides-per-view per breakpoint (4/3/2/1),
+  // so we measure the real rendered slide width + gap instead of assuming a fixed
+  // percentage. This keeps the carousel correct on desktop, tablet and mobile.
+  function gapPx() {
+    var cs = getComputedStyle(track);
+    var g = cs.getPropertyValue('gap') || cs.getPropertyValue('column-gap') || '0px';
+    var n = parseFloat(g);
+    return isNaN(n) ? 0 : n;
   }
-  function getSlidePct() { return 100 / spv; }
+  function measure() {
+    var slideW = slides[0].getBoundingClientRect().width;
+    var g = gapPx();
+    var step = slideW + g;
+    if (step <= 0) { maxIndex = 0; return 0; }
+    var perView = Math.max(1, Math.round((track.clientWidth + g) / step));
+    maxIndex = Math.max(0, total - perView);
+    return step;
+  }
   function update() {
-    track.style.transform = 'translateX(-' + (current * getSlidePct()) + '%)';
-    if (dotsWrap) {
-      var ds = dotsWrap.querySelectorAll('.fc-dot');
-      for (var i = 0; i < ds.length; i++) ds[i].classList.toggle('is-active', i === current);
-    }
+    var step = measure();
+    current = Math.max(0, Math.min(current, maxIndex));
+    track.style.transform = 'translateX(-' + (current * step) + 'px)';
     // disable arrows at edges unless loop
     if (prevBtn) prevBtn.disabled = !loop && current <= 0;
     if (nextBtn) nextBtn.disabled = !loop && current >= maxIndex;
@@ -456,7 +457,8 @@ function initCarousel(root) {
   }
   function goTo(i) {
     if (loop) {
-      current = ((i % (maxIndex + 1)) + (maxIndex + 1)) % (maxIndex + 1);
+      var span = maxIndex + 1;
+      current = ((i % span) + span) % span;
     } else {
       current = Math.max(0, Math.min(i, maxIndex));
     }
@@ -513,6 +515,15 @@ function initCarousel(root) {
       if (s === slide) startIndex = images.length - 1;
     }
     if (images.length) window.openLightbox(images, startIndex);
+  });
+  // Recompute on resize so the step stays in sync with CSS breakpoints (3/2/1 per view)
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (current > maxIndex) current = maxIndex;
+      update();
+    }, 150);
   });
   update();
 }

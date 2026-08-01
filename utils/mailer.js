@@ -67,9 +67,9 @@ function buildHtml(q) {
     ? q.customization.join('，')
     : '—';
   return (
-    '<div style="font-family:Inter,system-ui,sans-serif;max-width:560px;margin:0 auto;padding:20px;background:#FAFAF8">' +
+    '<div style="font-family:Arial, Helvetica, sans-serif;max-width:560px;margin:0 auto;padding:20px;background:#FAFAF8">' +
     '<div style="background:#fff;border:1px solid #E5E7EB;border-radius:16px;overflow:hidden">' +
-    '<div style="background:#2D5A3D;color:#fff;padding:18px 24px;font-family:\'Playfair Display\',serif;font-size:18px">New Quote Request #' +
+    '<div style="background:#2D5A3D;color:#fff;padding:18px 24px;font-family:Georgia, serif;font-size:18px">New Quote Request #' +
     q.id +
     '</div>' +
     '<table style="width:100%;border-collapse:collapse;padding:8px 24px">' +

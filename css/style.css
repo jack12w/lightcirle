@@ -55,7 +55,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--color-bg-light);
   color: var(--color-text-light);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -65,7 +65,7 @@ body {
 
 /* --- Typography --- */
 h1, h2, h3, h4 {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: Georgia, "Times New Roman", serif;
   letter-spacing: -0.02em;
   line-height: 1.3;
 }
@@ -255,7 +255,7 @@ h1, h2, h3, h4 {
   width: 200px;
   transition: all 0.3s ease;
   outline: none;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 .dark .nav-search { background: rgba(255,255,255,0.06); color: #E8E6E3; }
 .nav-search::placeholder { color: #9CA3AF; }
@@ -449,9 +449,23 @@ h1, h2, h3, h4 {
   max-width: 370px;
   aspect-ratio: 370 / 493;
 }
-/* Thumbnail strip wrapper: align to the 370px main image width */
+/* Thumbnail strip wrapper: width matches the main image (370px desktop, 100% mobile)
+   so the L/R arrows sit at the strip's true edges instead of overflowing. */
 .pd-thumb-wrap {
+  width: 100%;
   max-width: 370px;
+}
+/* Make sure the absolutely-positioned overlay arrows don't get clipped by the
+   outer flex column or by the thumb strip's overflow. */
+.pd-detail-grid .pd-thumb-wrap { overflow: visible; }
+/* On phones/tablets (single-column layout) let the media, thumb strip and the
+   factory card fill the available width instead of staying capped at 370/380px. */
+@media (max-width: 1023px) {
+  .pd-main-media,
+  .pd-thumb-wrap,
+  .factory-card {
+    max-width: 100%;
+  }
 }
 
 /* Price-range icon spacing (icon → text gap, custom to bypass purge) */
@@ -649,7 +663,7 @@ h1, h2, h3, h4 {
 }
 
 .trust-number {
-  font-family: 'Playfair Display', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--color-primary);
@@ -928,6 +942,10 @@ h1, h2, h3, h4 {
   background: rgba(0, 0, 0, 0.85);
   color: var(--color-accent);
 }
+/* Touch devices have no hover — keep the main-image arrows always visible */
+@media (hover: none) {
+  .main-image-arrow { opacity: 1; }
+}
 .thumb-arrow {
   width: 34px;
   height: 34px;
@@ -955,16 +973,30 @@ h1, h2, h3, h4 {
   background: var(--color-accent);
   color: #1a1a1a;
 }
-/* Carousel arrow overlay variant — absolutely positioned on top of the thumb strip edges */
+/* Carousel arrow overlay variant — sits at the inner edges of the thumbnail strip.
+   Default hidden; reveals when the strip is hovered (or always on touch devices). */
 .thumb-arrow-overlay {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
 }
-.thumb-arrow-left { left: 2px; }
-.thumb-arrow-right { right: 2px; }
+.pd-thumb-wrap:hover .thumb-arrow-overlay,
+.thumb-arrow-overlay:focus-visible {
+  opacity: 1;
+}
+/* Overlay arrows sit at the inner edges of the thumbnail strip wrapper (which
+   is now 370px wide on desktop and matches the main image). 4px inset keeps
+   them inside the strip's visual bounds while still feeling like edge controls. */
+.thumb-arrow-left { left: 4px; }
+.thumb-arrow-right { right: 4px; }
+/* Touch devices have no hover — keep the thumbnail arrows always visible */
+@media (hover: none) {
+  .thumb-arrow-overlay { opacity: 1; }
+}
 .thumb-item {
   transition: border-color 0.2s, transform 0.2s;
 }
@@ -1056,7 +1088,7 @@ h1, h2, h3, h4 {
   font-weight: 700;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
-  font-family: 'Playfair Display', serif;
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 .article-content h3 {
@@ -1213,7 +1245,7 @@ h1, h2, h3, h4 {
 .logo-chip:hover { filter: grayscale(0); opacity: 1; transform: translateY(-2px); }
 .dark .logo-chip { background: var(--color-surface-dark); border-color: var(--color-border-dark); }
 .logo-chip--text {
-  font-family: 'Playfair Display', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--color-text-muted-light);
@@ -1221,7 +1253,7 @@ h1, h2, h3, h4 {
 }
 .dark .logo-chip--text { color: var(--color-text-muted-dark); }
 .logo-chip--mono {
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
   color: var(--color-text-muted-light);
@@ -1266,7 +1298,7 @@ h1, h2, h3, h4 {
   font-size: 1.4rem;
 }
 .dark .how-step-icon { background: rgba(62,123,84,0.18); color: var(--color-primary-light); }
-.how-step-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 8px; }
+.how-step-title { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 8px; }
 .how-step-desc { font-size: 0.88rem; color: var(--color-text-muted-light); line-height: 1.6; }
 .dark .how-step-desc { color: var(--color-text-muted-dark); }
 
@@ -1503,7 +1535,7 @@ h1, h2, h3, h4 {
   color: white;
   font-size: 1rem;
   margin-bottom: 16px;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1517,6 +1549,16 @@ h1, h2, h3, h4 {
 
 .site-footer a:hover {
   color: white;
+}
+
+/* Footer social "Follow us" icons — hover color set per-platform via --soc-hover */
+.footer-social {
+  color: #fff;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.footer-social:hover {
+  background-color: var(--soc-hover, #2D5A3D) !important;
+  color: #fff !important;
 }
 
 .footer-bottom {
@@ -1845,7 +1887,7 @@ h1, h2, h3, h4 {
 }
 
 .q-panel-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 4px;
@@ -1899,7 +1941,7 @@ h1, h2, h3, h4 {
   border: 1.5px solid var(--color-border-light);
   border-radius: 12px;
   font-size: 0.95rem;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--color-bg-light);
   color: var(--color-text-light);
   outline: none;
@@ -2067,7 +2109,7 @@ h1, h2, h3, h4 {
 }
 
 .q-review h4 {
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2124,7 +2166,7 @@ h1, h2, h3, h4 {
 }
 
 .q-info h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.25rem;
   margin-bottom: 16px;
 }
@@ -2158,7 +2200,7 @@ h1, h2, h3, h4 {
 }
 
 .q-info-item h5 {
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.92rem;
   font-weight: 600;
   margin: 0 0 2px;
@@ -2246,28 +2288,6 @@ h1, h2, h3, h4 {
   color: #fff;
 }
 .dark .fc-arrow:hover { background: rgba(0, 0, 0, 0.85); }
-.fc-dots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 12px;
-}
-.fc-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 9999px;
-  background: #d1d5db;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-.fc-dot.is-active {
-  background: var(--color-primary);
-  transform: scale(1.25);
-}
-.dark .fc-dot { background: #4b5563; }
-.dark .fc-dot.is-active { background: var(--color-accent); }
 
 /* Responsive: fewer slides per view on small screens.
    data-slides-per-view on root controls desktop count (default 4);

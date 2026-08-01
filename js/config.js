@@ -8,13 +8,13 @@ window.SITE_CONFIG = {
   brandDomain: 'lightcirle.com',
   brandFullDomain: 'https://lightcirle.com',
   colors: {
-    primary: '#2d5a3d',
-    primaryLight: '#3e7b54',
-    primaryDark: '#1f3f2a',
-    accent: '#c4926e',
-    accentLight: '#d4a88c',
+    primary: '#2D5A3D',
+    primaryLight: '#3E7B54',
+    primaryDark: '#1F3F2A',
+    accent: '#C4926E',
+    accentLight: '#D4A88C',
     accentDark: '#A67B5B',
-    whatsapp: '#25d366',
+    whatsapp: '#25D366',
     background: '#FAFAF8',
     surface: '#FFFFFF',
     text: '#2C2C2C',
@@ -24,7 +24,7 @@ window.SITE_CONFIG = {
     darkSurface: '#252928',
     darkText: '#E8E6E3',
     darkTextMuted: '#9CA3AF',
-    darkBorder: '#374151',
+    darkBorder: '#374151'
   },
   whatsappNumber: '8612345678900',
   emailAddress: 'inquiry@lightcirle.com',
@@ -36,6 +36,7 @@ window.SITE_CONFIG = {
   countriesShipped: 30,
   faviconPath: '',
   businessHours: 'Mon-Sat, 9AM-6PM (GMT+8)',
+  socialLinks: {}
 };
 
 (function(){var c=window.SITE_CONFIG.colors;window.__TW_COLORS={primary:c.primary,'primary-light':c.primaryLight,'primary-dark':c.primaryDark,accent:c.accent,'accent-light':c.accentLight,'accent-dark':'#A67B5B',whatsapp:c.whatsapp,cream:c.background,darkbg:c.darkBackground,darksurface:c.darksurface};

@@ -30,9 +30,11 @@ module.exports = {
         darksurface: 'rgb(var(--tc-darksurface) / <alpha-value>)',
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['"Playfair Display"', 'serif'],
+        // System-native font stacks (no web-font loading) — fastest, zero cost,
+        // and universally available on every Western device.
+        serif: ['Georgia', '"Times New Roman"', 'serif'],
+        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+        display: ['Georgia', 'serif'],
       },
     },
   },

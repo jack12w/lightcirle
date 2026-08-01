@@ -207,6 +207,8 @@ function initSchema() {
     "ALTER TABLE settings ADD COLUMN favicon_path TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE settings ADD COLUMN oss_prefix TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE settings ADD COLUMN business_hours TEXT NOT NULL DEFAULT 'Mon-Sat, 9AM-6PM (GMT+8)'",
+    // Social media links shown in the site footer (Follow-us icons). JSON object keyed by platform.
+    "ALTER TABLE settings ADD COLUMN social_links TEXT NOT NULL DEFAULT '{}'",
     // Media columns
     "ALTER TABLE media ADD COLUMN folder TEXT NOT NULL DEFAULT 'site'",
     "ALTER TABLE media ADD COLUMN oss_path TEXT NOT NULL DEFAULT ''",

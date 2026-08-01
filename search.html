@@ -17,9 +17,6 @@
   <meta name="twitter:description" content="Search yoga wear products and expert manufacturing insights in one place.">
   <meta name="twitter:image" content="https://lightcirle.com/og-image.jpg">
   <link rel="canonical" href="https://lightcirle.com/search.html">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="siteFavicon">
   <script src="/js/config.js"></script>
@@ -150,6 +147,11 @@
       <!-- Rendering by JS -->
     </div>
 
+    <!-- Infinite-scroll sentinel + status -->
+    <div id="loadSentinel" class="flex justify-center py-10">
+      <div id="loadStatus" class="text-sm text-gray-400 dark:text-gray-500"></div>
+    </div>
+
     <!-- No Results -->
     <div id="noResults" class="empty-state hidden">
       <i class="fas fa-search"></i>
@@ -182,6 +184,14 @@
   let allArticles = [];
   let activeTab = 'all';
   let query = '';
+
+  // --- Infinite scroll state ---
+  let currentCards = [];   // full filtered+interleaved list for the active tab/query
+  let renderedCount = 0;   // how many cards have been injected so far
+  const PAGE_SIZE = 24;    // cards rendered per batch
+  let loadSentinel = null;
+  let loadStatusEl = null;
+  let io = null;           // IntersectionObserver instance
 
   // --- Category display names (loaded from API) ---
   let categoryNames = {};
@@ -319,7 +329,7 @@
       products = allProducts.filter(p => matchesQuery(p, matchedProductFields(p)));
       articles = allArticles.filter(a => matchesQuery(a, matchedArticleFields(a)));
     } else if (activeTab === 'new') {
-      // New arrivals: latest 6 products + 3 latest articles
+      // New arrivals: latest 6 products + 3 latest articles (intentionally capped — no infinite scroll here)
       products = allProducts.filter(p => matchesQuery(p, matchedProductFields(p))).slice(0, 6);
       articles = sortArticlesByDate(allArticles.filter(a => matchesQuery(a, matchedArticleFields(a)))).slice(0, 3);
     } else if (activeTab === 'blog') {
@@ -340,13 +350,16 @@
 
     if (total === 0) {
       container.innerHTML = '';
+      currentCards = [];
+      renderedCount = 0;
+      updateLoadStatus();
       noResults.classList.remove('hidden');
       return;
     }
 
     noResults.classList.add('hidden');
 
-    // Interleave products and articles in the same grid
+    // Build the full interleaved card list once (recomputed only on tab/query change)
     const cards = [];
     if (activeTab === 'all' || activeTab === 'new') {
       // Interleave: alternate product, article, product, article...
@@ -361,9 +374,48 @@
       products.forEach(p => cards.push({ type: 'product', data: p }));
     }
 
-    container.innerHTML = cards.map(c =>
+    currentCards = cards;
+    // Reset and render the first batch; the rest loads on scroll
+    container.innerHTML = '';
+    renderedCount = 0;
+    renderNextBatch();
+  }
+
+  // --- Infinite scroll: render the next batch of cards (append, never replace) ---
+  function renderNextBatch() {
+    const container = document.getElementById('searchResults');
+    if (!container) return;
+    if (renderedCount >= currentCards.length) {
+      updateLoadStatus();
+      return;
+    }
+    const chunk = currentCards.slice(renderedCount, renderedCount + PAGE_SIZE);
+    const html = chunk.map(c =>
       c.type === 'product' ? renderProductCard(c.data) : renderArticleCard(c.data)
     ).join('');
+    container.insertAdjacentHTML('beforeend', html);
+    renderedCount += chunk.length;
+    updateLoadStatus();
+    // If the sentinel is still on-screen (tall viewport / short batch), keep filling
+    if (renderedCount < currentCards.length && sentinelInView()) {
+      renderNextBatch();
+    }
+  }
+
+  function sentinelInView() {
+    if (!loadSentinel) return false;
+    const r = loadSentinel.getBoundingClientRect();
+    return r.top <= window.innerHeight + 200;
+  }
+
+  function updateLoadStatus() {
+    if (!loadStatusEl) return;
+    if (currentCards.length === 0) { loadStatusEl.textContent = ''; return; }
+    if (renderedCount >= currentCards.length) {
+      loadStatusEl.innerHTML = '<i class="fas fa-check mr-1"></i>Showing all ' + currentCards.length + ' results';
+    } else {
+      loadStatusEl.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Loading more…';
+    }
   }
 
   // --- Tab switching ---
@@ -515,6 +567,18 @@
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
+
+    // Infinite scroll: load more batches as the sentinel nears the viewport
+    loadSentinel = document.getElementById('loadSentinel');
+    loadStatusEl = document.getElementById('loadStatus');
+    if ('IntersectionObserver' in window && loadSentinel) {
+      io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) renderNextBatch();
+        });
+      }, { rootMargin: '300px' });
+      io.observe(loadSentinel);
+    }
 
     // Apply URL tab
     if (urlTab !== 'all') {
