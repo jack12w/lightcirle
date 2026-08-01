@@ -286,7 +286,7 @@
     // Carousel thumbnails — wrapper width matches the main image (370px on desktop, 100% on mobile)
     // so the L/R arrows sit inside the strip's visual bounds instead of overflowing the main image.
     html += '<div class="relative mt-4 pd-thumb-wrap">';
-    html += '<div id="thumbStrip" class="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory justify-between">';
+    html += '<div id="thumbStrip" class="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory">';
     // Thumbnail 0: video (if any)
     if (hasVideo) {
       html += '<button data-idx="-1" onclick="renderMainMedia(\'video\')" class="thumb-item w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-primary hover:border-primary/50 transition-colors relative bg-black flex items-center justify-center snap-start">' +

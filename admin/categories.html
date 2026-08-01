@@ -8,7 +8,85 @@
   <script src="/admin/js/media-picker.js"></script>
   <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
   <script defer src="/admin/js/admin-sidebar.js"></script>
-  <style>body{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; let token = localStorage.getItem('token');
+  <style>body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }</style>
+</head>
+<body class="bg-[#FAFAF8]">
+<div class="flex min-h-screen">
+    <!-- Sidebar：菜单由 admin/js/admin-sidebar.js 注入，单一数据源 -->
+    <aside id="adminSidebar">
+      <div class="sb-brand"><a href="dashboard.html">lightcirle</a><p>管理后台</p></div>
+      <nav id="adminNav" class="sb-nav"></nav>
+      <div class="sb-foot">
+        <a href="#" id="logoutBtn" class="sb-link logout"><i class="fas fa-sign-out-alt w-5"></i>退出登录</a>
+      </div>
+    </aside>
+  <main id="adminMain" class="flex-1 p-6 lg:p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-serif font-bold">分类管理</h1>
+      <button onclick="openEditor()" class="bg-[#2D5A3D] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-plus mr-1"></i> 新增分类</button>
+    </div>
+
+    <!-- Type tabs -->
+    <div class="flex gap-2 mb-4">
+      <button class="type-tab active text-xs px-4 py-1.5 rounded-full border border-[#2D5A3D] bg-[#2D5A3D] text-white font-medium" data-type="all">全部</button>
+      <button class="type-tab text-xs px-4 py-1.5 rounded-full border border-gray-200 text-gray-500 hover:border-[#2D5A3D]" data-type="product">产品分类</button>
+      <button class="type-tab text-xs px-4 py-1.5 rounded-full border border-gray-200 text-gray-500 hover:border-[#2D5A3D]" data-type="article">文章分类</button>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-gray-100 text-left text-gray-400 text-xs uppercase tracking-wider">
+          <th class="p-4 font-medium">分类名称</th><th class="p-4 font-medium">中文名称</th><th class="p-4 font-medium">封面</th><th class="p-4 font-medium">类型</th><th class="p-4 font-medium">父级</th><th class="p-4 font-medium">排序</th><th class="p-4 font-medium">操作</th>
+        </tr></thead>
+        <tbody id="categoryTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Editor Modal -->
+    <div id="editorModal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-start justify-center p-4 pt-16 overflow-y-auto" onclick="if(event.target===this)requestClose()">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6"><h2 id="editorTitle" class="text-xl font-serif font-bold">新增分类</h2><button onclick="requestClose()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button></div>
+        <form id="categoryForm" class="grid gap-4">
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">分类名称</label><input id="edId" oninput="validateIdInput()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: yoga-leggings"><p id="edIdError" class="field-error hidden"></p></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">中文名称</label><input id="edName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2D5A3D]/30 outline-none" placeholder="例如: 瑜伽紧身裤"><p id="edNameError" class="field-error hidden"></p></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">类型</label>
+            <select id="edType" onchange="onTypeChange()" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+              <option value="product">产品分类</option>
+              <option value="article">文章分类</option>
+            </select>
+          </div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">一级分类</label>
+            <select id="edParent" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+              <option value="">（顶级分类）</option>
+            </select>
+            <p id="edParentHint" class="text-[11px] text-gray-400 mt-1 hidden">该分类下已有子分类，不可再设为子分类。</p>
+          </div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">封面图片</label>
+            <div class="flex items-center gap-3">
+              <img id="edImagePreview" class="w-12 h-12 rounded-lg border border-gray-100 hidden object-cover">
+              <div id="edImagePlaceholder" class="w-12 h-12 rounded-lg border border-dashed border-gray-200 flex items-center justify-center text-gray-300"><i class="fas fa-image"></i></div>
+              <button type="button" onclick="document.getElementById('edImageInput').click()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs hover:border-[#2D5A3D] transition-colors"><i class="fas fa-upload mr-1"></i> 上传</button>
+              <button type="button" onclick="openCatMediaPicker()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs hover:bg-gray-50 transition-colors"><i class="fas fa-folder-open mr-1"></i> 媒体库</button>
+              <button type="button" onclick="clearEdImage()" class="text-xs text-red-400 hover:text-red-600">清除</button>
+            </div>
+            <p class="text-gray-400 mt-2" style="font-size:12px">提示：上传或选择封面后将自动保存，无需点击「保存」。</p>
+            <input type="hidden" id="edImage" value="">
+            <input type="file" id="edImageInput" accept="image/*" class="hidden" onchange="uploadEdImage(this)">
+          </div>
+          <div class="flex gap-3 justify-end pt-4 border-t border-gray-100">
+            <button type="button" onclick="requestClose()" class="px-6 py-2.5 border border-gray-200 rounded-xl text-sm">取消</button>
+            <button type="submit" class="px-6 py-2.5 bg-[#2D5A3D] text-white rounded-xl text-sm font-semibold hover:bg-[#3E7B54]"><i class="fas fa-save mr-1"></i> 保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+  <nav id="adminMobileNav"></nav>
+
+<script>
+  const API = '/api'; let token = localStorage.getItem('token');
   if (!token) window.location.href = '/admin/login.html';
   window.__API_BASE = API; window.__AUTH_TOKEN = token;
   document.getElementById('logoutBtn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); window.location.href = '/admin/login.html'; });
