@@ -408,7 +408,7 @@ h1, h2, h3, h4 {
 }
 
 /* ===== Product detail: two-column layout ===== */
-/* Left (image) column is pinned to 340px so it matches the main image width;
+/* Left (image) column is pinned to 370px so it matches the main image width;
    the right (info) column takes the remaining space. Mobile: single column. */
 .pd-detail-grid {
   display: grid;
@@ -417,7 +417,7 @@ h1, h2, h3, h4 {
 }
 @media (min-width: 1024px) {
   .pd-detail-grid {
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: 370px 1fr;
     gap: 4rem;
   }
 }
@@ -442,16 +442,16 @@ h1, h2, h3, h4 {
   overflow: hidden;
 }
 
-/* Main media: exactly 340 x 453px (portrait). Custom class bypasses Tailwind
+/* Main media: exactly 370 x 493px (portrait). Custom class bypasses Tailwind
    purge for the arbitrary max-width / aspect-ratio. */
 .pd-main-media {
   width: 100%;
-  max-width: 340px;
-  aspect-ratio: 340 / 453;
+  max-width: 370px;
+  aspect-ratio: 370 / 493;
 }
-/* Thumbnail strip wrapper: align to the 340px main image width */
+/* Thumbnail strip wrapper: align to the 370px main image width */
 .pd-thumb-wrap {
-  max-width: 340px;
+  max-width: 370px;
 }
 
 /* Price-range icon spacing (icon → text gap, custom to bypass purge) */
