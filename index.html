@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>lightcirle — Premium Custom Yoga Wear Manufacturer | MOQ 50pcs | Factory Direct</title>
-  <meta name="description" content="Premium custom yoga wear manufacturer with MOQ 50pcs. OEM/ODM services, factory-direct pricing, global shipping. Specialized in yoga leggings, sports bras, yoga shorts, and sets for B2B brands.">
+  <meta name="description" content="Premium custom yoga wear manufacturer with MOQ 50pcs. OEM/ODM services, factory-direct pricing, global shipping. Trusted by 200+ yoga & fitness brands worldwide.">
   <meta name="keywords" content="custom yoga wear, yoga clothing manufacturer, OEM yoga wear, low MOQ yoga wear, private label yoga clothing, yoga leggings manufacturer, yoga wear factory">
   <meta property="og:title" content="lightcirle — Premium Custom Yoga Wear Manufacturer | MOQ 50pcs">
-  <meta property="og:description" content="Factory-direct custom yoga wear manufacturer. MOQ 50pcs, global shipping, OEM/ODM services.">
+  <meta property="og:description" content="Factory-direct custom yoga wear manufacturer. MOQ 50pcs, OEM/ODM services, global shipping.">
   <meta property="og:image" content="https://lightcirle.com/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -40,7 +40,6 @@
 
       <!-- Desktop Nav -->
       <div class="hidden lg:flex items-center gap-5">
-        <!-- Search first -->
         <form class="nav-search-wrap" onsubmit="window.handleNavSearch(event)">
           <i class="fas fa-search nav-search-icon"></i>
           <input type="text" id="navSearchInput" class="nav-search" placeholder="Search products & articles...">
@@ -72,7 +71,6 @@
 
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden flex-col gap-2 pb-4 lg:hidden">
-      <!-- Mobile Search -->
       <form onsubmit="window.handleNavSearch(event)" class="relative px-1">
         <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
         <input type="text" id="mobileNavSearchInput" class="search-input text-sm" placeholder="Search products & articles...">
@@ -94,21 +92,23 @@
 
 <main>
 
-<!-- Hero Section -->
-<section class="relative min-h-screen flex items-center overflow-hidden">
+<!-- =========================================================
+     1. HERO
+     ========================================================= -->
+<section class="relative hero-section flex items-center overflow-hidden">
   <div id="heroCanvas" class="hero-canvas"></div>
-  <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-40 w-full">
+  <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-28 lg:py-40 w-full">
     <div class="max-w-3xl">
-      <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-primary/10 text-primary dark:bg-primary-light/20 dark:text-primary-light mb-6 animate-fade-in">
+      <span id="heroBadge" class="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-primary/10 text-primary dark:bg-primary-light/20 dark:text-primary-light mb-6 animate-fade-in">
         MOQ 50pcs · Factory Direct · Global Shipping
       </span>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-tight mb-6 animate-fade-in-up delay-100">
-        Premium Custom
-        <span class="gradient-text"> Yoga Wear </span>
-        Manufacturing
+      <h1 id="heroTitle" class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-tight mb-6 animate-fade-in-up delay-100">
+        <span id="heroTitleMain">Premium Custom</span>
+        <span id="heroTitleHighlight" class="gradient-text"> Yoga Wear </span>
+        <span id="heroTitlePost">Manufacturing</span>
       </h1>
-      <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-xl animate-fade-in-up delay-200">
-        From concept to creation — we manufacture high-performance yoga apparel for your brand. 
+      <p id="heroSubtitle" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-xl animate-fade-in-up delay-200">
+        From concept to creation — we manufacture high-performance yoga apparel for your brand.
         Low minimums, premium fabrics, worldwide delivery.
       </p>
       <div class="flex flex-wrap gap-4 animate-fade-in-up delay-300">
@@ -119,55 +119,69 @@
           <i class="fab fa-whatsapp"></i> Start a Conversation
         </a>
       </div>
+      <p class="mt-6 text-sm text-gray-500 dark:text-gray-400 animate-fade-in-up delay-400">
+        <i class="fas fa-circle-check text-primary dark:text-primary-light mr-1"></i>
+        Trusted by <b class="text-gray-700 dark:text-gray-200">200+ brands</b> · OEKO-TEX Certified · Replies within <b class="text-gray-700 dark:text-gray-200">2 hours</b>
+      </p>
     </div>
   </div>
-  <!-- Scroll indicator -->
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
     <i class="fas fa-chevron-down text-primary/40 dark:text-primary-light/40 text-xl"></i>
   </div>
 </section>
 
-<!-- Trust Badges -->
-<section class="py-16 lg:py-20 bg-white dark:bg-darksurface border-y border-gray-100 dark:border-gray-800">
+<!-- =========================================================
+     2. TRUST STRIP — certifications + key numbers
+     ========================================================= -->
+<section class="py-14 lg:py-16 bg-white dark:bg-darksurface border-y border-gray-100 dark:border-gray-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+    <!-- Certification logo chips -->
+    <div class="cert-strip animate-on-scroll">
+      <span class="cert-strip-label">Certified &amp; Compliant:</span>
+      <span id="certChips">
+        <span class="cert-chip"><i class="fas fa-certificate"></i> OEKO-TEX</span>
+        <span class="cert-chip"><i class="fas fa-certificate"></i> BSCI</span>
+        <span class="cert-chip"><i class="fas fa-certificate"></i> GRS</span>
+        <span class="cert-chip"><i class="fas fa-certificate"></i> REACH</span>
+      </span>
+    </div>
+    <!-- Key numbers -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-12" id="trustStats">
       <div class="trust-badge animate-on-scroll">
-        <div class="trust-number">
-          <span class="counter-value" data-target="10" data-suffix="+">0+</span>
-        </div>
+        <div class="trust-number"><span class="counter-value" data-target="10" data-suffix="+">0+</span></div>
         <p class="trust-label">Years Experience</p>
       </div>
       <div class="trust-badge animate-on-scroll">
-        <div class="trust-number">
-          <span class="counter-value" data-target="50" data-suffix="">0</span>
-        </div>
+        <div class="trust-number"><span class="counter-value" data-target="50" data-suffix="">0</span></div>
         <p class="trust-label">Pcs Minimum Order</p>
       </div>
       <div class="trust-badge animate-on-scroll">
-        <div class="trust-number">
-          <span class="counter-value" data-target="30" data-suffix="+">0+</span>
-        </div>
+        <div class="trust-number"><span class="counter-value" data-target="30" data-suffix="+">0+</span></div>
         <p class="trust-label">Countries Shipped</p>
       </div>
       <div class="trust-badge animate-on-scroll">
-        <div class="trust-number">
-          <span class="counter-value" data-target="200" data-suffix="+">0+</span>
-        </div>
+        <div class="trust-number"><span class="counter-value" data-target="200" data-suffix="+">0+</span></div>
         <p class="trust-label">Brands Served</p>
       </div>
-    </div>
-    <!-- Certifications / compliance trust strip -->
-    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400 animate-on-scroll">
-      <span class="font-semibold text-gray-700 dark:text-gray-300">Certified &amp; Compliant:</span>
-      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>OEKO-TEX</span>
-      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>BSCI</span>
-      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>GRS</span>
-      <span><i class="fas fa-certificate text-primary dark:text-primary-light mr-1"></i>REACH</span>
     </div>
   </div>
 </section>
 
-<!-- Featured Products (contact-first: give buyers something concrete + an easy Inquire) -->
+<!-- =========================================================
+     3. BRAND LOGO WALL (social proof)
+     ========================================================= -->
+<section class="py-12 lg:py-14">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="logo-wall-title animate-on-scroll" id="logoWallTitle">Trusted by <b>200+ yoga &amp; fitness brands</b> across 30+ countries</p>
+    <div class="logo-wall animate-on-scroll" id="logoWall">
+      <!-- Filled by JS: partnerLogos from /api/company, else decorative monograms -->
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     4. POPULAR STYLES (Best Sellers)
+     ========================================================= -->
 <section class="py-20 lg:py-28" id="featuredSection">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16 animate-on-scroll">
@@ -182,53 +196,16 @@
   </div>
 </section>
 
-<!-- Services -->
-<section class="py-20 lg:py-28">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16 animate-on-scroll">
-      <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Complete B2B Yoga Wear Solutions</h2>
-      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">From sampling to bulk production — everything you need to launch your yoga wear brand.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-8">
-      <!-- Service 1 -->
-      <div class="glass-card p-8 animate-on-scroll">
-        <div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-6">
-          <i class="fas fa-paint-brush text-2xl text-primary dark:text-primary-light"></i>
-        </div>
-        <h3 class="text-xl font-serif font-bold mb-3">Custom OEM/ODM</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">Full customization: fabrics, colors, patterns, logos, tags & packaging. Your brand, our manufacturing expertise.</p>
-        <a href="search.html" class="text-primary dark:text-primary-light font-semibold text-sm hover:underline">Explore options →</a>
-      </div>
-      <!-- Service 2 -->
-      <div class="glass-card p-8 animate-on-scroll">
-        <div class="w-14 h-14 rounded-2xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-6">
-          <i class="fas fa-box-open text-2xl text-accent dark:text-accent-light"></i>
-        </div>
-        <h3 class="text-xl font-serif font-bold mb-3">Small Batch Production</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">MOQ starting at just 50 pieces per style. Perfect for yoga studios, emerging brands, and market testing.</p>
-        <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20interested%20in%20small%20batch%20yoga%20wear%20production." target="_blank" rel="noopener" class="text-accent dark:text-accent-light font-semibold text-sm hover:underline">Inquire now →</a>
-      </div>
-      <!-- Service 3 -->
-      <div class="glass-card p-8 animate-on-scroll">
-        <div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-6">
-          <i class="fas fa-flask text-2xl text-primary dark:text-primary-light"></i>
-        </div>
-        <h3 class="text-xl font-serif font-bold mb-3">Sampling & Development</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">Fast sampling in 15 days. Test fabrics, fits, and colors before committing to bulk. Free fabric swatches available.</p>
-        <a href="https://wa.me/8612345678900?text=Hi!%20I'd%20like%20to%20request%20fabric%20swatches%20for%20yoga%20wear." target="_blank" rel="noopener" class="text-primary dark:text-primary-light font-semibold text-sm hover:underline">Request swatches →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Product Categories -->
+<!-- =========================================================
+     5. PRODUCT CATEGORIES
+     ========================================================= -->
 <section class="py-20 lg:py-28 bg-white dark:bg-darksurface">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16 animate-on-scroll">
       <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Explore Product Categories</h2>
       <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">Premium yoga wear styles — all customizable to your brand specifications.</p>
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" id="homeCategoryGrid">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 home-category-grid" id="homeCategoryGrid">
       <!-- Dynamically rendered from categories API -->
     </div>
     <div class="text-center mt-12 animate-on-scroll">
@@ -239,62 +216,67 @@
   </div>
 </section>
 
-<!-- Why Us -->
+<!-- =========================================================
+     6. HOW IT WORKS (replaces old 3-card Services)
+     ========================================================= -->
 <section class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-on-scroll">
+      <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light uppercase tracking-wider mb-4">Easy &amp; Fast</span>
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">How Custom Manufacturing Works</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">From your first idea to a box at your door — in four simple steps.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="howItWorks">
+      <div class="how-step animate-on-scroll">
+        <div class="how-step-num">1</div>
+        <div class="how-step-icon"><i class="fas fa-comments"></i></div>
+        <h3 class="how-step-title">Consult &amp; Quote</h3>
+        <p class="how-step-desc">Share your vision, fabrics and MOQ. We reply with a transparent quote within 2 hours.</p>
+      </div>
+      <div class="how-step animate-on-scroll">
+        <div class="how-step-num">2</div>
+        <div class="how-step-icon"><i class="fas fa-paint-brush"></i></div>
+        <h3 class="how-step-title">Sampling</h3>
+        <p class="how-step-desc">Physical samples in ~15 days. Free fabric swatches so you can feel the quality first.</p>
+      </div>
+      <div class="how-step animate-on-scroll">
+        <div class="how-step-num">3</div>
+        <div class="how-step-icon"><i class="fas fa-industry"></i></div>
+        <h3 class="how-step-title">Bulk Production</h3>
+        <p class="how-step-desc">AQL 2.5 inspected, 15–25 days. Your branding, labels and packaging applied.</p>
+      </div>
+      <div class="how-step animate-on-scroll">
+        <div class="how-step-num">4</div>
+        <div class="how-step-icon"><i class="fas fa-globe-americas"></i></div>
+        <h3 class="how-step-title">Delivery</h3>
+        <p class="how-step-desc">DDU/DDP worldwide via DHL, UPS, FedEx, air or sea. Door-to-door tracking.</p>
+      </div>
+    </div>
+    <div class="text-center mt-12 animate-on-scroll">
+      <a href="https://wa.me/8612345678900?text=Hi!%20I'd%20like%20to%20start%20my%20custom%20yoga%20wear%20project." target="_blank" rel="noopener" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Start Your Project</a>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     7. WHY CHOOSE US
+     ========================================================= -->
+<section class="py-20 lg:py-28 bg-white dark:bg-darksurface">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16 animate-on-scroll">
       <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Why Choose lightcirle</h2>
       <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">We're not just a factory — we're your manufacturing partner.</p>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="whyChooseUsGrid">
-      <div class="text-center animate-on-scroll">
-        <div class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mx-auto mb-5">
-          <i class="fas fa-industry text-2xl text-primary dark:text-primary-light"></i>
-        </div>
-        <h3 class="font-serif font-bold text-lg mb-2">Factory Direct</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">No middlemen. Better margins for your business with transparent factory pricing.</p>
-      </div>
-      <div class="text-center animate-on-scroll">
-        <div class="w-16 h-16 rounded-2xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mx-auto mb-5">
-          <i class="fas fa-check-circle text-2xl text-accent dark:text-accent-light"></i>
-        </div>
-        <h3 class="font-serif font-bold text-lg mb-2">Quality Assured</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">AQL 2.5 inspection standard. Every batch checked before shipment. OEKO-TEX certified fabrics.</p>
-      </div>
-      <div class="text-center animate-on-scroll">
-        <div class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mx-auto mb-5">
-          <i class="fas fa-leaf text-2xl text-primary dark:text-primary-light"></i>
-        </div>
-        <h3 class="font-serif font-bold text-lg mb-2">Premium Fabrics</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">Moisture-wicking, 4-way stretch, squat-proof. Nylon-Spandex, recycled options, organic blends.</p>
-      </div>
-      <div class="text-center animate-on-scroll">
-        <div class="w-16 h-16 rounded-2xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mx-auto mb-5">
-          <i class="fas fa-rocket text-2xl text-accent dark:text-accent-light"></i>
-        </div>
-        <h3 class="font-serif font-bold text-lg mb-2">Fast Turnaround</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">15 days sampling + 15-25 days production. Express shipping available worldwide.</p>
-      </div>
-      <div class="text-center animate-on-scroll">
-        <div class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mx-auto mb-5">
-          <i class="fab fa-whatsapp text-2xl text-primary dark:text-primary-light"></i>
-        </div>
-        <h3 class="font-serif font-bold text-lg mb-2">WhatsApp Support</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">Direct communication with our team. Quick response, no email delays. We speak English.</p>
-      </div>
-      <div class="text-center animate-on-scroll">
-        <div class="w-16 h-16 rounded-2xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mx-auto mb-5">
-          <i class="fas fa-globe-americas text-2xl text-accent dark:text-accent-light"></i>
-        </div>
-        <h3 class="font-serif font-bold text-lg mb-2">Global Shipping</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">DDU/DDP options to 30+ countries. DHL, UPS, FedEx, air & sea freight. Door-to-door available.</p>
-      </div>
+      <!-- Filled by /api/company (whyChooseUs) -->
     </div>
   </div>
 </section>
 
-<!-- Factory Capabilities -->
-<section class="py-20 lg:py-28 bg-white dark:bg-darksurface border-t border-gray-100 dark:border-gray-800">
+<!-- =========================================================
+     8. FACTORY CAPABILITIES
+     ========================================================= -->
+<section class="py-20 lg:py-28 border-t border-gray-100 dark:border-gray-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16 animate-on-scroll">
       <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4" id="factoryBadge">Our Factory</span>
@@ -316,9 +298,20 @@
         <div class="text-3xl lg:text-4xl font-serif font-bold text-primary dark:text-primary-light"><span class="counter-value" data-target="300000" data-suffix="">0</span></div>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Monthly Capacity (pcs)</p>
       </div>
-      <div class="stat-card animate-on-scroll" id="statCountries">
-        <div class="text-3xl lg:text-4xl font-serif font-bold text-primary dark:text-primary-light"><span class="counter-value" data-target="30" data-suffix="+">0+</span></div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Countries Shipped</p>
+      <div class="stat-card animate-on-scroll" id="statYears">
+        <div class="text-3xl lg:text-4xl font-serif font-bold text-primary dark:text-primary-light"><span class="counter-value" data-target="10" data-suffix="+">0+</span></div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Years of Excellence</p>
+      </div>
+    </div>
+
+    <!-- Factory Video (humanizing for independent site) -->
+    <div class="factory-video-wrap animate-on-scroll" id="factoryVideo">
+      <div class="factory-video-poster">
+        <img src="/assets/images/factory/1.jpg" alt="lightcirle factory tour" loading="lazy" onerror="this.style.display='none'">
+        <a href="https://wa.me/8612345678900?text=Hi!%20I'd%20like%20to%20watch%20a%20video%20factory%20tour." target="_blank" rel="noopener" class="factory-video-play" aria-label="Request factory tour video">
+          <i class="fas fa-play"></i>
+        </a>
+        <span class="factory-video-cap">Take a 90-second factory tour</span>
       </div>
     </div>
 
@@ -326,90 +319,58 @@
     <div class="mb-16 animate-on-scroll">
       <h3 class="text-xl lg:text-2xl font-serif font-bold mb-8 text-center">Inside Our Factory</h3>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8" id="factoryGallery">
-        <div class="gallery-item">
-          <img src="/assets/images/factory/1.jpg" alt="Advanced sewing production line" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/2.jpg" alt="Quality inspection station" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/3.jpg" alt="Fabric warehouse" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/4.jpg" alt="Pattern making" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/5.jpg" alt="Cutting equipment" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/6.jpg" alt="Packaging area" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/7.jpg" alt="Stitching machinery" loading="lazy" class="w-full h-full object-cover">
-        </div>
-        <div class="gallery-item">
-          <img src="/assets/images/factory/8.jpg" alt="Fabric quality testing" loading="lazy" class="w-full h-full object-cover">
-        </div>
+        <div class="gallery-item"><img src="/assets/images/factory/1.jpg" alt="Advanced sewing production line" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/2.jpg" alt="Quality inspection station" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/3.jpg" alt="Fabric warehouse" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/4.jpg" alt="Pattern making" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/5.jpg" alt="Cutting equipment" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/6.jpg" alt="Packaging area" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/7.jpg" alt="Stitching machinery" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="gallery-item"><img src="/assets/images/factory/8.jpg" alt="Fabric quality testing" loading="lazy" class="w-full h-full object-cover"></div>
       </div>
-      </div>
+    </div>
 
     <!-- Customization Capabilities -->
     <div class="animate-on-scroll" id="capabilitiesSection">
       <h3 class="text-xl lg:text-2xl font-serif font-bold mb-8 text-center">What We Can Customize</h3>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" id="capabilitiesGrid">
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-palette text-lg text-primary dark:text-primary-light"></i>
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4"><i class="fas fa-palette text-lg text-primary dark:text-primary-light"></i></div>
           <h4 class="font-bold mb-2">Custom Design</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">Create your own styles from scratch or modify our existing designs to match your brand vision.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-fill-drip text-lg text-accent dark:text-accent-light"></i>
-          </div>
-          <h4 class="font-bold mb-2">Color & Dyeing</h4>
+          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4"><i class="fas fa-fill-drip text-lg text-accent dark:text-accent-light"></i></div>
+          <h4 class="font-bold mb-2">Color &amp; Dyeing</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">Pantone color matching. Custom dye lots starting from 50 pieces. Vibrant, fade-resistant colors.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-tshirt text-lg text-primary dark:text-primary-light"></i>
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4"><i class="fas fa-tshirt text-lg text-primary dark:text-primary-light"></i></div>
           <h4 class="font-bold mb-2">Fabric Selection</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">Nylon-Spandex, Poly-Spandex, recycled fabrics, organic cotton blends — choose the perfect hand feel.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-print text-lg text-accent dark:text-accent-light"></i>
-          </div>
-          <h4 class="font-bold mb-2">Printing & Embroidery</h4>
+          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4"><i class="fas fa-print text-lg text-accent dark:text-accent-light"></i></div>
+          <h4 class="font-bold mb-2">Printing &amp; Embroidery</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">Silkscreen, heat transfer, sublimation, and embroidery for logos, brand names, and artwork.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-tag text-lg text-primary dark:text-primary-light"></i>
-          </div>
-          <h4 class="font-bold mb-2">Labels & Tags</h4>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4"><i class="fas fa-tag text-lg text-primary dark:text-primary-light"></i></div>
+          <h4 class="font-bold mb-2">Labels &amp; Tags</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">Custom woven labels, hang tags, care labels, barcodes — complete branding package.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-box text-lg text-accent dark:text-accent-light"></i>
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4"><i class="fas fa-box text-lg text-accent dark:text-accent-light"></i></div>
           <h4 class="font-bold mb-2">Custom Packaging</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">Branded poly bags, gift boxes, tissue paper — unboxing experience that reflects your brand.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-ruler-combined text-lg text-primary dark:text-primary-light"></i>
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4"><i class="fas fa-ruler-combined text-lg text-primary dark:text-primary-light"></i></div>
           <h4 class="font-bold mb-2">Size Range</h4>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Asian sizing & EU/US sizing available. From XS to 4XL. Plus-size friendly manufacturing.</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Asian sizing &amp; EU/US sizing available. From XS to 4XL. Plus-size friendly manufacturing.</p>
         </div>
         <div class="capability-card">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4">
-            <i class="fas fa-certificate text-lg text-accent dark:text-accent-light"></i>
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-accent/10 dark:bg-accent-light/10 flex items-center justify-center mb-4"><i class="fas fa-certificate text-lg text-accent dark:text-accent-light"></i></div>
           <h4 class="font-bold mb-2">Compliance Support</h4>
           <p class="text-sm text-gray-500 dark:text-gray-400">OEKO-TEX, CPSIA, REACH compliance documentation available for your target markets.</p>
         </div>
@@ -423,30 +384,12 @@
           <h3 class="text-xl lg:text-2xl font-serif font-bold mb-4" id="eqSectionTitle">Advanced Equipment for Premium Results</h3>
           <p class="text-gray-600 dark:text-gray-400 mb-6" id="eqSectionDesc">Our factory is equipped with industry-leading machinery to ensure every stitch meets international quality standards.</p>
           <div class="grid grid-cols-2 gap-3" id="eqListContainer">
-            <div class="flex items-center gap-2 text-sm">
-              <i class="fas fa-check-circle text-primary dark:text-primary-light"></i>
-              <span>4-Needle 6-Thread Machines</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm">
-              <i class="fas fa-check-circle text-primary dark:text-primary-light"></i>
-              <span>Flat Lock Machines</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm">
-              <i class="fas fa-check-circle text-primary dark:text-primary-light"></i>
-              <span>Bartack Reinforcement</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm">
-              <i class="fas fa-check-circle text-primary dark:text-primary-light"></i>
-              <span>Semi-Automatic Sewing</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm">
-              <i class="fas fa-check-circle text-primary dark:text-primary-light"></i>
-              <span>Computerized Cutting</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm">
-              <i class="fas fa-check-circle text-primary dark:text-primary-light"></i>
-              <span>Digital Pattern Making</span>
-            </div>
+            <div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>4-Needle 6-Thread Machines</span></div>
+            <div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>Flat Lock Machines</span></div>
+            <div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>Bartack Reinforcement</span></div>
+            <div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>Semi-Automatic Sewing</span></div>
+            <div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>Computerized Cutting</span></div>
+            <div class="flex items-center gap-2 text-sm"><i class="fas fa-check-circle text-primary dark:text-primary-light"></i><span>Digital Pattern Making</span></div>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3" id="eqImageGrid">
@@ -466,80 +409,153 @@
       </a>
     </div>
   </div>
+</section>
+
+<!-- =========================================================
+     9. TESTIMONIALS (social proof)
+     ========================================================= -->
+<section class="py-20 lg:py-28 bg-white dark:bg-darksurface">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-on-scroll">
+      <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">Client Stories</span>
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">What Our Partners Say</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">Brands of every size grow with lightcirle as their manufacturing partner.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6" id="testimonialsGrid">
+      <!-- Filled by JS: /api/company testimonials, else sample defaults -->
+    </div>
   </div>
 </section>
 
-<!-- CTA Section -->
+<!-- =========================================================
+     10. SUSTAINABILITY
+     ========================================================= -->
+<section class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="sustain-wrap animate-on-scroll">
+      <div class="sustain-copy">
+        <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light uppercase tracking-wider mb-4">Sustainable Manufacturing</span>
+        <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Better Fabrics, Smaller Footprint</h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">We help brands meet rising demand for responsible activewear — without compromising performance or margins.</p>
+        <ul class="sustain-list">
+          <li><i class="fas fa-recycle"></i> <div><b>GRS-Certified Recycled Fabrics</b><span>ECONYL® and recycled nylon/spandex blends available on every style.</span></div></li>
+          <li><i class="fas fa-leaf"></i> <div><b>OEKO-TEX Standard 100</b><span>Every fabric batch is tested for harmful substances.</span></div></li>
+          <li><i class="fas fa-tint"></i> <div><b>Low-MOQ, Less Waste</b><span>50-piece runs let you test demand instead of overproducing.</span></div></li>
+        </ul>
+      </div>
+      <div class="sustain-media">
+        <img src="/assets/images/factory/3.jpg" alt="Sustainable fabric warehouse" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     11. BLOG / RESOURCES PREVIEW (SEO content)
+     ========================================================= -->
+<section class="py-20 lg:py-28 bg-white dark:bg-darksurface">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-on-scroll">
+      <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">Resources</span>
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Yoga Wear Sourcing Guides</h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">Practical articles to help you build and scale your brand.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6" id="blogPreviewGrid">
+      <!-- Filled by JS from /data/blog.json -->
+    </div>
+    <div class="text-center mt-12 animate-on-scroll">
+      <a href="search.html?tab=blog" class="btn-primary"><i class="fas fa-book-open"></i> Read All Articles</a>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     12. FAQ
+     ========================================================= -->
+<section class="py-20 lg:py-28">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-on-scroll">
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold mb-4">Frequently Asked Questions</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg">Everything buyers ask before their first order.</p>
+    </div>
+    <div class="faq-list animate-on-scroll">
+      <details class="faq-item">
+        <summary>What is your minimum order quantity (MOQ)?<i class="fas fa-chevron-down faq-chevron"></i></summary>
+        <div class="faq-body">Our MOQ is just <b>50 pieces per style</b>. That lets studios, influencers and emerging brands launch without heavy inventory risk.</div>
+      </details>
+      <details class="faq-item">
+        <summary>How long does sampling and production take?<i class="fas fa-chevron-down faq-chevron"></i></summary>
+        <div class="faq-body">Sampling takes about <b>15 days</b>; bulk production runs <b>15–25 days</b> after sample approval. Express options are available worldwide.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Can you do fully custom fabrics, colors and logos?<i class="fas fa-chevron-down faq-chevron"></i></summary>
+        <div class="faq-body">Yes. We offer OEM/ODM: Pantone color matching, custom dye lots, printing &amp; embroidery, woven labels, hang tags and branded packaging.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Which certifications do you hold?<i class="fas fa-chevron-down faq-chevron"></i></summary>
+        <div class="faq-body">We are <b>OEKO-TEX</b>, <b>BSCI</b>, <b>GRS</b> and <b>REACH</b> compliant, and can provide compliance documentation for your target markets.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     13. LEAD CAPTURE — Sample Request + Newsletter
+     ========================================================= -->
 <section class="py-20 lg:py-28 bg-primary dark:bg-primary-dark">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="lead-capture animate-on-scroll">
+      <div class="lead-capture-cta">
+        <h2 class="text-3xl lg:text-4xl font-serif font-bold text-white mb-4">Request a Free Sample</h2>
+        <p class="text-primary-light/90 text-lg mb-6">Feel the quality before you commit. We'll send fabric swatches and a sample of your chosen style.</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="quote.html" class="bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-full font-semibold inline-flex items-center gap-2 transition-all">
+            <i class="fas fa-vial"></i> Request a Sample
+          </a>
+          <a href="https://wa.me/8612345678900?text=Hi!%20I'd%20like%20to%20request%20fabric%20swatches." target="_blank" rel="noopener" class="border-2 border-white/40 text-white hover:bg-white/10 px-6 py-3 rounded-full font-semibold inline-flex items-center gap-2 transition-all">
+            <i class="fab fa-whatsapp"></i> Ask on WhatsApp
+          </a>
+        </div>
+      </div>
+      <div class="lead-capture-form">
+        <h3 class="text-white font-serif font-bold text-xl mb-2">Get the Sourcing Newsletter</h3>
+        <p class="text-primary-light/80 text-sm mb-4">MOQ tips, fabric guides and new styles — once a month. No spam.</p>
+        <form id="newsletterForm" class="flex flex-col sm:flex-row gap-2" novalidate>
+          <input type="email" id="newsletterEmail" required placeholder="you@yourbrand.com" class="newsletter-input" aria-label="Email address">
+          <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+        <p id="newsletterMsg" class="newsletter-msg" role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     14. BIG CTA
+     ========================================================= -->
+<section class="py-20 lg:py-28 bg-white dark:bg-darksurface">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-3xl lg:text-4xl font-serif font-bold text-white mb-6 animate-on-scroll">Ready to Start Your Custom Yoga Wear Line?</h2>
-    <p class="text-primary-light/90 text-lg mb-10 max-w-2xl mx-auto animate-on-scroll">MOQ just 50 pieces. Get in touch today — our team will respond within 2 hours during business hours.</p>
+    <h2 class="text-3xl lg:text-4xl font-serif font-bold text-gray-900 dark:text-white mb-6 animate-on-scroll">Ready to Start Your Custom Yoga Wear Line?</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto text-lg animate-on-scroll">MOQ just 50 pieces. Get in touch today — our team will respond within 2 hours during business hours.</p>
     <div class="flex flex-wrap justify-center gap-4 animate-on-scroll">
-      <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20ready%20to%20start%20my%20custom%20yoga%20wear%20project." target="_blank" rel="noopener" class="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 inline-flex items-center gap-3">
+      <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20ready%20to%20start%20my%20custom%20yoga%20wear%20project." target="_blank" rel="noopener" class="bg-primary dark:bg-primary-light text-white hover:opacity-90 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 inline-flex items-center gap-3">
         <i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp
       </a>
-      <a href="mailto:inquiry@lightcirle.com?subject=Custom%20Yoga%20Wear%20Project%20Inquiry" class="border-2 border-white/40 text-white hover:bg-white/10 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 inline-flex items-center gap-3">
+      <a href="mailto:inquiry@lightcirle.com?subject=Custom%20Yoga%20Wear%20Project%20Inquiry" class="border-2 border-primary dark:border-primary-light text-primary dark:text-primary-light hover:bg-primary hover:text-white dark:hover:bg-primary-light dark:hover:text-darkbg px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 inline-flex items-center gap-3">
         <i class="fas fa-envelope"></i> Send an Email
       </a>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer class="site-footer">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div>
-        <h4>lightcirle</h4>
-        <p class="text-sm leading-relaxed">Premium custom yoga wear manufacturer. MOQ 50pcs, factory direct, global shipping.</p>
-        <div class="flex gap-3 mt-4">
-          <a href="https://wa.me/8612345678900?text=Hi!%20I'm%20interested%20in%20your%20yoga%20wear." target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-whatsapp transition-colors" aria-label="WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="mailto:inquiry@lightcirle.com" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="Email">
-            <i class="fas fa-envelope"></i>
-          </a>
-        </div>
-      </div>
-      <div>
-        <h4>Products</h4>
-        <ul class="space-y-2">
-          <li><a href="search.html?tab=yoga-pants">yoga-pants</a></li>
-          <li><a href="search.html?tab=sports-bras">sports-bras</a></li>
-          <li><a href="search.html?tab=yoga-outerwear">yoga-outerwear</a></li>
-          <li><a href="search.html?tab=hoodies">hoodies</a></li>
-          <li><a href="search.html?tab=sets">sets</a></li>
-          <li><a href="search.html?tab=seamless">seamless</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Resources</h4>
-        <ul class="space-y-2">
-          <li><a href="search.html?tab=blog">Blog</a></li>
-          <li><a href="search.html?tab=blog">fabric-knowledge</a></li>
-          <li><a href="search.html?tab=blog">business-tips</a></li>
-          <li><a href="search.html?q=shipping">Shipping Info</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <ul class="space-y-2 text-sm">
-          <li><i class="fab fa-whatsapp mr-2"></i> WhatsApp: +86 123 4567 8900</li>
-          <li><i class="fas fa-envelope mr-2"></i> inquiry@lightcirle.com</li>
-          <li><i class="fas fa-map-marker-alt mr-2"></i> Guangzhou, China</li>
-          <li><i class="fas fa-clock mr-2"></i> Mon-Sat, 9AM-6PM (GMT+8)</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 lightcirle. Premium Custom Yoga Wear Manufacturer. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
+<!-- =========================================================
+     15. FOOTER
+     ========================================================= -->
+<footer id="siteFooter" class="site-footer"></footer>
 
 </main>
 
-<!-- Floating Contact -->
+<!-- Floating Contact (hidden by site-wide sticky bar from main.js) -->
 <div id="floatingContact" class="floating-contact"></div>
 
 <!-- Scroll to Top -->
@@ -554,7 +570,6 @@
 <script src="/js/visitor-tracker.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Three.js particles are a desktop enhancement only — skip on small screens for performance.
     if (window.innerWidth >= 768) {
       new HeroBackground('heroCanvas');
     } else {
@@ -573,7 +588,6 @@ document.addEventListener('DOMContentLoaded', function() {
       var data = JSON.parse(xhr.responseText);
       if (!data) return;
 
-      // Update title and description
       var titleEl = document.getElementById('factoryTitle');
       var descEl = document.getElementById('factoryDesc');
       var badgeEl = document.getElementById('factoryBadge');
@@ -581,37 +595,30 @@ document.addEventListener('DOMContentLoaded', function() {
       if (descEl && data.aboutText) descEl.textContent = data.aboutText;
       if (badgeEl) badgeEl.textContent = 'Our Factory';
 
-      // Update stats and re-trigger counter animation
       if (data.stats) {
         var statMap = {
           statFacility: { target: data.stats.facilitySize, label: 'Production Facility', suffix: ' m²' },
           statWorkers: { target: data.stats.workers, label: 'Skilled Workers', suffix: '+' },
           statCapacity: { target: data.stats.monthlyCapacity, label: 'Monthly Capacity (pcs)', suffix: '' },
-          statCountries: { target: data.stats.countriesShipped, label: 'Countries Shipped', suffix: '+' },
+          statYears: { target: '10+', label: 'Years of Excellence', suffix: '+' }
         };
         Object.keys(statMap).forEach(function(id) {
           var el = document.getElementById(id);
           if (!el) return;
           var s = statMap[id];
-          var numVal = parseInt(s.target.replace(/[,\+Kk]/g, '')) || 0;
+          var numVal = parseInt(String(s.target).replace(/[,\+Kk]/g, '')) || 0;
           var counter = el.querySelector('.counter-value');
-          if (counter) {
-            counter.setAttribute('data-target', numVal);
-            counter.textContent = '0';
-          }
+          if (counter) { counter.setAttribute('data-target', numVal); counter.textContent = '0'; }
           var label = el.querySelector('p');
           if (label) label.textContent = s.label;
         });
-        // Re-trigger counter animations
         if (window.runCounters) window.runCounters();
       }
 
-      // Update capability cards from API data
       if (data.capabilities && data.capabilities.length >= 4) {
         var grid = document.getElementById('capabilitiesGrid');
         if (grid) {
           var icons = ['fa-palette','fa-fill-drip','fa-tshirt','fa-print','fa-tag','fa-box','fa-ruler-combined','fa-certificate'];
-          var colors = ['bg-primary/10 dark:bg-primary-light/10 text-primary dark:text-primary-light','bg-accent/10 dark:bg-accent-light/10 text-accent dark:text-accent-light'];
           var descs = [
             'Custom design and pattern making from your sketches or reference images.',
             'Pantone matched colors with custom dyeing for consistent brand identity.',
@@ -624,38 +631,25 @@ document.addEventListener('DOMContentLoaded', function() {
           ];
           var cards = '';
           for (var i = 0; i < Math.min(data.capabilities.length, 8); i++) {
-            var c = colors[i % 2];
-            cards += '<div class="capability-card">' +
-              '<div class="w-12 h-12 rounded-xl ' + c.split(' ')[0] + ' flex items-center justify-center mb-4">' +
-              '<i class="fas ' + (icons[i] || 'fa-check') + ' text-lg ' + c.split(' ')[2] + ' ' + c.split(' ')[3] + '"></i></div>' +
-              '<h4 class="font-bold mb-2">' + data.capabilities[i] + '</h4>' +
-              '<p class="text-sm text-gray-500 dark:text-gray-400">' + (descs[i] || 'Professional service for your brand.') + '</p></div>';
+            cards += '<div class="capability-card"><div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary-light/10 flex items-center justify-center mb-4"><i class="fas ' + (icons[i] || 'fa-check') + ' text-lg text-primary dark:text-primary-light"></i></div><h4 class="font-bold mb-2">' + escapeHtml(data.capabilities[i]) + '</h4><p class="text-sm text-gray-500 dark:text-gray-400">' + (descs[i] || 'Professional service for your brand.') + '</p></div>';
           }
           grid.innerHTML = cards;
         }
       }
 
-      // Update "Why Choose Us" cards from API
       if (data.whyChooseUs && data.whyChooseUs.length >= 2) {
         var whyGrid = document.getElementById('whyChooseUsGrid');
         if (whyGrid) {
-          var whyIcons = [];
-          var whyColors = ['primary', 'accent'];
           var whyCards = '';
           for (var wi = 0; wi < Math.min(data.whyChooseUs.length, 6); wi++) {
             var wc = data.whyChooseUs[wi];
-            var col = whyColors[wi % 2];
-            whyCards += '<div class="text-center animate-on-scroll">' +
-              '<div class="w-16 h-16 rounded-2xl bg-' + col + '/10 dark:bg-' + col + '-light/10 flex items-center justify-center mx-auto mb-5">' +
-              '<i class="fas ' + (wc.icon || 'fa-check') + ' text-2xl text-' + col + ' dark:text-' + col + '-light"></i></div>' +
-              '<h3 class="font-serif font-bold text-lg mb-2">' + escapeHtml(wc.title) + '</h3>' +
-              '<p class="text-gray-600 dark:text-gray-400 text-sm">' + escapeHtml(wc.desc) + '</p></div>';
+            var col = wi % 2 === 0 ? 'primary' : 'accent';
+            whyCards += '<div class="text-center animate-on-scroll"><div class="w-16 h-16 rounded-2xl bg-' + col + '/10 dark:bg-' + col + '-light/10 flex items-center justify-center mx-auto mb-5"><i class="fas ' + (wc.icon || 'fa-check') + ' text-2xl text-' + col + ' dark:text-' + col + '-light"></i></div><h3 class="font-serif font-bold text-lg mb-2">' + escapeHtml(wc.title) + '</h3><p class="text-gray-600 dark:text-gray-400 text-sm">' + escapeHtml(wc.desc) + '</p></div>';
           }
           whyGrid.innerHTML = whyCards;
         }
       }
 
-      // Update equipment section from API
       var eqTitleEl = document.getElementById('eqSectionTitle');
       var eqDescEl = document.getElementById('eqSectionDesc');
       var eqListEl = document.getElementById('eqListContainer');
@@ -667,112 +661,189 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
       }
 
-      // Update factory gallery images from API (always replace, never show hardcoded)
       var galleryGrid = document.getElementById('factoryGallery');
       if (galleryGrid) {
         if (data.gallery && data.gallery.length > 0) {
           galleryGrid.innerHTML = data.gallery.map(function(url) {
             return '<div class="gallery-item"><img src="' + url + '" alt="Factory" loading="lazy" class="w-full h-full object-cover"></div>';
           }).join('');
-        } else {
-          // Empty gallery — user hasn't uploaded yet, clear hardcoded images
-          galleryGrid.innerHTML = '';
+        } else { galleryGrid.innerHTML = ''; }
+      }
+      var eqImgGrid = document.getElementById('eqImageGrid');
+      if (eqImgGrid && data.equipmentImages && data.equipmentImages.length > 0) {
+        eqImgGrid.innerHTML = data.equipmentImages.map(function(url) {
+          return '<img src="' + url + '" alt="Equipment" loading="lazy" class="rounded-xl w-full h-40 object-cover">';
+        }).join('');
+      }
+
+      // --- Homepage editable copy (Hero / certifications / trust stats / how-it-works) ---
+      if (data.hero) {
+        if (data.hero.badge) { var bEl = document.getElementById('heroBadge'); if (bEl) bEl.textContent = data.hero.badge; }
+        if (data.hero.titleMain) { var hmEl = document.getElementById('heroTitleMain'); if (hmEl) hmEl.textContent = data.hero.titleMain; }
+        if (data.hero.titleHighlight) { var hhEl = document.getElementById('heroTitleHighlight'); if (hhEl) hhEl.textContent = data.hero.titleHighlight; }
+        if (data.hero.titlePost) { var hpEl = document.getElementById('heroTitlePost'); if (hpEl) hpEl.textContent = data.hero.titlePost; }
+        if (data.hero.subtitle) { var hsEl = document.getElementById('heroSubtitle'); if (hsEl) hsEl.textContent = data.hero.subtitle; }
+      }
+
+      if (data.certifications && data.certifications.length) {
+        var ccEl = document.getElementById('certChips');
+        if (ccEl) ccEl.innerHTML = data.certifications.map(function(c) {
+          return '<span class="cert-chip"><i class="fas fa-certificate"></i> ' + escapeHtml(c) + '</span>';
+        }).join('');
+      }
+
+      if (data.trustStats && data.trustStats.length) {
+        var tsEl = document.getElementById('trustStats');
+        if (tsEl) {
+          tsEl.innerHTML = data.trustStats.map(function(s) {
+            var val = (s.value !== undefined && s.value !== null) ? s.value : '';
+            var suf = s.suffix || '';
+            var label = s.label || '';
+            return '<div class="trust-badge animate-on-scroll">' +
+              '<div class="trust-number"><span class="counter-value" data-target="' + escapeHtml(String(val)) + '" data-suffix="' + escapeHtml(suf) + '">' + escapeHtml(String(val)) + suf + '</span></div>' +
+              '<p class="trust-label">' + escapeHtml(label) + '</p>' +
+            '</div>';
+          }).join('');
+          if (window.runCounters) window.runCounters();
         }
       }
-      // Update equipment images from API
-      var eqImgGrid = document.getElementById('eqImageGrid');
-      if (eqImgGrid) {
-        if (data.equipmentImages && data.equipmentImages.length > 0) {
-          eqImgGrid.innerHTML = data.equipmentImages.map(function(url) {
-            return '<img src="' + url + '" alt="Equipment" loading="lazy" class="rounded-xl w-full h-40 object-cover">';
+
+      if (data.howItWorks && data.howItWorks.length) {
+        var hiEl = document.getElementById('howItWorks');
+        if (hiEl) {
+          hiEl.innerHTML = data.howItWorks.map(function(step, i) {
+            var n = step.num || (i + 1);
+            var icon = step.icon || 'fa-check';
+            var title = step.title || '';
+            var desc = step.desc || '';
+            return '<div class="how-step animate-on-scroll">' +
+              '<div class="how-step-num">' + escapeHtml(String(n)) + '</div>' +
+              '<div class="how-step-icon"><i class="fas ' + escapeHtml(icon) + '"></i></div>' +
+              '<h3 class="how-step-title">' + escapeHtml(title) + '</h3>' +
+              '<p class="how-step-desc">' + escapeHtml(desc) + '</p>' +
+            '</div>';
           }).join('');
         }
-        // else: keep hardcoded fallback images
       }
-    } catch(e) { /* silently skip if API fails, keep hardcoded fallback */ }
+
+      // Brand logo wall — title (with <b> highlight support) + partnerLogos if present, else decorative monograms
+      renderBrandWallTitle(data.brandWallTitle);
+      renderLogoWall(data.partnerLogos);
+
+      // Testimonials — if present, else sample defaults
+      renderTestimonials(data.testimonials);
+    } catch(e) { /* keep static fallbacks */ }
   };
-  xhr.onerror = function() { /* silently skip */ };
+  xhr.onerror = function() { renderLogoWall(null); renderTestimonials(null); };
   xhr.send();
 });
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+function renderBrandWallTitle(html) {
+  var el = document.getElementById('logoWallTitle');
+  if (!el) return;
+  if (html && html.trim()) {
+    // Allow safe <b> highlight from admin; escape everything else
+    var safe = escapeHtml(html).replace(/&lt;b&gt;/g, '<b>').replace(/&lt;\/b&gt;/g, '</b>');
+    el.innerHTML = safe;
+  }
+  // else: keep the default markup already in HTML
 }
 
-// --- Render product category cards from API ---
+function renderLogoWall(partners) {
+  var wall = document.getElementById('logoWall');
+  if (!wall) return;
+  if (partners && partners.length) {
+    wall.innerHTML = partners.map(function(p) {
+      var name = typeof p === 'string' ? p : (p.name || '');
+      var mono = (typeof p === 'object' && p.mono) ? p.mono : (name ? name.substring(0, 2).toUpperCase() : '');
+      var logo = (typeof p === 'object' && p.logo) ? p.logo : '';
+      if (logo) return '<div class="logo-chip"><img src="' + logo + '" alt="' + escapeHtml(name) + '" loading="lazy"></div>';
+      return '<div class="logo-chip logo-chip--text">' + escapeHtml(mono) + '</div>';
+    }).join('');
+  } else {
+    var monos = ['YB','FX','AV','NM','KO','ST','LU','VE'];
+    wall.innerHTML = monos.map(function(m) { return '<div class="logo-chip logo-chip--mono">' + m + '</div>'; }).join('');
+  }
+}
+
+var SAMPLE_TESTIMONIALS = [
+  { quote: 'lightcirle let us launch a 4-style capsule with just 50 pieces each. The fabric quality and turnaround beat every factory we pitched.', name: 'Sofia R.', role: 'Founder, EU yoga studio' },
+  { quote: 'Their team replied on WhatsApp within the hour and nailed our Pantone match on the first sample. We have reordered 6 times.', name: 'Marcus L.', role: 'Buyer, fitness apparel brand' }
+];
+function renderTestimonials(items) {
+  var grid = document.getElementById('testimonialsGrid');
+  if (!grid) return;
+  var list = (items && items.length) ? items : SAMPLE_TESTIMONIALS;
+  grid.innerHTML = list.map(function(t) {
+    var q = (typeof t === 'string') ? t : (t.quote || '');
+    var n = (typeof t === 'object') ? (t.name || '') : '';
+    var r = (typeof t === 'object') ? (t.role || '') : '';
+    return '<div class="testimonial-card animate-on-scroll"><i class="fas fa-quote-left testimonial-mark"></i><p class="testimonial-quote">' + escapeHtml(q) + '</p><div class="testimonial-author"><div class="testimonial-avatar">' + escapeHtml((n || '?').charAt(0)) + '</div><div><div class="testimonial-name">' + escapeHtml(n) + '</div><div class="testimonial-role">' + escapeHtml(r) + '</div></div></div></div>';
+  }).join('');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+</script>
+<script>
+// --- Render Product category cards from API ---
 document.addEventListener('DOMContentLoaded', async function() {
   var grid = document.getElementById('homeCategoryGrid');
   if (!grid) return;
-
   try {
-    // Fetch categories from backend API
     var catResp = await fetch(window.location.origin + '/api/categories?type=product');
     var categories = await catResp.json();
-
     if (!categories.length) return;
-
     grid.innerHTML = categories.map(function(cat) {
-      // Only use category image from backend — no Unsplash fallback
       var imgSrc = cat.image || '';
-      var imgHtml = imgSrc
-        ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.id) + '" loading="lazy">'
-        : '<div class="flex items-center justify-center h-full text-gray-300 dark:text-gray-600"><i class="fas fa-image text-4xl"></i></div>';
+      var imgHtml = '<div class="cat-img-fallback"><i class="fas fa-image text-4xl"></i></div>' +
+        (imgSrc ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.id) + '" loading="lazy" onerror="this.style.display=\'none\'">' : '');
       return '<a href="search.html?tab=' + cat.id + '" class="product-card home-cat-card animate-on-scroll block">' +
         '<div class="product-image-wrap">' + imgHtml + '</div>' +
-        '<div class="p-3">' +
-          '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
-          '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p>' +
-        '</div>' +
-      '</a>';
+        '<div class="p-3"><h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
+        '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p></div></a>';
     }).join('');
   } catch(e) {
-    // Silently fallback — render static cards if API unavailable
-    console.error('Failed to load categories:', e);
     var fallbackCats = [
-      {id:'yoga-pants',name:'Yoga Pants'},
-      {id:'sports-bras',name:'Sports Bras'},
-      {id:'yoga-outerwear',name:'Yoga Outerwear'},
-      {id:'hoodies',name:'Hoodies'},
-      {id:'sets',name:'Matching Sets'},
-      {id:'seamless',name:'Seamless'}
+      {id:'yoga-pants',name:'Yoga Pants'},{id:'sports-bras',name:'Sports Bras'},{id:'yoga-outerwear',name:'Yoga Outerwear'},
+      {id:'hoodies',name:'Hoodies'},{id:'sets',name:'Matching Sets'},{id:'seamless',name:'Seamless'}
     ];
     grid.innerHTML = fallbackCats.map(function(cat) {
       return '<a href="search.html?tab=' + cat.id + '" class="product-card home-cat-card animate-on-scroll block">' +
-        '<div class="product-image-wrap">' +
-          '<div class="flex items-center justify-center h-full text-gray-300 dark:text-gray-600"><i class="fas fa-image text-4xl"></i></div>' +
-        '</div>' +
-        '<div class="p-3">' +
-          '<h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
-          '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p>' +
-        '</div>' +
-      '</a>';
+        '<div class="product-image-wrap"><div class="cat-img-fallback"><i class="fas fa-image text-4xl"></i></div></div>' +
+        '<div class="p-3"><h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
+        '<p class="text-xs text-gray-500 dark:text-gray-400">MOQ 50pcs</p></div></a>';
     }).join('');
   }
 });
 </script>
 <script>
-// --- Render Featured Products row on homepage ---
+// --- Render Featured Products (Best Sellers) ---
 document.addEventListener('DOMContentLoaded', function() {
   var grid = document.getElementById('featuredProducts');
   if (!grid) return;
   var cfg = window.SITE_CONFIG || { whatsappNumber: '8612345678900', emailAddress: 'inquiry@lightcirle.com' };
   function slugify(text) {
-    var s = String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    return s.length > 60 ? s.slice(0, 60) : s;
+    return String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
   }
   fetch('/data/products.json').then(function(r){ return r.json(); }).then(function(products){
-    var featured = (products || []).slice(0, 4);
-    grid.innerHTML = featured.map(function(p){
+    products = products || [];
+    var featured = products.filter(function(p){ return p.featured; });
+    var list = (featured.length ? featured : products).slice(0, 4);
+    grid.innerHTML = list.map(function(p){
       var url = '/product-detail/' + slugify(p.name) + '_' + p.id + '.html';
       var waHref = 'https://wa.me/' + cfg.whatsappNumber + '?text=' + encodeURIComponent("Hi! I'm interested in " + p.name);
+      var badge = p.isNew ? '<span class="product-badge product-badge--new">New</span>'
+                : (p.featured ? '<span class="product-badge product-badge--hot">Hot</span>' : '');
       var certs = (p.certifications && p.certifications.length)
         ? '<div class="flex flex-wrap gap-1.5 mt-2">' + p.certifications.slice(0,3).map(function(c){
             return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-[11px] font-medium"><i class="fas fa-certificate text-[10px]"></i>' + c + '</span>';
           }).join('') + '</div>'
         : '';
       return '<a href="' + url + '" class="product-card block group">' +
-        '<div class="product-image-wrap relative"><img src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy">' +
+        '<div class="product-image-wrap relative">' + badge + '<img src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy">' +
           (p.video ? '<span class="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/55 text-white flex items-center justify-center backdrop-blur-sm" title="Video"><i class="fas fa-play text-xs"></i></span>' : '') +
         '</div>' +
         '<div class="p-4">' +
@@ -784,11 +855,69 @@ document.addEventListener('DOMContentLoaded', function() {
           '<div class="flex gap-2 mt-3">' +
             '<span class="flex-1 text-center text-xs font-semibold bg-whatsapp text-white py-2 rounded-full hover:opacity-90 transition-opacity cursor-pointer" onclick="event.stopPropagation(); window.open(\'' + waHref + '\',\'_blank\')"><i class="fab fa-whatsapp"></i> Inquire</span>' +
           '</div>' +
-        '</div>' +
-      '</a>';
+        '</div></a>';
     }).join('');
   }).catch(function(){});
 });
 </script>
+<script>
+// --- Render Blog / Resources preview from /data/blog.json ---
+document.addEventListener('DOMContentLoaded', function() {
+  var grid = document.getElementById('blogPreviewGrid');
+  if (!grid) return;
+  fetch('/data/blog.json').then(function(r){ return r.json(); }).then(function(articles){
+    articles = (articles || []).slice().sort(function(a,b){ return (b.date || '').localeCompare(a.date || ''); }).slice(0, 3);
+    grid.innerHTML = articles.map(function(a){
+      var url = '/blog-detail.html?id=' + a.id;
+      return '<a href="' + url + '" class="blog-card block animate-on-scroll">' +
+        '<div class="blog-image-wrap"><img src="' + (a.image || '') + '" alt="' + escapeHtml(a.title) + '" loading="lazy"></div>' +
+        '<div class="p-5">' +
+          '<span class="text-xs font-semibold text-accent dark:text-accent-light uppercase tracking-wider">' + escapeHtml(a.category || 'Blog') + '</span>' +
+          '<h3 class="font-serif font-bold text-lg mt-2 mb-2 leading-snug">' + escapeHtml(a.title) + '</h3>' +
+          '<p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3">' + escapeHtml(a.excerpt || '') + '</p>' +
+          '<span class="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-primary dark:text-primary-light">Read more <i class="fas fa-arrow-right"></i></span>' +
+        '</div></a>';
+    }).join('');
+  }).catch(function(){});
+});
+</script>
+<script>
+// --- Newsletter lead capture (POST to backend /api/subscribe) ---
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.getElementById('newsletterForm');
+  if (!form) return;
+  var msg = document.getElementById('newsletterMsg');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('newsletterEmail').value.trim();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      msg.textContent = 'Please enter a valid email.';
+      msg.className = 'newsletter-msg newsletter-msg--err';
+      return;
+    }
+    msg.textContent = 'Submitting...';
+    msg.className = 'newsletter-msg';
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, source: 'homepage' })
+    }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, body: j }; }); })
+      .then(function(res){
+        if (res.ok && (res.body.success || res.body.alreadySubscribed)) {
+          msg.textContent = res.body.alreadySubscribed ? 'You are already subscribed — thanks!' : 'Thanks! You are subscribed.';
+          msg.className = 'newsletter-msg newsletter-msg--ok';
+          form.reset();
+        } else {
+          msg.textContent = (res.body && res.body.error) ? res.body.error : 'Subscription failed. Please try again.';
+          msg.className = 'newsletter-msg newsletter-msg--err';
+        }
+      }).catch(function(){
+        msg.textContent = 'Network error. Please try again.';
+        msg.className = 'newsletter-msg newsletter-msg--err';
+      });
+  });
+});
+</script>
+  <script src="/js/footer.js"></script>
 </body>
 </html>

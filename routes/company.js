@@ -43,6 +43,18 @@ router.get('/', (req, res) => {
       equipmentDesc: info.equipment_desc || '',
       equipmentList: JSON.parse(info.equipment_list || '[]'),
       equipmentImages: JSON.parse(info.equipment_images || '[]'),
+      hero: {
+        badge: info.hero_badge || '',
+        titleMain: info.hero_title_main || '',
+        titleHighlight: info.hero_title_highlight || '',
+        titlePost: info.hero_title_post || '',
+        subtitle: info.hero_subtitle || '',
+      },
+      trustStats: JSON.parse(info.trust_stats || '[]'),
+      certifications: JSON.parse(info.certifications || '[]'),
+      howItWorks: JSON.parse(info.how_it_works || '[]'),
+      brandWallTitle: info.brand_wall_title || '',
+      partnerLogos: JSON.parse(info.partner_logos || '[]'),
     });
   } catch(e) {
     res.status(500).json({ error: e.message });
@@ -59,12 +71,19 @@ router.put('/', (req, res) => {
     const whyChooseUs = JSON.stringify(data.whyChooseUs || defaultWhyChooseUs);
     const equipmentList = JSON.stringify(data.equipmentList || defaultEquipmentList);
     const equipmentImages = JSON.stringify(data.equipmentImages || []);
+    const trustStats = JSON.stringify(data.trustStats || []);
+    const certifications = JSON.stringify(data.certifications || []);
+    const howItWorks = JSON.stringify(data.howItWorks || []);
+    const hero = data.hero || {};
     d.prepare(`
       UPDATE company_info SET
         about_title=?, about_text=?,
         facility_size=?, workers=?, monthly_capacity=?, countries_shipped=?,
         capabilities=?, gallery=?,
         why_choose_us=?, equipment_title=?, equipment_desc=?, equipment_list=?, equipment_images=?,
+        hero_badge=?, hero_title_main=?, hero_title_highlight=?, hero_title_post=?, hero_subtitle=?,
+        trust_stats=?, certifications=?, how_it_works=?,
+        brand_wall_title=?, partner_logos=?,
         updated_at=datetime('now')
       WHERE id=1
     `).run(
@@ -72,7 +91,10 @@ router.put('/', (req, res) => {
       data.stats?.facilitySize || '3,000', data.stats?.workers || '120+',
       data.stats?.monthlyCapacity || '300K', data.stats?.countriesShipped || '30+',
       capabilities, gallery,
-      whyChooseUs, data.equipmentTitle || '', data.equipmentDesc || '', equipmentList, equipmentImages
+      whyChooseUs, data.equipmentTitle || '', data.equipmentDesc || '', equipmentList, equipmentImages,
+      hero.badge || '', hero.titleMain || '', hero.titleHighlight || '', hero.titlePost || '', hero.subtitle || '',
+      trustStats, certifications, howItWorks,
+      data.brandWallTitle || '', JSON.stringify(data.partnerLogos || [])
     );
     res.json({ success: true });
   } catch(e) {

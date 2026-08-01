@@ -127,7 +127,24 @@ function initSchema() {
       countries_shipped TEXT NOT NULL DEFAULT '30+',
       capabilities TEXT NOT NULL DEFAULT '["OEM & ODM Service","Custom Fabric Blends","Pantone Color Matching","Logo Embroidery","Custom Labels & Tags","Branded Packaging","OEKO-TEX Certified","AQL 2.5 QC"]',
       gallery TEXT NOT NULL DEFAULT '[]',
-      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      -- Homepage editable copy (Hero / trust strip / certifications / how-it-works)
+      hero_badge TEXT NOT NULL DEFAULT '',
+      hero_title_main TEXT NOT NULL DEFAULT '',
+      hero_title_highlight TEXT NOT NULL DEFAULT '',
+      hero_title_post TEXT NOT NULL DEFAULT '',
+      hero_subtitle TEXT NOT NULL DEFAULT '',
+      trust_stats TEXT NOT NULL DEFAULT '[]',
+      certifications TEXT NOT NULL DEFAULT '[]',
+      how_it_works TEXT NOT NULL DEFAULT '[]'
+    );
+
+    -- Newsletter subscribers (lead capture from homepage)
+    CREATE TABLE IF NOT EXISTS subscribers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      source TEXT NOT NULL DEFAULT 'homepage',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
     -- Visitor analytics
@@ -199,6 +216,18 @@ function initSchema() {
     "ALTER TABLE company_info ADD COLUMN equipment_desc TEXT NOT NULL DEFAULT 'Our factory is equipped with industry-leading machinery to ensure every stitch meets international quality standards.'",
     "ALTER TABLE company_info ADD COLUMN equipment_list TEXT NOT NULL DEFAULT '[]'",
     "ALTER TABLE company_info ADD COLUMN equipment_images TEXT NOT NULL DEFAULT '[]'",
+    // Homepage editable copy columns
+    "ALTER TABLE company_info ADD COLUMN hero_badge TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE company_info ADD COLUMN hero_title_main TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE company_info ADD COLUMN hero_title_highlight TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE company_info ADD COLUMN hero_title_post TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE company_info ADD COLUMN hero_subtitle TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE company_info ADD COLUMN trust_stats TEXT NOT NULL DEFAULT '[]'",
+    "ALTER TABLE company_info ADD COLUMN certifications TEXT NOT NULL DEFAULT '[]'",
+    "ALTER TABLE company_info ADD COLUMN how_it_works TEXT NOT NULL DEFAULT '[]'",
+    // Homepage brand wall (Trusted by ... + 8 partner logos)
+    "ALTER TABLE company_info ADD COLUMN brand_wall_title TEXT NOT NULL DEFAULT 'Trusted by 200+ yoga & fitness brands across 30+ countries'",
+    "ALTER TABLE company_info ADD COLUMN partner_logos TEXT NOT NULL DEFAULT '[]'",
     // Categories
     "ALTER TABLE categories ADD COLUMN image TEXT NOT NULL DEFAULT ''",
     // Categories: parent_id for two-level hierarchy (empty string = top-level)

@@ -206,6 +206,7 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/media', require('./routes/media'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/company', require('./routes/company'));
+app.use('/api/subscribe', require('./routes/subscribe'));
 app.use('/api/visitors', require('./routes/visitors'));
 app.use('/api/quotes', require('./routes/quotes'));
 

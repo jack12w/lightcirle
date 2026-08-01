@@ -19,6 +19,21 @@
     .gallery-item:hover{border-color:#2D5A3D}
     .gallery-item .remove-btn{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,.9);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;opacity:0;transition:opacity .2s}
     .gallery-item:hover .remove-btn{opacity:1}
+    /* 底部浮动保存条：固定在右下角，按钮小、不挡内容 */
+    .admin-save-bar{position:fixed;right:24px;bottom:24px;z-index:60;background:#fff;border:1px solid #E5E7EB;box-shadow:0 8px 24px rgba(0,0,0,.10);border-radius:9999px;padding:5px 5px 5px 14px;display:inline-flex;align-items:center;gap:6px}
+    .admin-save-bar .save-btn{background:#2D5A3D;color:#fff;padding:7px 16px;border-radius:9999px;font-size:.8rem;font-weight:600;border:none;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:6px;line-height:1}
+    .admin-save-bar .save-btn:hover{background:#3E7B54}
+    .admin-save-bar .save-btn:disabled{opacity:.6;cursor:not-allowed}
+    .admin-save-bar .dirty-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#C4926E;flex-shrink:0}
+    .admin-save-bar.is-clean .dirty-dot{display:none}
+    .admin-save-bar.is-clean .unsaved-label{display:none}
+    /* 移动端：保存条压扁到右下小角 */
+    @media (max-width:640px){
+      .admin-save-bar{right:16px;bottom:16px;padding:4px 4px 4px 10px}
+      .admin-save-bar .save-btn{padding:6px 12px;font-size:.75rem}
+    }
+    /* 主内容底部留白，避免被浮动保存条遮挡 */
+    #adminMain{padding-bottom:6rem}
   </style>
 </head>
 <body class="bg-[#FAFAF8]">
@@ -37,9 +52,8 @@
     <!-- Toast -->
     <div id="toast" class="toast"><i class="fas fa-check-circle mr-2"></i><span id="toastMsg">已保存</span></div>
 
-    <div class="flex items-center justify-between mb-8">
+    <div class="mb-8">
       <h1 class="text-2xl font-serif font-bold">公司信息</h1>
-      <button onclick="saveCompany()" class="bg-[#2D5A3D] text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#3E7B54] transition-colors"><i class="fas fa-save mr-2"></i>保存</button>
     </div>
 
     <!-- About Section -->
@@ -53,6 +67,68 @@
         <div>
           <label class="block text-xs font-medium text-gray-500 mb-1">正文</label>
           <textarea id="aboutText" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm h-28 resize-none outline-none focus:ring-2 focus:ring-[#2D5A3D]/30"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Homepage Editable Copy: Hero -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-home mr-2 text-[#2D5A3D]"></i>首页文案 · Hero 区块</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">顶部徽章</label>
+          <input id="heroBadge" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#2D5A3D]/30" placeholder="MOQ 50pcs · Factory Direct · Global Shipping">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">标题·前</label><input id="heroTitleMain" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Premium Custom"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">标题·高亮(绿色渐变)</label><input id="heroTitleHighlight" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Yoga Wear"></div>
+          <div><label class="block text-xs font-medium text-gray-500 mb-1">标题·后</label><input id="heroTitlePost" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Manufacturing"></div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">副标题</label>
+          <textarea id="heroSubtitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm h-20 resize-none outline-none focus:ring-2 focus:ring-[#2D5A3D]/30"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Homepage Editable Copy: Trust Stats -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-hashtag mr-2 text-[#C4926E]"></i>首页信任数字条</h2>
+      <p class="text-xs text-gray-400 mb-3">每个数字：数值、后缀(如 +)、标签。最多 4 个。</p>
+      <div id="trustStatsList"></div>
+      <button onclick="addTrustStat()" class="mt-3 text-sm text-[#2D5A3D] hover:underline"><i class="fas fa-plus mr-1"></i>添加数字</button>
+    </div>
+
+    <!-- Homepage Editable Copy: Certifications -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-certificate mr-2 text-[#2D5A3D]"></i>首页认证条</h2>
+      <p class="text-xs text-gray-400 mb-3">每行一个认证名称，显示在首页信任条。</p>
+      <textarea id="certificationsInput" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-24 resize-none" placeholder="OEKO-TEX&#10;BSCI&#10;GRS&#10;REACH"></textarea>
+    </div>
+
+    <!-- Homepage Editable Copy: How it works -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-list-ol mr-2 text-[#C4926E]"></i>首页 How it works（步骤）</h2>
+      <p class="text-xs text-gray-400 mb-3">每个步骤：序号、图标(FontAwesome 名)、标题、描述。</p>
+      <div id="howItWorksList"></div>
+      <button onclick="addHowStep()" class="mt-3 text-sm text-[#2D5A3D] hover:underline"><i class="fas fa-plus mr-1"></i>添加步骤</button>
+    </div>
+
+    <!-- Homepage Editable Copy: Brand wall -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 mb-6">
+      <h2 class="font-semibold text-base mb-4"><i class="fas fa-flag mr-2 text-[#2D5A3D]"></i>首页品牌墙（Trusted by…）</h2>
+      <p class="text-xs text-gray-400 mb-4">首页「Trusted by … 30+ countries」一行的标题，以及下面 8 个合作伙伴 logo。留空将使用默认占位。</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">墙标题（支持简单 <code>&lt;b&gt;加粗&lt;/b&gt;</code>）</label>
+          <input id="brandWallTitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#2D5A3D]/30" placeholder="Trusted by 200+ yoga &amp; fitness brands across 30+ countries">
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-xs font-medium text-gray-500">合作伙伴 logo（每行：<b>名称 | 缩写 | logo URL</b>，可只填名称）</label>
+            <button onclick="addPartnerLogo()" class="text-sm text-[#2D5A3D] hover:underline"><i class="fas fa-plus mr-1"></i>添加</button>
+          </div>
+          <div id="partnerLogosList" class="space-y-2"></div>
         </div>
       </div>
     </div>
@@ -142,6 +218,13 @@
 
     <!-- Mobile Bottom Nav -->
     <nav id="adminMobileNav"></nav>
+
+    <!-- 底部浮动保存条：右下角小通栏，不挡内容 -->
+    <div class="admin-save-bar is-clean" id="adminSaveBar">
+      <span class="dirty-dot" aria-hidden="true"></span>
+      <span class="unsaved-label text-[11px] text-gray-400 select-none">未保存</span>
+      <button onclick="saveCompany()" class="save-btn"><i class="fas fa-save"></i>保存</button>
+    </div>
   </main>
 </div>
 
@@ -153,6 +236,10 @@
   let gallery = [];
   let equipmentImages = [];
   let whyChooseUs = [];
+  let trustStats = [];
+  let certifications = [];
+  let howItWorks = [];
+  let partnerLogos = [];
 
   if (!token) window.location.href = '/admin/login.html';
   document.getElementById('logoutBtn')?.addEventListener('click', e => {
@@ -232,6 +319,68 @@
   function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  // --- Trust Stats (homepage) ---
+  function renderTrustStats() {
+    const el = document.getElementById('trustStatsList');
+    el.innerHTML = trustStats.map((s, i) =>
+      `<div class="flex items-center gap-2 mb-2">
+        <input value="${escapeHtml(s.value)}" onchange="trustStats[${i}].value=this.value" class="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="10">
+        <input value="${escapeHtml(s.suffix)}" onchange="trustStats[${i}].suffix=this.value" class="w-14 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="+">
+        <input value="${escapeHtml(s.label)}" onchange="trustStats[${i}].label=this.value" class="flex-1 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="标签">
+        <button onclick="trustStats.splice(${i},1);renderTrustStats()" class="text-red-400 hover:text-red-600"><i class="fas fa-times"></i></button>
+      </div>`
+    ).join('');
+  }
+  function addTrustStat() {
+    if (trustStats.length >= 4) return showToast('最多4个数字');
+    trustStats.push({ value: '', suffix: '+', label: '' });
+    renderTrustStats();
+  }
+
+  // --- Partner Logos (homepage brand wall) ---
+  function renderPartnerLogos() {
+    var el = document.getElementById('partnerLogosList');
+    if (!el) return;
+    if (!partnerLogos.length) {
+      el.innerHTML = '<p class="text-xs text-gray-400">暂无合作伙伴，留空时首页显示默认 8 个占位字母。</p>';
+      return;
+    }
+    el.innerHTML = partnerLogos.map(function(p, i) {
+      return '<div class="flex items-center gap-2 p-2 rounded-xl bg-gray-50 border border-gray-100">' +
+        '<input value="' + escapeHtml(p.name || '') + '" onchange="partnerLogos[' + i + '].name=this.value" class="flex-1 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="客户/品牌名称">' +
+        '<input value="' + escapeHtml(p.mono || '') + '" onchange="partnerLogos[' + i + '].mono=this.value" class="w-16 px-2 py-1.5 border border-gray-200 rounded-lg text-sm text-center" placeholder="缩写" maxlength="3">' +
+        '<input value="' + escapeHtml(p.logo || '') + '" onchange="partnerLogos[' + i + '].logo=this.value" class="flex-1 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="logo URL（可空，自动用缩写）">' +
+        '<button onclick="partnerLogos.splice(' + i + ',1);renderPartnerLogos()" class="text-red-400 hover:text-red-600 flex-shrink-0 px-2"><i class="fas fa-times"></i></button>' +
+        '</div>';
+    }).join('');
+  }
+  function addPartnerLogo() {
+    if (partnerLogos.length >= 20) return showToast('最多20个合作伙伴');
+    partnerLogos.push({ name: '', mono: '', logo: '' });
+    renderPartnerLogos();
+  }
+
+  // --- How It Works (homepage) ---
+  function renderHowItWorks() {
+    const el = document.getElementById('howItWorksList');
+    el.innerHTML = howItWorks.map((s, i) =>
+      `<div class="border border-gray-100 rounded-xl p-3 mb-2">
+        <div class="flex items-center gap-2 mb-2">
+          <input value="${escapeHtml(s.num)}" onchange="howItWorks[${i}].num=this.value" class="w-14 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="1">
+          <input value="${escapeHtml(s.icon)}" onchange="howItWorks[${i}].icon=this.value" class="w-32 px-2 py-1.5 border border-gray-200 rounded-lg text-sm" placeholder="fa-comments">
+          <button onclick="howItWorks.splice(${i},1);renderHowItWorks()" class="text-red-400 hover:text-red-600 ml-auto"><i class="fas fa-times"></i></button>
+        </div>
+        <input value="${escapeHtml(s.title)}" onchange="howItWorks[${i}].title=this.value" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm mb-1" placeholder="标题">
+        <textarea onchange="howItWorks[${i}].desc=this.value" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs h-14 resize-none" placeholder="描述">${escapeHtml(s.desc)}</textarea>
+      </div>`
+    ).join('');
+  }
+  function addHowStep() {
+    if (howItWorks.length >= 6) return showToast('最多6个步骤');
+    howItWorks.push({ num: String(howItWorks.length + 1), icon: 'fa-check', title: '新步骤', desc: '描述' });
+    renderHowItWorks();
   }
 
   // --- Gallery ---
@@ -345,6 +494,7 @@
 
   // --- Load / Save ---
   async function loadCompany() {
+    _suppressDirty = true;
     document.getElementById('galleryLoading').textContent = '加载中...';
     try {
       const data = await api('/company');
@@ -358,6 +508,17 @@
       gallery = data.gallery || [];
       equipmentImages = data.equipmentImages || [];
       whyChooseUs = data.whyChooseUs || [];
+      document.getElementById('heroBadge').value = data.hero?.badge || '';
+      document.getElementById('heroTitleMain').value = data.hero?.titleMain || '';
+      document.getElementById('heroTitleHighlight').value = data.hero?.titleHighlight || '';
+      document.getElementById('heroTitlePost').value = data.hero?.titlePost || '';
+      document.getElementById('heroSubtitle').value = data.hero?.subtitle || '';
+      trustStats = data.trustStats || [];
+      certifications = data.certifications || [];
+      howItWorks = data.howItWorks || [];
+      partnerLogos = data.partnerLogos || [];
+      document.getElementById('brandWallTitle').value = data.brandWallTitle || '';
+      document.getElementById('certificationsInput').value = (data.certifications || []).join('\n');
       document.getElementById('eqTitle').value = data.equipmentTitle || '';
       document.getElementById('eqDesc').value = data.equipmentDesc || '';
       document.getElementById('eqList').value = (data.equipmentList || []).join('\n');
@@ -365,12 +526,20 @@
       renderGallery();
       renderEqImages();
       renderWhyChooseUs();
+      renderTrustStats();
+      renderHowItWorks();
+      renderPartnerLogos();
     } catch(e) {
       document.getElementById('galleryLoading').textContent = '加载失败: ' + e.message;
+    } finally {
+      _suppressDirty = false;
+      markSaved();
     }
   }
 
   async function saveCompany() {
+    const btn = document.querySelector('.admin-save-bar .save-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>保存中...'; }
     const eqListRaw = document.getElementById('eqList').value;
     const eqItems = eqListRaw.split('\n').map(s => s.trim()).filter(Boolean);
     const data = {
@@ -386,6 +555,18 @@
       gallery: gallery,
       equipmentImages: equipmentImages,
       whyChooseUs: whyChooseUs,
+      hero: {
+        badge: document.getElementById('heroBadge').value,
+        titleMain: document.getElementById('heroTitleMain').value,
+        titleHighlight: document.getElementById('heroTitleHighlight').value,
+        titlePost: document.getElementById('heroTitlePost').value,
+        subtitle: document.getElementById('heroSubtitle').value,
+      },
+      trustStats: trustStats,
+      certifications: document.getElementById('certificationsInput').value.split('\n').map(s => s.trim()).filter(Boolean),
+      howItWorks: howItWorks,
+      brandWallTitle: document.getElementById('brandWallTitle').value,
+      partnerLogos: partnerLogos.filter(p => p && (p.name || p.mono || p.logo)),
       equipmentTitle: document.getElementById('eqTitle').value,
       equipmentDesc: document.getElementById('eqDesc').value,
       equipmentList: eqItems,
@@ -393,10 +574,22 @@
     try {
       await api('/company', { method: 'PUT', body: JSON.stringify(data) });
       showToast('公司信息已保存！');
+      markSaved();
     } catch(e) {
       showToast('保存失败: ' + e.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i>保存'; }
     }
   }
+
+  // --- 浮动保存条：未保存高亮 ---
+  const _saveBar = document.getElementById('adminSaveBar');
+  let _suppressDirty = false;
+  function markDirty() { if (!_suppressDirty) _saveBar?.classList.remove('is-clean'); }
+  function markSaved() { _saveBar?.classList.add('is-clean'); }
+  // 任何表单输入改动（事件委托）就标记 dirty
+  document.getElementById('adminMain')?.addEventListener('input', markDirty);
+  document.getElementById('adminMain')?.addEventListener('change', markDirty);
 
   loadCompany();
 </script>
