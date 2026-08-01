@@ -197,8 +197,8 @@
       <p class="text-xs text-gray-400 mb-4">独立站语境下的"工厂核心能力快览"：展示工厂 logo、名称、一句话定位、认证徽章、所在地/经验年限、核心承诺（MOQ/打样）、4 个关键数字（响应/交期/起订量/月产能）、定制能力 chip。留空 = 不显示该卡片。</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
-          <label class="block text-xs font-medium text-gray-500 mb-1">工厂 / 品牌名称</label>
-          <input id="fcName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="lightcirle">
+          <label class="block text-xs font-medium text-gray-500 mb-1">公司名称（独立于站点名 lightcirle，填实际公司全称）</label>
+          <input id="fcName" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Guangdong Easemotion Apparel Tech Co., Ltd.">
         </div>
         <div>
           <label class="block text-xs font-medium text-gray-500 mb-1">工厂 logo URL</label>
@@ -256,10 +256,6 @@
 
       <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">定制能力 chip（每行一个，桌面端最多显示 6 个；移动端最多 3 个 +N）</h3>
       <textarea id="fcCapabilities" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm h-24 resize-none" placeholder="OEM Service&#10;ODM Service&#10;Pantone Color Match&#10;Custom Logo & Embroidery&#10;Custom Packaging&#10;Private Label"></textarea>
-
-      <h3 class="text-sm font-semibold text-gray-700 mt-5 mb-2">底部 CTA 链接（可选）</h3>
-      <p class="text-xs text-gray-400 mb-2">留空 = 默认 WhatsApp 联系我们。填写 https:// 链接 = 跳独立页面（如首页工厂模块 /contact）。填写 mailto: = 邮件。</p>
-      <input id="fcCtaLink" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="留空 = WhatsApp；或填 https://... 或 mailto:...">
     </div>
 
     <!-- Equipment Images -->
@@ -629,7 +625,6 @@
     set('fcMonthlyCapacity', fc.monthlyCapacity);
     set('fcBrandsServed', fc.brandsServed);
     set('fcCapabilities', (fc.capabilities || []).join('\n'));
-    set('fcCtaLink', fc.ctaLink);
     renderFcLogoPreview();
   }
   function renderFcLogoPreview() {
@@ -767,7 +762,6 @@
         monthlyCapacity: document.getElementById('fcMonthlyCapacity').value.trim(),
         brandsServed: document.getElementById('fcBrandsServed').value.trim(),
         capabilities: document.getElementById('fcCapabilities').value.split('\n').map(s => s.trim()).filter(Boolean),
-        ctaLink: document.getElementById('fcCtaLink').value.trim(),
       },
       equipmentTitle: document.getElementById('eqTitle').value,
       equipmentDesc: document.getElementById('eqDesc').value,

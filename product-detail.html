@@ -196,13 +196,13 @@
   // Driven by /api/company.factoryCard. Independent-site context: instead of marketplace
   // trading metrics (store rating, on-time dispatch rate, reorder rate) we surface the
   // factory's real manufacturing promises: response time, sampling/lead time, MOQ, monthly
-  // capacity, plus a chip list of customization capabilities and a single CTA to contact.
+  // capacity, plus a chip list of customization capabilities. The card does NOT include a
+  // CTA button — the global sticky contact bar already covers conversion.
   // Mobile: drop the 4-column metrics, keep header + 2-3 capability chips for a compact card.
   function renderFactoryCard() {
     var fc = (window.__companyData && window.__companyData.factoryCard) || {};
-    // Require at minimum a name or a tagline — otherwise don't render
+    // Require at minimum a company name or a tagline or a highlight — otherwise don't render
     if (!fc.name && !fc.tagline && !fc.highlight) return '';
-    var wa = (window.SITE_CONFIG && window.SITE_CONFIG.whatsappNumber) || '8612345678900';
     var isMobile = window.innerWidth < 768;
 
     // Header: logo + name + tagline + certification badge
@@ -214,7 +214,7 @@
         '<div class="fc-logo-wrap">' + logoHtml + '</div>' +
         '<div class="fc-id">' +
           '<div class="fc-name-row">' +
-            '<span class="fc-name">' + escHtml(fc.name || 'lightcirle') + '</span>' +
+            '<span class="fc-name">' + escHtml(fc.name || '') + '</span>' +
             (fc.certified ? '<span class="fc-certified"><i class="fas fa-certificate"></i>' + escHtml(fc.certified) + '</span>' : '') +
           '</div>' +
           (fc.tagline ? '<p class="fc-tagline">' + escHtml(fc.tagline) + '</p>' : '') +
@@ -227,8 +227,8 @@
     if (fc.years) metaBits.push('<span><i class="fas fa-calendar fc-meta-icon"></i>' + escHtml(fc.years) + '</span>');
     var metaHtml = metaBits.length ? '<div class="fc-meta-line">' + metaBits.join('<span class="fc-meta-sep">·</span>') + '</div>' : '';
 
-    // Highlight bar (core promise, e.g. "MOQ 50pcs · 15-Day Sampling")
-    var highlightHtml = fc.highlight ? '<div class="fc-highlight"><i class="fas fa-bolt"></i>' + escHtml(fc.highlight) + '</div>' : '';
+    // Highlight pill (core promise, e.g. "MOQ 50pcs · 15-Day Sampling") — wrapped in a centering block
+    var highlightHtml = fc.highlight ? '<div class="fc-highlight-wrap"><span class="fc-highlight"><i class="fas fa-bolt"></i>' + escHtml(fc.highlight) + '</span></div>' : '';
 
     // 4-column metrics — only render on desktop to keep the card compact on mobile
     var metrics = [
@@ -259,15 +259,7 @@
       '</div>'
     ) : '';
 
-    // CTA: if admin set a custom link, use it as a "Learn more" link; otherwise fall back to WhatsApp
-    var ctaLink = fc.ctaLink && fc.ctaLink.trim() ? fc.ctaLink.trim() :
-      ('https://wa.me/' + wa + '?text=' + encodeURIComponent("Hi! I'd like to talk to your factory about my project."));
-    var ctaText = (fc.ctaLink && fc.ctaLink.indexOf('wa.me') < 0 && fc.ctaLink.indexOf('mailto:') < 0)
-      ? 'Learn more'
-      : 'Talk to our factory';
-    var ctaHtml = '<a class="fc-cta" href="' + escAttr(ctaLink) + '" target="_blank" rel="noopener"><span>' + escHtml(ctaText) + '</span><i class="fas fa-arrow-right"></i></a>';
-
-    return '<div class="factory-card mt-4">' + headerHtml + metaHtml + highlightHtml + metricsHtml + capHtml + ctaHtml + '</div>';
+    return '<div class="factory-card mt-4">' + headerHtml + metaHtml + highlightHtml + metricsHtml + capHtml + '</div>';
   }
   // Minimal HTML escapers used by renderFactoryCard
   function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
