@@ -8,6 +8,11 @@ node_modules/
 data/config.js
 # Debug / preview-only HTML files (never commit)
 *-preview.html
+# Diagnostics / temp / cache (never commit)
+.workbuddy/
+_backend_diag.js
+tools/_fixfont.py
+整改方案-*.md
 uploads/*
 !uploads/.gitkeep
 .DS_Store
