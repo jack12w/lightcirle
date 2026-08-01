@@ -13,6 +13,9 @@ data/config.js
 _backend_diag.js
 tools/_fixfont.py
 整改方案-*.md
+# Test / diagnostic scripts (never commit; kept on disk for local/Docker use only)
+tools/verify-*.js
+tools/debug-*.js
 uploads/*
 !uploads/.gitkeep
 .DS_Store
