@@ -555,6 +555,30 @@ h1, h2, h3, h4 {
 }
 
 /* --- Search --- */
+/* Search page result cards: square 210x210 image area, card height capped at 410px.
+   Scoped to #searchResults so products.html / blog.html / homepage are unaffected. */
+#searchResults .product-card,
+#searchResults .blog-result-card {
+  display: flex;
+  flex-direction: column;
+  max-height: 410px;
+}
+#searchResults .product-image-wrap,
+#searchResults .blog-image-wrap {
+  aspect-ratio: auto;
+  height: 210px;
+  flex-shrink: 0;
+}
+#searchResults .product-image-wrap img,
+#searchResults .blog-image-wrap img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+/* article card image is wrapped in an <a>; keep it from being squeezed in flex column */
+#searchResults .blog-result-card > a {
+  flex-shrink: 0;
+}
 .search-input {
   width: 100%;
   padding: 14px 20px 14px 48px;
