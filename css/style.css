@@ -407,21 +407,24 @@ h1, h2, h3, h4 {
     radial-gradient(circle at 75% 75%, rgba(196, 146, 110, 0.14), transparent 55%);
 }
 
-/* ===== Product detail: title / description typography ===== */
-/* Title / description live in a flex row with the Read more button as a SIBLING
-   (not inside the clamped box — otherwise line-clamp clips & hides the button).
-   The button is bottom-aligned and on the same line; it never affects how the
-   text above wraps. */
-.pd-clamp-row {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: flex-end;
-  gap: 10px;
+/* ===== Product detail: two-column layout ===== */
+/* Left (image) column is pinned to 340px so it matches the main image width;
+   the right (info) column takes the remaining space. Mobile: single column. */
+.pd-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
 }
-/* Main product title: 18px, max 2 lines */
+@media (min-width: 1024px) {
+  .pd-detail-grid {
+    grid-template-columns: 340px 1fr;
+    gap: 4rem;
+  }
+}
+
+/* ===== Product detail: title / description typography ===== */
+/* Main product title: 18px, max 2 lines (folded, no expand button) */
 .pd-title {
-  flex: 1 1 auto;
-  min-width: 0;
   font-size: 18px;
   line-height: 1.35;
   display: -webkit-box;
@@ -429,44 +432,14 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-/* Long description: 14px, max 3 lines, fold extra (toggle expands) */
+/* Long description: 14px, max 3 lines, folded (no expand button) */
 .pd-desc {
-  flex: 1 1 auto;
-  min-width: 0;
   font-size: 14px;
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-/* Read more toggle: inline sibling, always visible */
-.pd-readmore {
-  flex: 0 0 auto;
-  display: inline-block;
-  white-space: nowrap;
-  color: var(--color-primary);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-}
-.dark .pd-readmore {
-  color: var(--color-primary-light);
-}
-/* Expanded state: release the line-clamp on the inner title/description.
-   Let the row wrap so the toggle drops below the full text. */
-.pd-clamp-row.expanded {
-  flex-wrap: wrap;
-  align-items: flex-start;
-}
-.pd-clamp-row.expanded .pd-title,
-.pd-clamp-row.expanded .pd-desc {
-  -webkit-line-clamp: unset;
-  display: block;
-  overflow: visible;
 }
 
 /* Main media: exactly 340 x 453px (portrait). Custom class bypasses Tailwind
