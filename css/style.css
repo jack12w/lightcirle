@@ -579,6 +579,42 @@ h1, h2, h3, h4 {
 #searchResults .blog-result-card > a {
   flex-shrink: 0;
 }
+
+/* Search page card typography — exact px sizes per spec.
+   Scoped so products.html / blog.html / homepage are untouched. */
+/* 分类名称: 10px */
+#searchResults .product-card .uppercase,
+#searchResults .blog-result-card .p-5 > div:first-child span {
+  font-size: 10px;
+}
+/* 标题: 12px, 最多2行省略 */
+#searchResults .product-card h3,
+#searchResults .blog-result-card h3 {
+  font-size: 12px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* 产品材质(fabric): 10px */
+#searchResults .product-card .p-4 > p:first-of-type {
+  font-size: 10px;
+}
+/* 产品价格(priceRange): 12px */
+#searchResults .product-card .p-4 > p:nth-of-type(2) {
+  font-size: 12px;
+}
+/* 文章简介(excerpt): 10px */
+#searchResults .blog-result-card .p-5 > p {
+  font-size: 10px;
+}
+/* 文章标签(tags): 10px */
+#searchResults .blog-result-card .p-5 > div:last-child span {
+  font-size: 10px;
+}
+
 .search-input {
   width: 100%;
   padding: 14px 20px 14px 48px;
