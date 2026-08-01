@@ -232,14 +232,21 @@
     html += '<button type="button" onclick="scrollThumbs(1)" class="thumb-arrow thumb-arrow-overlay thumb-arrow-right" aria-label="Next thumbnails"><i class="fas fa-chevron-right"></i></button>';
     html += '</div></div>';
     html += '<div>';
-    html += '<span id="productCategoryLabel" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 dark:bg-primary-light/20 text-primary dark:text-primary-light uppercase tracking-wider mb-4">' + (product.category) + '</span>';
     // Title: clamp to 2 lines (no Read more button)
     html += '<h1 id="productTitle" class="pd-title font-serif font-bold mb-4">' + product.name + '</h1>';
     // Long description: clamp to 3 lines (no Read more button)
     var descText = product.description || '';
-    html += '<div class="mb-6">';
+    html += '<div class="mb-4">';
     html += '<p id="productDesc" class="pd-desc text-gray-600 dark:text-gray-400">' + descText + '</p>';
     html += '</div>';
+    // Certifications: single-line row directly below the description, NO heading
+    if (product.certifications && product.certifications.length) {
+      html += '<div class="mb-6 flex flex-nowrap gap-2 overflow-hidden">';
+      for (var ci = 0; ci < product.certifications.length; ci++) {
+        html += '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-xs font-medium border border-primary/20 dark:border-primary-light/20 whitespace-nowrap flex-shrink-0"><i class="fas fa-certificate"></i>' + product.certifications[ci] + '</span>';
+      }
+      html += '</div>';
+    }
     // Price range (text only — no tiered pricing exposed; guides inquiry)
     if (product.priceRange && product.priceRange.trim()) {
       html += '<p class="text-sm text-gray-500 dark:text-gray-400 mb-6"><i class="fas fa-tags pd-price-icon text-primary dark:text-primary-light"></i>' + product.priceRange + '</p>';
@@ -251,18 +258,6 @@
     html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Fabric</p><p class="font-bold text-sm">' + product.fabric + '</p></div>';
     html += '<div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"><p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Weight</p><p class="font-bold text-sm">' + product.weight + '</p></div>';
     html += '</div>';
-    // Certifications strip (trust signal, front-loaded)
-    if (product.certifications && product.certifications.length) {
-      html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Certifications</p><div class="flex flex-wrap gap-2">';
-      for (var ci = 0; ci < product.certifications.length; ci++) {
-        html += '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary-light/10 text-primary dark:text-primary-light text-xs font-medium border border-primary/20 dark:border-primary-light/20"><i class="fas fa-certificate"></i>' + product.certifications[ci] + '</span>';
-      }
-      html += '</div></div>';
-    }
-    // Customization summary (front-loaded hook into the section below)
-    if (product.customization && product.customization.length) {
-      html += '<a href="#customizationSection" class="inline-flex items-center gap-2 text-sm font-medium text-primary dark:text-primary-light mb-6 hover:underline"><i class="fas fa-sliders-h"></i> Fully customizable — ' + product.customization.slice(0, 3).join(', ') + ' &amp; more</a>';
-    }
     // Sizes
     html += '<div class="mb-6"><p class="text-sm font-semibold mb-2">Available Sizes</p><div class="flex flex-wrap gap-2">';
     for (var s = 0; s < product.sizes.length; s++) {
@@ -317,7 +312,6 @@
     contentEl.classList.remove('hidden');
     window.__renderedProduct = product;
     window.__currentProduct = product;
-    if (window.refreshProductCategoryName) window.refreshProductCategoryName();
     if (window.setStickyProduct) window.setStickyProduct(product.name, (product.images && product.images[0]) ? product.images[0] : '');
     // Update canonical URL with slug
     var canonLink = document.querySelector('link[rel="canonical"]');
