@@ -46,6 +46,20 @@ const { chromium } = require('playwright');
   console.log('CATEGORIES:', JSON.stringify(cat));
   await page.screenshot({ path: '.workbuddy/verify-admin-categories.png', fullPage: false });
 
+  // --- articles.html ---
+  await page.goto('http://localhost:3000/admin/articles.html', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(800);
+  const art = await page.evaluate(() => ({
+    bodyLen: document.body.innerText.trim().length,
+    hasSidebar: !!document.getElementById('adminSidebar'),
+    hasTable: !!document.getElementById('articleTable'),
+    hasEditor: !!document.getElementById('editorModal'),
+    hasForm: !!document.getElementById('articleForm'),
+    white: document.body.innerText.trim().length < 20
+  }));
+  console.log('ARTICLES:', JSON.stringify(art));
+  await page.screenshot({ path: '.workbuddy/verify-admin-articles.png', fullPage: false });
+
   // --- product detail thumbnails left-aligned ---
   await page.goto('http://localhost:3000/product-detail.html?id=yp001', { waitUntil: 'networkidle' });
   await page.waitForTimeout(500);
