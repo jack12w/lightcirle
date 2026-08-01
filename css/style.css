@@ -481,7 +481,7 @@ h1, h2, h3, h4 {
   border-color: rgba(62,123,84,.25);
   color: #E5E7EB;
 }
-/* Header: logo (left) + name/tagline/certified badge (right) */
+/* Header: logo (left) + name/tagline (right) */
 .fc-header {
   display: flex;
   gap: 12px;
@@ -531,22 +531,6 @@ h1, h2, h3, h4 {
   max-width: 100%;
 }
 .dark .fc-name { color: #F3F4F6; }
-/* Certification badge (replaces old "Verified PRO" pill) */
-.fc-certified {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-  font-weight: 600;
-  color: #2D5A3D;
-  background: rgba(45, 90, 61, 0.08);
-  border: 1px solid rgba(45, 90, 61, 0.2);
-  padding: 1px 6px;
-  border-radius: 9999px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-.fc-certified i { color: #2D5A3D; font-size: 9px; }
 /* Tagline (one-line brand positioning) */
 .fc-tagline {
   margin-top: 2px;
@@ -572,11 +556,7 @@ h1, h2, h3, h4 {
 .fc-meta-icon { color: #6B7280; font-size: 10px; margin-right: 3px; }
 .dark .fc-meta-icon { color: #9CA3AF; }
 .fc-meta-sep { color: #9CA3AF; }
-/* Highlight pill (core promise, e.g. "MOQ 50pcs · 15-Day Sampling") — wrapper centers the pill */
-.fc-highlight-wrap {
-  text-align: center;
-  margin-bottom: 10px;
-}
+/* Highlight pill (core promise, e.g. "MOQ 50pcs · 15-Day Sampling") — left aligned inline pill */
 .fc-highlight {
   display: inline-flex;
   align-items: center;
@@ -588,6 +568,7 @@ h1, h2, h3, h4 {
   border: 1px solid rgba(45, 90, 61, 0.15);
   padding: 5px 10px;
   border-radius: 8px;
+  margin-bottom: 10px;
 }
 .fc-highlight i { color: #F59E0B; font-size: 10px; }
 /* 4-column metrics (response / lead time / MOQ / monthly capacity) */

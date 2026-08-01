@@ -205,7 +205,7 @@
     if (!fc.name && !fc.tagline && !fc.highlight) return '';
     var isMobile = window.innerWidth < 768;
 
-    // Header: logo + name + tagline + certification badge
+    // Header: logo + name + tagline
     var logoHtml = fc.logo
       ? '<img class="fc-logo" src="' + escAttr(fc.logo) + '" alt="' + escHtml(fc.name || 'factory logo') + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="fc-logo-fallback" style="display:none"><i class="fas fa-industry"></i></span>'
       : '<span class="fc-logo-fallback"><i class="fas fa-industry"></i></span>';
@@ -215,7 +215,6 @@
         '<div class="fc-id">' +
           '<div class="fc-name-row">' +
             '<span class="fc-name">' + escHtml(fc.name || '') + '</span>' +
-            (fc.certified ? '<span class="fc-certified"><i class="fas fa-certificate"></i>' + escHtml(fc.certified) + '</span>' : '') +
           '</div>' +
           (fc.tagline ? '<p class="fc-tagline">' + escHtml(fc.tagline) + '</p>' : '') +
         '</div>' +
@@ -227,8 +226,8 @@
     if (fc.years) metaBits.push('<span><i class="fas fa-calendar fc-meta-icon"></i>' + escHtml(fc.years) + '</span>');
     var metaHtml = metaBits.length ? '<div class="fc-meta-line">' + metaBits.join('<span class="fc-meta-sep">·</span>') + '</div>' : '';
 
-    // Highlight pill (core promise, e.g. "MOQ 50pcs · 15-Day Sampling") — wrapped in a centering block
-    var highlightHtml = fc.highlight ? '<div class="fc-highlight-wrap"><span class="fc-highlight"><i class="fas fa-bolt"></i>' + escHtml(fc.highlight) + '</span></div>' : '';
+    // Highlight pill (core promise, e.g. "MOQ 50pcs · 15-Day Sampling") — left aligned inline pill
+    var highlightHtml = fc.highlight ? '<div class="fc-highlight"><i class="fas fa-bolt"></i>' + escHtml(fc.highlight) + '</div>' : '';
 
     // 4-column metrics — only render on desktop to keep the card compact on mobile
     var metrics = [

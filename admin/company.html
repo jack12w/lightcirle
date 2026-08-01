@@ -213,10 +213,6 @@
           <input id="fcTagline" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Custom Yoga Wear Manufacturer">
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">认证徽章（如 OEKO-TEX · BSCI Certified）</label>
-          <input id="fcCertified" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="OEKO-TEX · BSCI Certified">
-        </div>
-        <div>
           <label class="block text-xs font-medium text-gray-500 mb-1">所在城市 + 国家</label>
           <input id="fcLocation" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Dongguan, China">
         </div>
@@ -615,7 +611,6 @@
     set('fcName', fc.name);
     set('fcLogo', fc.logo);
     set('fcTagline', fc.tagline);
-    set('fcCertified', fc.certified);
     set('fcLocation', fc.location);
     set('fcYears', fc.years);
     set('fcHighlight', fc.highlight);
@@ -752,7 +747,6 @@
         name: document.getElementById('fcName').value.trim(),
         logo: document.getElementById('fcLogo').value.trim(),
         tagline: document.getElementById('fcTagline').value.trim(),
-        certified: document.getElementById('fcCertified').value.trim(),
         location: document.getElementById('fcLocation').value.trim(),
         years: document.getElementById('fcYears').value.trim(),
         highlight: document.getElementById('fcHighlight').value.trim(),
