@@ -562,6 +562,17 @@ h1, h2, h3, h4 {
   display: flex;
   flex-direction: column;
   max-height: 410px;
+  overflow: hidden;
+}
+/* Card body fills the remaining height so the bottom row can be pushed down with margin-top:auto.
+   让卡片正文区成为弹性容器，底部行用 auto margin 推到卡底，不管内容多寡都对齐。 */
+#searchResults .product-card .p-4,
+#searchResults .product-card .p-5,
+#searchResults .blog-result-card .p-5 {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 #searchResults .product-image-wrap,
 #searchResults .blog-image-wrap {
@@ -621,6 +632,12 @@ h1, h2, h3, h4 {
 }
 #searchResults .product-card .cert-tag i {
   font-size: 10px;
+}
+
+/* 底部行贴底：产品卡的 MOQ+图标、博客卡的标签 — 不管上面内容多寡都自动推到底部 */
+#searchResults .product-card .p-4 > .flex.items-center.justify-between,
+#searchResults .blog-result-card .p-5 > div:last-child {
+  margin-top: auto;
 }
 
 .search-input {
