@@ -45,9 +45,39 @@
       return parts.join('');
     }
 
+    // --- Live contact details straight from SITE_CONFIG (admin settings) ---
+    // Read directly here (not via main.js replaceTextContent) so the footer shows
+    // the correct contact info regardless of script init order.
+    function fmtWhatsApp(raw) {
+      var s = (raw || '').replace(/\D/g, '');
+      if (!s) return raw;
+      if (s.length > 5 && s.indexOf('86') === 0) {
+        var rest = s.slice(2);
+        if (rest.length === 10) return '+86 ' + rest.slice(0, 4) + ' ' + rest.slice(4, 8) + ' ' + rest.slice(8);
+        if (rest.length === 11) return '+86 ' + rest.slice(0, 3) + ' ' + rest.slice(3, 7) + ' ' + rest.slice(7);
+        return '+' + s.slice(0, 2) + ' ' + rest;
+      }
+      return '+' + s;
+    }
+    var contactEmail = cfg.emailAddress || 'inquiry@lightcirle.com';
+    var contactWaNum = (cfg.whatsappNumber || '').replace(/\D/g, '');
+    var contactWaDisplay = contactWaNum ? fmtWhatsApp(contactWaNum) : '+86 123 4567 8900';
+    var contactLoc = cfg.location || 'Guangzhou, China';
+    var contactHours = cfg.businessHours || 'Mon-Sat, 9AM-6PM (GMT+8)';
+    var contactCol =
+      '<div>' +
+        '<h4>Contact</h4>' +
+        '<ul class="space-y-2 text-sm">' +
+          (contactWaNum ? '<li><a href="https://wa.me/' + contactWaNum + '?text=' + encodeURIComponent('Hi! Interested in your yoga wear customization services.') + '" target="_blank" rel="noopener"><i class="fab fa-whatsapp" style="margin-right:8px;color:#25D366"></i>' + contactWaDisplay + '</a></li>' : '') +
+          '<li><a href="mailto:' + contactEmail + '"><i class="fas fa-envelope" style="margin-right:8px"></i>' + contactEmail + '</a></li>' +
+          '<li style="display:flex;align-items:flex-start"><i class="fas fa-map-marker-alt" style="margin-right:8px;margin-top:4px"></i><span>' + contactLoc + '</span></li>' +
+          '<li style="display:flex;align-items:flex-start"><i class="fas fa-clock" style="margin-right:8px;margin-top:4px"></i><span>' + contactHours + '</span></li>' +
+        '</ul>' +
+      '</div>';
+
     var html =
       '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">' +
-        '<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">' +
+        '<div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">' +
           '<div>' +
             '<h4>' + brand + '</h4>' +
             '<p class="text-sm leading-relaxed">Premium custom yoga wear manufacturer. MOQ 50pcs, factory direct, global shipping.</p>' +
@@ -82,6 +112,7 @@
               '<li><a href="sustainability.html">Sustainability</a></li>' +
             '</ul>' +
           '</div>' +
+          contactCol +
         '</div>' +
         '<div class="footer-bottom">' +
           '<p>&copy; 2026 ' + brand + '. Premium Custom Yoga Wear Manufacturer. All rights reserved.</p>' +
