@@ -250,10 +250,46 @@
     openSharedMediaPicker();
   }
 
+  // 分类封面图尺寸优化：上传前用 Canvas 把任意比例原图居中裁剪为固定比例(2:1)、
+  // 缩放到目标宽度并转 WebP。这样无论用户传什么图，封面都清晰、比例统一，
+  // 前端 object-fit:cover 在卡片框(约2.47:1)内会呈现明显的“短边放大、长边裁剪”效果。
+  // 仅对静态图片生效；gif/svg/不支持时原样跳过，绝不影响上传。
+  async function optimizeCoverImage(file) {
+    try {
+      const ratio = 2 / 1;        // 目标宽高比 w:h（< 卡片框 2.47:1，使 cover 裁剪明显且不丢太多内容）
+      const maxWidth = 1280;      // 输出宽度上限（高 = 宽/ratio）
+      const quality = 0.85;       // WebP 质量
+      if (!/^image\//.test(file.type) || file.type === 'image/gif' || file.type === 'image/svg+xml') {
+        return file;
+      }
+      if (typeof createImageBitmap !== 'function') return file;  // 老浏览器兜底
+      const bmp = await createImageBitmap(file);
+      const sw = bmp.width, sh = bmp.height;
+      let cw, ch;
+      if (sw / sh > ratio) { ch = sh; cw = Math.round(sh * ratio); }   // 原图更宽 → 裁左右
+      else { cw = sw; ch = Math.round(sw / ratio); }                   // 原图更方/更高 → 裁上下
+      const cx = Math.round((sw - cw) / 2), cy = Math.round((sh - ch) / 2);
+      const outW = Math.min(cw, maxWidth), outH = Math.round(outW / ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = outW; canvas.height = outH;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bmp, cx, cy, cw, ch, 0, 0, outW, outH);
+      if (bmp.close) bmp.close();
+      const blob = await new Promise((res) => canvas.toBlob(res, 'image/webp', quality));
+      if (!blob) return file;
+      const base = (file.name || 'image').replace(/\.[^.]+$/, '');
+      return new File([blob], base + '.webp', { type: 'image/webp' });
+    } catch (e) {
+      console.warn('[optimizeCover] 跳过优化，回退原图:', e);
+      return file;
+    }
+  }
+
   async function uploadEdImage(input) {
     if (!input.files || !input.files[0]) return;
     const formData = new FormData();
-    formData.append('file', input.files[0]);
+    const optimized = await optimizeCoverImage(input.files[0]);
+    formData.append('file', optimized);
     formData.append('folder', 'site');
     try {
       const res = await fetch(API + '/upload', {
