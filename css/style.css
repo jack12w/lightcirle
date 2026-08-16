@@ -723,9 +723,11 @@ h1, h2, h3, h4 {
   position: relative;
 }
 .home-cat-card .product-image-wrap img {
+  position: relative;       /* sit ABOVE the fallback placeholder so the image is visible by default */
+  z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: cover;        /* small images auto-enlarge to fill; large images center-crop */
+  object-fit: cover;        /* keep aspect ratio; short edge fills the box, long edge cropped (original design) */
   object-position: center;
   transition: transform 0.5s var(--transition-spring);
 }

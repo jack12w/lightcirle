@@ -753,7 +753,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     grid.innerHTML = categories.map(function(cat) {
       var imgSrc = cat.image || '';
       var imgHtml = '<div class="cat-img-fallback"><i class="fas fa-image text-4xl"></i></div>' +
-        (imgSrc ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.id) + '" loading="lazy" onerror="this.style.display=\'none\'">' : '');
+        (imgSrc ? '<img src="' + imgSrc + '" alt="' + escapeHtml(cat.id) + '" loading="lazy" onload="if(this.previousElementSibling)this.previousElementSibling.style.display=\'none\'" onerror="this.style.display=\'none\'">' : '');
       return '<a href="search.html?tab=' + cat.id + '" class="product-card home-cat-card animate-on-scroll block">' +
         '<div class="product-image-wrap">' + imgHtml + '</div>' +
         '<div class="p-3"><h3 class="font-serif font-bold text-base mb-0.5">' + escapeHtml(cat.id) + '</h3>' +
